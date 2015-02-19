@@ -4,6 +4,8 @@
 	return two-column data.frame with name and (if installed) version
 	* man/getPackages.Rd: Generated via roxygen header
 
+	* cleanup: Added helper script
+
 2015-02-17  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Very first version and commit
