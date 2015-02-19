@@ -9,9 +9,13 @@ using namespace Rcpp;
 std::vector<std::string> getPackages();
 RcppExport SEXP rapt_getPackages() {
 BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    __result = Rcpp::wrap(getPackages());
-    return __result;
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        std::vector<std::string> __result = getPackages();
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP
 }
