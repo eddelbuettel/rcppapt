@@ -19,3 +19,18 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// hasPackages
+bool hasPackages(const std::string pkg);
+RcppExport SEXP rapt_hasPackages(SEXP pkgSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const std::string >::type pkg(pkgSEXP );
+        bool __result = hasPackages(pkg);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}

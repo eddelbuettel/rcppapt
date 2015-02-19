@@ -12,3 +12,14 @@ getPackages <- function() {
     .Call('rapt_getPackages', PACKAGE = 'rapt')
 }
 
+#' The APT Package Management system uses a data-rich caching '
+#' structure. This accessor function tests whether a given package
+#' exists.
+#' @title Test for Existence of Given Package
+#' @param pkg Name of the package
+#' @return A boolean result is returned
+#' @author Dirk Eddelbuettel
+hasPackages <- function(pkg) {
+    .Call('rapt_hasPackages', PACKAGE = 'rapt', pkg)
+}
+
