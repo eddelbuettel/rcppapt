@@ -7,7 +7,8 @@
 getPackages()
 }
 \value{
-A vector of strings containing the known package names
+A data frame with two columns containing the
+package name, and the installed version or NA if not installed
 }
 \description{
 The APT Package Management system uses a data-rich caching '

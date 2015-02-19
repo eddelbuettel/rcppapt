@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // getPackages
-std::vector<std::string> getPackages();
+Rcpp::DataFrame getPackages();
 RcppExport SEXP rapt_getPackages() {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        std::vector<std::string> __result = getPackages();
+        Rcpp::DataFrame __result = getPackages();
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

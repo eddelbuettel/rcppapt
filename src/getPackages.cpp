@@ -34,21 +34,32 @@
 //' structure. This accessor function returns the names of installable
 //' packages.
 //' @title Retrieve Names of All Installable Packages
-//' @return A vector of strings containing the known package names
+//' @return A data frame with two columns containing the 
+//' package name, and the installed version or NA if not installed
 //' @author Dirk Eddelbuettel
 // [[Rcpp::export]]
-std::vector<std::string> getPackages() {
+Rcpp::DataFrame getPackages() {
 
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
     pkgCacheFile cacheFile;
     pkgCache* cache = cacheFile.GetPkgCache();
-    
-    std::vector<std::string> res;
+ 
+    std::vector<std::string> name, ver;
+    // first pass uses STL vectors and grows them
     for (pkgCache::PkgIterator package = cache->PkgBegin(); !package.end(); package++) {
-        res.push_back(std::string(package.Name()));
+        name.push_back(std::string(package.Name()));
+        const char *version = package.CurVersion();
+        ver.push_back(version == NULL ? "NA" : version);
     }
-
-    return res;
+    // second pass to set proper NA values for R
+    Rcpp::CharacterVector V(ver.size());
+    for (int i=0; i<V.size(); i++) {
+        V[i] = ver[i];
+        if (ver[i] == "NA") V[i] = NA_STRING; 
+    }
+    
+    return Rcpp::DataFrame::create(Rcpp::Named("Package") = name,
+                                   Rcpp::Named("Installed") = V);
 }

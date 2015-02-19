@@ -5,7 +5,8 @@
 #' structure. This accessor function returns the names of installable
 #' packages.
 #' @title Retrieve Names of All Installable Packages
-#' @return A vector of strings containing the known package names
+#' @return A data frame with two columns containing the 
+#' package name, and the installed version or NA if not installed
 #' @author Dirk Eddelbuettel
 getPackages <- function() {
     .Call('rapt_getPackages', PACKAGE = 'rapt')
