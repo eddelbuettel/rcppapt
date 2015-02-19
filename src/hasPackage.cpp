@@ -34,11 +34,12 @@
 //' structure. This accessor function tests whether a given package
 //' exists.
 //' @title Test for Existence of Given Package
-//' @param pkg Name of the package
-//' @return A boolean result is returned
+//' @param pkg A character vector with name of the package
+//' @return A boolean result vector is returned indicating if the 
+//' package at the given position is available.
 //' @author Dirk Eddelbuettel
 // [[Rcpp::export]]
-bool hasPackages(const std::string pkg) {
+Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg) {
 
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
@@ -46,6 +47,13 @@ bool hasPackages(const std::string pkg) {
     pkgCacheFile cacheFile;
     pkgCache* cache = cacheFile.GetPkgCache();
  
-    pkgCache::PkgIterator package = cache->FindPkg(pkg);
-    return (package.end() != true); // if iterator at end, no match found
+    Rcpp::LogicalVector res(pkg.size());
+    for (int i=0; i<res.size(); i++) {
+        std::string p(pkg[i]);
+        pkgCache::PkgIterator package = cache->FindPkg(p);
+        // if iterator not at end, a match was found
+        res[i] = (package.end() != true); 
+    }
+    res.names() = pkg;
+    return res;
 }

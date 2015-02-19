@@ -7,10 +7,11 @@
 hasPackages(pkg)
 }
 \arguments{
-\item{pkg}{Name of the package}
+\item{pkg}{A character vector with name of the package}
 }
 \value{
-A boolean result is returned
+A boolean result vector is returned indicating if the
+package at the given position is available.
 }
 \description{
 The APT Package Management system uses a data-rich caching '

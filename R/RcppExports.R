@@ -16,8 +16,9 @@ getPackages <- function() {
 #' structure. This accessor function tests whether a given package
 #' exists.
 #' @title Test for Existence of Given Package
-#' @param pkg Name of the package
-#' @return A boolean result is returned
+#' @param pkg A character vector with name of the package
+#' @return A boolean result vector is returned indicating if the 
+#' package at the given position is available.
 #' @author Dirk Eddelbuettel
 hasPackages <- function(pkg) {
     .Call('rapt_hasPackages', PACKAGE = 'rapt', pkg)

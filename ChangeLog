@@ -1,6 +1,6 @@
 2015-02-19  Dirk Eddelbuettel  <edd@debian.org>
 
-	* src/hasPackage.cpp: New function to check if package available
+	* src/hasPackages.cpp: New function to check if packages available
 	* man/hasPackages.Rd: Generated via roxygen header
 
 2015-02-18  Dirk Eddelbuettel  <edd@debian.org>
