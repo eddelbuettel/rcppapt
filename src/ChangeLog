@@ -1,0 +1,11 @@
+2015-02-18  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/getPackages.cpp: Added proper copyright header
+	* man/getPackages.Rd: Generated via roxygen header
+
+2015-02-17  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Very first version and commit
+
+	* src/getPackages.cpp: Simple accessor for known packages
+
