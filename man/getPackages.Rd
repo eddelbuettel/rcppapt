@@ -7,8 +7,9 @@
 getPackages()
 }
 \value{
-A data frame with two columns containing the
-package name, and the installed version or NA if not installed
+A data frame with columns containing the
+package name, the installed version (or NA if not installed)
+and the section it is installed in (or NA).
 }
 \description{
 The APT Package Management system uses a data-rich caching '

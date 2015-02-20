@@ -3,6 +3,9 @@
 	* src/hasPackages.cpp: New function to check if packages available
 	* man/hasPackages.Rd: Generated via roxygen header
 
+	* src/getPackages.cpp: Also return Section as third column
+
+
 2015-02-18  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/getPackages.cpp: Added proper copyright header; changed to
