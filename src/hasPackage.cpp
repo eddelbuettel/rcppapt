@@ -25,6 +25,7 @@
 //
 //  Dirk Eddelbuettel, Feb 2015
 
+#include <apt-pkg/init.h>
 #include <apt-pkg/cachefile.h>
 #include <apt-pkg/pkgcache.h>
 

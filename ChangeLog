@@ -14,6 +14,9 @@
 
 	* .travis.yml: Added for Travis CI testing
 
+	* src/getPackages.cpp: Added #include <apt-pkg/init.h> for Ubuntu 12.04
+	* src/hasPackages.cpp: Idem
+
 2015-02-19  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/hasPackages.cpp: New function to check if packages available
