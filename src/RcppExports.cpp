@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // getPackages
 Rcpp::DataFrame getPackages(const std::string regexp = ".");
-RcppExport SEXP rapt_getPackages(SEXP regexpSEXP) {
+RcppExport SEXP RcppAPT_getPackages(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // hasPackages
 Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg);
-RcppExport SEXP rapt_hasPackages(SEXP pkgSEXP) {
+RcppExport SEXP RcppAPT_hasPackages(SEXP pkgSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;

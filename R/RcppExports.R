@@ -14,7 +14,7 @@
 #' @examples 
 #' getPackages("^r-(base|doc)-")
 getPackages <- function(regexp = ".") {
-    .Call('rapt_getPackages', PACKAGE = 'rapt', regexp)
+    .Call('RcppAPT_getPackages', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching '
@@ -28,6 +28,6 @@ getPackages <- function(regexp = ".") {
 #' @examples
 #' hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
 hasPackages <- function(pkg) {
-    .Call('rapt_hasPackages', PACKAGE = 'rapt', pkg)
+    .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
 }
 

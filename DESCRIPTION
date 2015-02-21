@@ -1,6 +1,6 @@
-Package: rapt
+Package: RcppAPT
 Type: Package
-Title: R Interface to the APT Package Manager
+Title: Rcpp Interface to the APT Package Manager
 Version: 0.0.1
 Date: 2015-02-20
 Author: Dirk Eddelbuettel

@@ -1,9 +1,9 @@
-\name{rapt-package}
-\alias{rapt-package}
-\alias{rapt}
+\name{RcppAPT-package}
+\alias{RcppAPT-package}
+\alias{RcppAPT}
 \docType{package}
 \title{
-  R Interface to the APT Package Manager
+  Rcpp Interface to the APT Package Manager
 }
 \description{
   Debian-based systems such as Debian, Ubuntu, or their derivatives use
