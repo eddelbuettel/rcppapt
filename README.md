@@ -16,15 +16,14 @@ library `libapt-pkg`.  This small package provides
 
 We can query packages by regular expression:
 
-```{.r}
-R> library(RcppAPT)
-R> getPackages("^r-base-core.")
+```
+library(RcppAPT)
+getPackages("^r-base-core.")
            Package      Installed        Section
 1 r-base-core-dbg 3.1.2-1utopic0 universe/math
 2 r-base-core-dbg           <NA> universe/math
 3     r-base-core 3.1.2-1utopic0 universe/math
 4     r-base-core           <NA> universe/math
-R> 
 ``` 
 
 which shows two sets for every matching package, presumably because my
@@ -35,10 +34,9 @@ repositories as well as the
 We can also check for installability of a given package or set of packages:
 
 ```{.r}
-R> hasPackages(c("r-cran-rcpp", "r-cran-rcppapt"))
+hasPackages(c("r-cran-rcpp", "r-cran-rcppapt"))
    r-cran-rcpp r-cran-rcppapt 
           TRUE          FALSE 
-R> 
 ```
 
 which shows that [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) is (of
