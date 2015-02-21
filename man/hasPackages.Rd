@@ -18,6 +18,9 @@ The APT Package Management system uses a data-rich caching '
 structure. This accessor function tests whether a given package
 exists.
 }
+\examples{
+hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
+}
 \author{
 Dirk Eddelbuettel
 }

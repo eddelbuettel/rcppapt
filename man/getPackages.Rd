@@ -19,6 +19,9 @@ The APT Package Management system uses a data-rich caching
 structure. This accessor function returns the names of installable
 packages for a given regular expression.
 }
+\examples{
+getPackages("^r-(base|doc)-")
+}
 \author{
 Dirk Eddelbuettel
 }

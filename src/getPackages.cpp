@@ -34,12 +34,15 @@
 //' The APT Package Management system uses a data-rich caching 
 //' structure. This accessor function returns the names of installable
 //' packages for a given regular expression.
+//'
 //' @title Retrieve Names of All Installable Packages
 //' @param regexp Regular expression for package name
 //' @return A data frame with columns containing the 
 //' package name, the installed version (or NA if not installed)  
 //' and the section it is installed in (or NA).
 //' @author Dirk Eddelbuettel
+//' @examples 
+//' getPackages("^r-(base|doc)-")
 // [[Rcpp::export]]
 Rcpp::DataFrame getPackages(const std::string regexp = ".") {
 

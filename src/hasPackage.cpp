@@ -38,6 +38,8 @@
 //' @return A boolean result vector is returned indicating if the 
 //' package at the given position is available.
 //' @author Dirk Eddelbuettel
+//' @examples
+//' hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
 // [[Rcpp::export]]
 Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg) {
 

@@ -4,12 +4,15 @@
 #' The APT Package Management system uses a data-rich caching 
 #' structure. This accessor function returns the names of installable
 #' packages for a given regular expression.
+#'
 #' @title Retrieve Names of All Installable Packages
 #' @param regexp Regular expression for package name
 #' @return A data frame with columns containing the 
 #' package name, the installed version (or NA if not installed)  
 #' and the section it is installed in (or NA).
 #' @author Dirk Eddelbuettel
+#' @examples 
+#' getPackages("^r-(base|doc)-")
 getPackages <- function(regexp = ".") {
     .Call('rapt_getPackages', PACKAGE = 'rapt', regexp)
 }
@@ -22,6 +25,8 @@ getPackages <- function(regexp = ".") {
 #' @return A boolean result vector is returned indicating if the 
 #' package at the given position is available.
 #' @author Dirk Eddelbuettel
+#' @examples
+#' hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
 hasPackages <- function(pkg) {
     .Call('rapt_hasPackages', PACKAGE = 'rapt', pkg)
 }
