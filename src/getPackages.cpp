@@ -35,13 +35,13 @@
 //' structure. This accessor function returns the names of installable
 //' packages for a given regular expression.
 //' @title Retrieve Names of All Installable Packages
-//' @param Regular expression for package name
+//' @param regexp Regular expression for package name
 //' @return A data frame with columns containing the 
 //' package name, the installed version (or NA if not installed)  
 //' and the section it is installed in (or NA).
 //' @author Dirk Eddelbuettel
 // [[Rcpp::export]]
-Rcpp::DataFrame getPackages(const std::string re = ".") {
+Rcpp::DataFrame getPackages(const std::string regexp = ".") {
 
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
@@ -49,7 +49,7 @@ Rcpp::DataFrame getPackages(const std::string re = ".") {
     pkgCacheFile cacheFile;
     pkgCache* cache = cacheFile.GetPkgCache();
  
-    APT::CacheFilter::PackageNameMatchesRegEx pkgre(re);
+    APT::CacheFilter::PackageNameMatchesRegEx pkgre(regexp);
 
     std::vector<std::string> name, ver, sec;
     // first pass uses STL vectors and grows them

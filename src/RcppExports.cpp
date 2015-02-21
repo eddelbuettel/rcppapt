@@ -6,13 +6,13 @@
 using namespace Rcpp;
 
 // getPackages
-Rcpp::DataFrame getPackages(const std::string re = ".");
-RcppExport SEXP rapt_getPackages(SEXP reSEXP) {
+Rcpp::DataFrame getPackages(const std::string regexp = ".");
+RcppExport SEXP rapt_getPackages(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const std::string >::type re(reSEXP);
-    __result = Rcpp::wrap(getPackages(re));
+    Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
+    __result = Rcpp::wrap(getPackages(regexp));
     return __result;
 END_RCPP
 }

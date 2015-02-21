@@ -5,13 +5,13 @@
 #' structure. This accessor function returns the names of installable
 #' packages for a given regular expression.
 #' @title Retrieve Names of All Installable Packages
-#' @param Regular expression for package name
+#' @param regexp Regular expression for package name
 #' @return A data frame with columns containing the 
 #' package name, the installed version (or NA if not installed)  
 #' and the section it is installed in (or NA).
 #' @author Dirk Eddelbuettel
-getPackages <- function(re = ".") {
-    .Call('rapt_getPackages', PACKAGE = 'rapt', re)
+getPackages <- function(regexp = ".") {
+    .Call('rapt_getPackages', PACKAGE = 'rapt', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching '

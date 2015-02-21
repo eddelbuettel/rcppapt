@@ -4,10 +4,10 @@
 \alias{getPackages}
 \title{Retrieve Names of All Installable Packages}
 \usage{
-getPackages(re = ".")
+getPackages(regexp = ".")
 }
 \arguments{
-\item{Regular}{expression for package name}
+\item{regexp}{Regular expression for package name}
 }
 \value{
 A data frame with columns containing the
