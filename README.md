@@ -1,4 +1,4 @@
-## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/RcppAPT.png)](https://travis-ci.org/eddelbuettel/RcppAPT) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 
 Rcpp Interface to APT Package Manager
 
