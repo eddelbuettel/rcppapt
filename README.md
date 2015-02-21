@@ -11,7 +11,7 @@ Tool).  Accessible at the command-line via front-ends `apt`, `apt-get`,
 library `libapt-pkg`.  This small package provides
 [R](http://www.r-project.org) with access to this library via
 [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html). 
-
+
 ### Examples
 
 We can query packages by regular expression:

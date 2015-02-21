@@ -14,7 +14,7 @@ A boolean result vector is returned indicating if the
 package at the given position is available.
 }
 \description{
-The APT Package Management system uses a data-rich caching '
+The APT Package Management system uses a data-rich caching
 structure. This accessor function tests whether a given package
 exists.
 }

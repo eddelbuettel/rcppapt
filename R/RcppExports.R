@@ -17,7 +17,7 @@ getPackages <- function(regexp = ".") {
     .Call('RcppAPT_getPackages', PACKAGE = 'RcppAPT', regexp)
 }
 
-#' The APT Package Management system uses a data-rich caching '
+#' The APT Package Management system uses a data-rich caching
 #' structure. This accessor function tests whether a given package
 #' exists.
 #' @title Test for Existence of Given Package
