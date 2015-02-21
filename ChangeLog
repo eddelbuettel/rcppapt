@@ -12,6 +12,8 @@
 	* src/hasPackages.cpp: Example added to roxygen2 documentation
 	* src/hasPackages.cpp: Idem
 
+	* .travis.yml: Added for Travis CI testing
+
 2015-02-19  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/hasPackages.cpp: New function to check if packages available
