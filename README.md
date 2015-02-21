@@ -11,25 +11,17 @@ Tool).  Accessible at the command-line via front-ends `apt`, `apt-get`,
 library `libapt-pkg`.  This small package provides
 [R](http://www.r-project.org) with access to this library via
 [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html). 
-
+
 ### Examples
 
 We can query packages by regular expression:
 
-```
+```{.r}
 library(RcppAPT)
-getPackages("^r-base-core.")
-           Package      Installed        Section
-1 r-base-core-dbg 3.1.2-1utopic0 universe/math
-2 r-base-core-dbg           <NA> universe/math
-3     r-base-core 3.1.2-1utopic0 universe/math
-4     r-base-core           <NA> universe/math
+getPackages("^r-base-.")
 ``` 
 
-which shows two sets for every matching package, presumably because my
-machine is subscribed to both the standard Ubuntu distributionton package
-repositories as well as the
-[CRAN Ubuntu](http://cran.rstudio.com/bin/linux/ubuntu) installation.
+which returns a data frame with name, version (if installed) and section.
 
 We can also check for installability of a given package or set of packages:
 
