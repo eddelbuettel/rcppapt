@@ -6,31 +6,24 @@
 using namespace Rcpp;
 
 // getPackages
-Rcpp::DataFrame getPackages();
-RcppExport SEXP rapt_getPackages() {
+Rcpp::DataFrame getPackages(const std::string re = ".");
+RcppExport SEXP rapt_getPackages(SEXP reSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::DataFrame __result = getPackages();
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const std::string >::type re(reSEXP);
+    __result = Rcpp::wrap(getPackages(re));
+    return __result;
 END_RCPP
 }
 // hasPackages
 Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg);
 RcppExport SEXP rapt_hasPackages(SEXP pkgSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type pkg(pkgSEXP );
-        Rcpp::LogicalVector __result = hasPackages(pkg);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type pkg(pkgSEXP);
+    __result = Rcpp::wrap(hasPackages(pkg));
+    return __result;
 END_RCPP
 }

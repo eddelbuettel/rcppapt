@@ -4,7 +4,10 @@
 \alias{getPackages}
 \title{Retrieve Names of All Installable Packages}
 \usage{
-getPackages()
+getPackages(re = ".")
+}
+\arguments{
+\item{Regular}{expression for package name}
 }
 \value{
 A data frame with columns containing the
@@ -12,9 +15,9 @@ package name, the installed version (or NA if not installed)
 and the section it is installed in (or NA).
 }
 \description{
-The APT Package Management system uses a data-rich caching '
+The APT Package Management system uses a data-rich caching
 structure. This accessor function returns the names of installable
-packages.
+packages for a given regular expression.
 }
 \author{
 Dirk Eddelbuettel

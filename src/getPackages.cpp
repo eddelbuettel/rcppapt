@@ -26,20 +26,22 @@
 //  Dirk Eddelbuettel, Feb 2015
 
 #include <apt-pkg/cachefile.h>
+#include <apt-pkg/cachefilter.h>
 #include <apt-pkg/pkgcache.h>
 
 #include <Rcpp.h>
 
-//' The APT Package Management system uses a data-rich caching '
+//' The APT Package Management system uses a data-rich caching 
 //' structure. This accessor function returns the names of installable
-//' packages.
+//' packages for a given regular expression.
 //' @title Retrieve Names of All Installable Packages
+//' @param Regular expression for package name
 //' @return A data frame with columns containing the 
 //' package name, the installed version (or NA if not installed)  
 //' and the section it is installed in (or NA).
 //' @author Dirk Eddelbuettel
 // [[Rcpp::export]]
-Rcpp::DataFrame getPackages() {
+Rcpp::DataFrame getPackages(const std::string re = ".") {
 
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
@@ -47,17 +49,22 @@ Rcpp::DataFrame getPackages() {
     pkgCacheFile cacheFile;
     pkgCache* cache = cacheFile.GetPkgCache();
  
+    APT::CacheFilter::PackageNameMatchesRegEx pkgre(re);
+
     std::vector<std::string> name, ver, sec;
     // first pass uses STL vectors and grows them
     for (pkgCache::PkgIterator package = cache->PkgBegin(); !package.end(); package++) {
-        name.push_back(std::string(package.Name()));
-        const char *version = package.CurVersion();
-        ver.push_back(version == NULL ? "NA" : version);
-        const char *section = package.Section();
-        sec.push_back(section == NULL ? "NA" : section);
+        // if we match the regular expression, collect data
+        if (pkgre(package)) {   
+            name.push_back(std::string(package.Name()));
+            const char *version = package.CurVersion();
+            ver.push_back(version == NULL ? "NA" : version);
+            const char *section = package.Section();
+            sec.push_back(section == NULL ? "NA" : section);
+        }
     }
     // second pass to set proper NA values for R
-    Rcpp::CharacterVector V(ver.size()), S(sec.size()), A(arch.size());
+    Rcpp::CharacterVector V(ver.size()), S(sec.size());
     for (int i=0; i<V.size(); i++) {
         V[i] = ver[i];
         if (ver[i] == "NA") V[i] = NA_STRING; 
