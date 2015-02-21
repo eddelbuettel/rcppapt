@@ -7,6 +7,8 @@
 	system such as Debian, Ubuntu or one of the derivatives -- and that
 	the libapt-pkg-dev package is installed
 
+	* DESCRIPTION: Added SystemRequirements: and OS_type:
+
 2015-02-19  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/hasPackages.cpp: New function to check if packages available
