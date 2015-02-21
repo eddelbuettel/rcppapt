@@ -3,6 +3,10 @@
 	* src/hasPackages.cpp: Now searches by regular expression for
 	packages, with a default to a general wildcard
 
+	* configure: Added simple sanity checker to ensure we are on a
+	system such as Debian, Ubuntu or one of the derivatives -- and that
+	the libapt-pkg-dev package is installed
+
 2015-02-19  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/hasPackages.cpp: New function to check if packages available
