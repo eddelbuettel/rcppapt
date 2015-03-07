@@ -45,14 +45,20 @@ But `libapt-pkg` is pretty mature, and feature-rich, so it is mostly j
 
 ### Installation
 
-The package is available via [drat](http://dirk.eddelbuettel.com/code/drat.html):
+The package is on [CRAN](http://cran.r-project.orh) so a very standard
+
+```{.r}
+install.packages("RcppAPT")
+```
+
+Versions of the package may also be available via
+[drat](http://dirk.eddelbuettel.com/code/drat.html) via:
+
 ```{.r}
 drat:::add("eddelbuettel")
 install.packages("RcppAPT")
 ```
 
-I may upload it to CRAN where it may get rejected as it cannot build on
-multiple architectures. _On vera..._
 
 ### Author
 
