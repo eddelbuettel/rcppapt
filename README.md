@@ -1,4 +1,4 @@
-## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.svg)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](http://cran.rstudio.com/package=RcppAPT) [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT)
+## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 
 Rcpp Interface to APT Package Manager
 
@@ -38,14 +38,14 @@ available pre-built.
 ### Status
 
 The package is still fairly small, and functionality is (currently) limited
-to the examples shown above.  It builds reliably on the supported systems,
-and can 
+to the examples shown above.  It builds reliably on the supported systems.
 
-But `libapt-pkg` is pretty mature, and feature-rich, so it is mostly j
+But `libapt-pkg` is pretty mature, and feature-rich, so this package acts
+mostly as a wrapper from R.
 
 ### Installation
 
-The package is on [CRAN](http://cran.r-project.orh) so a very standard
+The package is on [CRAN](http://cran.r-project.org) so a very standard
 
 ```{.r}
 install.packages("RcppAPT")

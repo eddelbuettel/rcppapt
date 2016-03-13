@@ -1,5 +1,7 @@
 2015-02-20  Dirk Eddelbuettel  <edd@debian.org>
 
+	* DESCRIPTION: Release 0.0.1
+
 	* src/hasPackages.cpp: Now searches by regular expression for
 	packages, with a default to a general wildcard
 
