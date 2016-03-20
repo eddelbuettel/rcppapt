@@ -1,4 +1,4 @@
-## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](http://cran.r-project.org/package=RcppAPT) [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT)
 
 Rcpp Interface to APT Package Manager
 
@@ -50,6 +50,9 @@ The package is on [CRAN](http://cran.r-project.org) so a very standard
 ```{.r}
 install.packages("RcppAPT")
 ```
+
+will do. Make you install the [libapt-pkg-dev](https://packages.debian.org/sid/libapt-pkg-dev)
+package first as it is a build-dependency.
 
 Versions of the package may also be available via
 [drat](http://dirk.eddelbuettel.com/code/drat.html) via:
