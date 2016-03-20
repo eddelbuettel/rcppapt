@@ -54,6 +54,9 @@ bool showSrc(const std::string regexp = ".") {
     return true;
 }
 
+// The DeNull function is in the current source version of libapt-pkg-dev but
+// not all older ones so we create a variant here
+inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 
 // [[Rcpp::export]]
 bool dumpPackages(const std::string regexp = ".") {
@@ -78,8 +81,9 @@ bool dumpPackages(const std::string regexp = ".") {
                 Rcpp::Rcout << std::endl;
                 for (pkgCache::DescIterator D = Cur.DescriptionList(); D.end() == false; ++D) {
                     Rcpp::Rcout << " Description Language: " << D.LanguageCode() << std::endl
-                         << "                 File: " << D.FileList().File().FileName() << std::endl
-                         << "                  MD5: " << D.md5() << std::endl;
+                                << "                 File: " << D.FileList().File().FileName()
+                                << std::endl
+                                << "                  MD5: " << D.md5() << std::endl;
                 }
                 Rcpp::Rcout << std::endl;
             }
@@ -88,9 +92,10 @@ bool dumpPackages(const std::string regexp = ".") {
       
             Rcpp::Rcout << "Reverse Depends: " << std::endl;
             for (pkgCache::DepIterator D = pkg.RevDependsList(); D.end() != true; ++D) {
-                Rcpp::Rcout << "  " << D.ParentPkg().FullName(true) << ',' << D.TargetPkg().FullName(true);
+                Rcpp::Rcout << "  " << D.ParentPkg().FullName(true)
+                            << ',' << D.TargetPkg().FullName(true);
                 if (D->Version != 0)
-                    Rcpp::Rcout << ' ' << DeNull(D.TargetVer()) << std::endl;
+                    Rcpp::Rcout << ' ' << localDeNull(D.TargetVer()) << std::endl;
                 else
                     Rcpp::Rcout << std::endl;
             }
@@ -99,7 +104,9 @@ bool dumpPackages(const std::string regexp = ".") {
             for (pkgCache::VerIterator Cur = pkg.VersionList(); Cur.end() != true; ++Cur) {
                 Rcpp::Rcout << Cur.VerStr() << " - ";
                 for (pkgCache::DepIterator Dep = Cur.DependsList(); Dep.end() != true; ++Dep)
-                    Rcpp::Rcout << Dep.TargetPkg().FullName(true) << " (" << (int)Dep->CompareOp << " " << DeNull(Dep.TargetVer()) << ") ";
+                    Rcpp::Rcout << Dep.TargetPkg().FullName(true)
+                                << " (" << (int)Dep->CompareOp << " "
+                                << localDeNull(Dep.TargetVer()) << ") ";
                 Rcpp::Rcout << std::endl;
             }      
 
@@ -112,7 +119,8 @@ bool dumpPackages(const std::string regexp = ".") {
             }
             Rcpp::Rcout << "Reverse Provides: " << std::endl;
             for (pkgCache::PrvIterator Prv = pkg.ProvidesList(); Prv.end() != true; ++Prv)
-                Rcpp::Rcout << Prv.OwnerPkg().FullName(true) << " " << Prv.OwnerVer().VerStr() << std::endl;
+                Rcpp::Rcout << Prv.OwnerPkg().FullName(true) << " "
+                            << Prv.OwnerVer().VerStr() << std::endl;
         }
     }
     return true;

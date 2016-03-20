@@ -2,6 +2,8 @@
 
 	* src/reverseDepends.cpp (showSrc): Added preliminary versions of
 	dumpPackages() and showSrc() with a nod to apt-cache.cc
+	(localDeNull): define as DeNull not in older versions
+	(dumpPackages): use localDeNull()
 
 	* src/getPackages.cpp (getPackages): Update accessor to Section of a
 	package using preferred iterator approach; also updated help text
