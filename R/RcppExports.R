@@ -32,3 +32,11 @@ hasPackages <- function(pkg) {
     .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
 }
 
+showSrc <- function(regexp = ".") {
+    .Call('RcppAPT_showSrc', PACKAGE = 'RcppAPT', regexp)
+}
+
+dumpPackages <- function(regexp = ".") {
+    .Call('RcppAPT_dumpPackages', PACKAGE = 'RcppAPT', regexp)
+}
+
