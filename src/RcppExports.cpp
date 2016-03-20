@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // getPackages
-Rcpp::DataFrame getPackages(const std::string regexp = ".");
+Rcpp::DataFrame getPackages(const std::string regexp);
 RcppExport SEXP RcppAPT_getPackages(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
