@@ -32,3 +32,42 @@ hasPackages <- function(pkg) {
     .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
 }
 
+#' The APT Package Management system uses a data-rich caching
+#' structure. This accessor function displays the information for
+#' a set of packages matching the given regular expression. The
+#' output corresponds to \code{apt-cache showsrc pkgname}.
+#'
+#' @title Display information for given packages
+#' @param regexp A regular expression for the package name(s) with a
+#' default of all (".")
+#' @return A boolean is returned indicating whether or not the given
+#' regular expression could be matched to source packages -- but the
+#' function is invoked ' for the side effect of displaying information.
+#' @author Dirk Eddelbuettel
+#' @examples
+#' showSrc("^r-(base|doc)-")
+#' showSrc("r-cran-rcpp")  # also finds RcppEigen and RcppArmadillo
+#' showSrc("r-cran-rcpp$") # just Rcpp
+showSrc <- function(regexp = ".") {
+    .Call('RcppAPT_showSrc', PACKAGE = 'RcppAPT', regexp)
+}
+
+#' The APT Package Management system uses a data-rich caching
+#' structure. This accessor function displays the information for
+#' a set of packages matching the given regular expression. It
+#' corresponds somewhat to \code{apt-cache showpkg pkgname} but
+#' displays more information.
+#'
+#' @title Display information for given packages
+#' @param regexp A regular expression for the package name(s) with a
+#' default of all (".")
+#' @return A boolean is returned indicating whether or not the given
+#' regular expression could be matched to source packages -- but the
+#' function is invoked ' for the side effect of displaying information.
+#' @author Dirk Eddelbuettel
+#' @examples
+#' showSrc("^r-(base|doc)-")
+dumpPackages <- function(regexp = ".") {
+    .Call('RcppAPT_dumpPackages', PACKAGE = 'RcppAPT', regexp)
+}
+

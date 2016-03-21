@@ -51,7 +51,8 @@ The package is on [CRAN](http://cran.r-project.org) so a very standard
 install.packages("RcppAPT")
 ```
 
-will do. Make you install the [libapt-pkg-dev](https://packages.debian.org/sid/libapt-pkg-dev)
+will do. Make sure you install the
+[libapt-pkg-dev](https://packages.debian.org/sid/libapt-pkg-dev) 
 package first as it is a build-dependency.
 
 Versions of the package may also be available via
