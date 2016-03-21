@@ -5,6 +5,9 @@
 	(localDeNull): define as DeNull not in older versions
 	(dumpPackages): use localDeNull()
 
+	* man/dumpPackages.Rd: New (roxygen2-based) manual page
+	* man/showSrc.Rd: Idem
+
 	* src/getPackages.cpp (getPackages): Update accessor to Section of a
 	package using preferred iterator approach; also updated help text
 
