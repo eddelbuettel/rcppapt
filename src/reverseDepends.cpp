@@ -1,3 +1,23 @@
+// -*- mode: C++; c-indent-level: 4; c-basic-offset: 4;  -*-
+//
+//  RcppAPT -- Rcpp bindings to APT package information on Debian systems
+//
+//  Copyright (C) 2015 - 2016  Dirk Eddelbuettel
+//
+//  This file is part of RcppAPT
+//
+//  RcppAPT is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  RcppAPT is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with RcppAPT.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <apt-pkg/init.h>
 #include <apt-pkg/cachefile.h>
@@ -6,6 +26,22 @@
 
 #include <Rcpp.h>
 
+//' The APT Package Management system uses a data-rich caching
+//' structure. This accessor function displays the information for
+//' a set of packages matching the given regular expression. The
+//' output corresponds to \code{apt-cache showsrc pkgname}.
+//'
+//' @title Display information for given packages
+//' @param regexp A regular expression for the package name(s) with a
+//' default of all (".")
+//' @return A boolean is returned indicating whether or not the given
+//' regular expression could be matched to source packages -- but the
+//' function is invoked ' for the side effect of displaying information.
+//' @author Dirk Eddelbuettel
+//' @examples
+//' showSrc("^r-(base|doc)-")
+//' showSrc("r-cran-rcpp")  # also finds RcppEigen and RcppArmadillo
+//' showSrc("r-cran-rcpp$") # just Rcpp
 // [[Rcpp::export]]
 bool showSrc(const std::string regexp = ".") {
 
@@ -31,7 +67,7 @@ bool showSrc(const std::string regexp = ".") {
     for (pkgCache::PkgIterator pkg = cache->PkgBegin(); !pkg.end(); pkg++) {
         if (pkgre(pkg)) {
             const std::string pkgstr = pkg.FullName(true);
-
+            //Rcpp::Rcout << "--" << pkgstr << std::endl;
             SrcRecs.Restart();
       
             pkgSrcRecords::Parser *Parse;
@@ -40,12 +76,13 @@ bool showSrc(const std::string regexp = ".") {
                 Rcpp::Rcout << Parse->AsStr() << std::endl;;
                 found++;
                 found_this++;
+                //Rcpp::Rcout << "(" << found << "," << found_this << ")" << std::endl;
             }
-            if (found_this == 0) {
-                //_error->Warning(_("Unable to locate package %s"),*I);
-                Rcpp::stop("Unable to locate package");
-                continue;
-            }
+            // if (found_this == 0) {
+            //     //_error->Warning(_("Unable to locate package %s"),*I);
+            //     Rcpp::stop("Unable to locate package");
+            //     continue;
+            // }
         }
     }
     if (found == 0)
@@ -58,6 +95,21 @@ bool showSrc(const std::string regexp = ".") {
 // not all older ones so we create a variant here
 inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 
+//' The APT Package Management system uses a data-rich caching
+//' structure. This accessor function displays the information for
+//' a set of packages matching the given regular expression. It
+//' corresponds somewhat to \code{apt-cache showpkg pkgname} but
+//' displays more information.
+//'
+//' @title Display information for given packages
+//' @param regexp A regular expression for the package name(s) with a
+//' default of all (".")
+//' @return A boolean is returned indicating whether or not the given
+//' regular expression could be matched to source packages -- but the
+//' function is invoked ' for the side effect of displaying information.
+//' @author Dirk Eddelbuettel
+//' @examples
+//' showSrc("^r-(base|doc)-")
 // [[Rcpp::export]]
 bool dumpPackages(const std::string regexp = ".") {
 
