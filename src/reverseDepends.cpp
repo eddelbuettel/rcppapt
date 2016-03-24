@@ -23,8 +23,63 @@
 #include <apt-pkg/cachefile.h>
 #include <apt-pkg/cachefilter.h>
 #include <apt-pkg/pkgcache.h>
+#include <apt-pkg/debsrcrecords.h>
 
 #include <Rcpp.h>
+
+//' The APT Package Management system uses a data-rich caching
+//' structure. This accessor function returns the Build-Depends for
+//' a set of packages matching the given regular expression. 
+//'
+//' @title Return Build-Depends for given packages
+//' @param name A regular expression for the package name(s) with a
+//' default of all (".")
+//' @return A character vector containing package names is returned.
+//' @author Dirk Eddelbuettel
+//' @examples
+//' reverseDepends("r-cran-rcpp$")
+// [[Rcpp::export]]
+std::vector<std::string> reverseDepends(const std::string regexp = ".") {
+
+    pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
+    pkgInitSystem(*_config, _system);
+
+    pkgCacheFile cacheFile;
+    pkgCache* cache = cacheFile.GetPkgCache();
+
+    APT::CacheFilter::PackageNameMatchesRegEx pkgre(regexp);
+
+    std::vector<std::string> res;
+
+    pkgSourceList *List = cacheFile.GetSourceList();
+    if (unlikely(List == NULL))
+        return res;
+
+    // Create the text record parsers
+    pkgSrcRecords SrcRecs(*List);
+    if (_error->PendingError() == true)
+        return res;
+
+    for (pkgCache::PkgIterator pkg = cache->PkgBegin(); !pkg.end(); pkg++) {
+        if (pkgre(pkg)) {
+            const std::string pkgstr = pkg.FullName(true);
+            SrcRecs.Restart();
+
+            debSrcRecordParser::Parser *Parse;
+            unsigned found_this = 0;
+            while ((Parse = SrcRecs.Find(pkgstr.c_str(), false)) != 0) {
+                std::vector<pkgSrcRecords::Parser::BuildDepRec> bdvec;
+                Parse->BuildDepends(bdvec, false);
+
+                for (unsigned int ctr=0; ctr < bdvec.size(); ctr++) {
+                    res.push_back(bdvec[ctr].Package);
+                }
+            }
+        }
+    }
+    return res;
+}
+
 
 //' The APT Package Management system uses a data-rich caching
 //' structure. This accessor function displays the information for

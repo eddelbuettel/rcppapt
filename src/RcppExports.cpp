@@ -27,6 +27,17 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// reverseDepends
+std::vector<std::string> reverseDepends(const std::string regexp);
+RcppExport SEXP RcppAPT_reverseDepends(SEXP regexpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
+    __result = Rcpp::wrap(reverseDepends(regexp));
+    return __result;
+END_RCPP
+}
 // showSrc
 bool showSrc(const std::string regexp);
 RcppExport SEXP RcppAPT_showSrc(SEXP regexpSEXP) {

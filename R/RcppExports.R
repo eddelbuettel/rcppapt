@@ -33,6 +33,21 @@ hasPackages <- function(pkg) {
 }
 
 #' The APT Package Management system uses a data-rich caching
+#' structure. This accessor function returns the Build-Depends for
+#' a set of packages matching the given regular expression. 
+#'
+#' @title Return Build-Depends for given packages
+#' @param regexp A regular expression for the package name(s) with a
+#' default of all (".")
+#' @return A character vector containing package names is returned.
+#' @author Dirk Eddelbuettel
+#' @examples
+#' reverseDepends("r-cran-rcpp$")
+reverseDepends <- function(regexp = ".") {
+    .Call('RcppAPT_reverseDepends', PACKAGE = 'RcppAPT', regexp)
+}
+
+#' The APT Package Management system uses a data-rich caching
 #' structure. This accessor function displays the information for
 #' a set of packages matching the given regular expression. The
 #' output corresponds to \code{apt-cache showsrc pkgname}.

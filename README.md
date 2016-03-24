@@ -4,13 +4,13 @@ Rcpp Interface to APT Package Manager
 
 ### Background
 
-[Debian](http://www.debian.org) and its derivatives like [Ubuntu]() utilize a
-powerful package managing backend / frontend combination in APT (A Packaging
-Tool).  Accessible at the command-line via front-ends `apt`, `apt-get`,
-`apt-cache`, ... as well as numerous GUI variants, it is implemented using a
-library `libapt-pkg`.  This small package provides
-[R](http://www.r-project.org) with access to this library via
-[Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html). 
+[Debian](http://www.debian.org) and its derivatives like
+[Ubuntu](http://www.ubuntu.com) utilize a powerful package managing backend /
+frontend combination in APT (A Packaging Tool).  Accessible at the
+command-line via front-ends `apt`, `apt-get`, `apt-cache`, ... as well as
+numerous GUI variants, it is implemented using a library `libapt-pkg`.  This
+small package provides [R](http://www.r-project.org) with access to this
+library via [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html).
 
 ### Examples
 
