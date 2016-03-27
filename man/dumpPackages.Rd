@@ -22,6 +22,13 @@ a set of packages matching the given regular expression. It
 corresponds somewhat to \code{apt-cache showpkg pkgname} but
 displays more information.
 }
+\details{
+Note that the package lookup uses regular expressions. If only a
+single package is desired, append a single \code{$} to terminate
+the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+return results for \code{r-cran-rcpparmadillo} and
+\code{r-cran-rcppeigen}.
+}
 \examples{
 showSrc("^r-(base|doc)-")
 }
