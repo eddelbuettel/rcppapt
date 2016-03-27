@@ -1,3 +1,20 @@
+2016-03-27  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Roll minor Version and Date
+
+	* src/getPackages.cpp (getPackages): Add note to roxygen2 for Details
+	section that package name is a regular expression; test package for
+	possible architecture suffix and only process plain name; also report
+	available candidate version (though often NA)
+	* src/reverseDepends.cpp (reverseDepends): Add note to roxygen2 for Details
+	section that package name is a regular expression
+	(showSrc): Idem
+	(dumpPackages): Idem
+	* man/dumpPackages.Rd: Expanded Details section regarding regular expression
+	* man/getPackages.Rd: Idem
+	* man/reverseDepends.Rd: Idem
+	* man/showSrc.Rd: Idem
+
 2016-03-21  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/reverseDepends.cpp (reverseDepends): New function

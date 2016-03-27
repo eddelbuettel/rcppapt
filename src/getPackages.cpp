@@ -36,9 +36,15 @@
 //' structure. This accessor function returns the names of installable
 //' packages for a given regular expression.
 //'
+//' Note that the package lookup uses regular expressions. If only a
+//' single package is desired, append a single \code{$} to terminate
+//' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+//' return results for \code{r-cran-rcpparmadillo} and
+//' \code{r-cran-rcppeigen}.
+//' 
 //' @title Retrieve Names of All Installable Packages
 //' @param regexp A regular expression for the package name(s) with a
-//' default of all (".")
+//' default of all ("."). 
 //' @return A data frame with columns containing the
 //' package name, the installed version (or NA if not installed)
 //' and the section it is installed in (or NA).
@@ -61,29 +67,33 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
     for (pkgCache::PkgIterator package = cache->PkgBegin(); !package.end(); package++) {
         // if we match the regular expression, collect data
         if (pkgre(package)) {
-            name.push_back(std::string(package.Name()));
-            const char *version = package.CurVersion();
-            ver.push_back(version == NULL ? "NA" : version);
-            // const char *candidate = package.CandVersion();
-            // cand.push_back(version == NULL ? "NA" : candidate);
-            pkgCache::VerIterator vit = package.VersionList();
-            const char *section = vit.Section(); // FIXME iterator may have multiple
-            sec.push_back(section == NULL ? "NA" : section);
+            std::string pkgname(package.Name());
+            if (package.FullName(true) != pkgname) { 	// we do not want the foo:i386 variant
+                name.push_back(pkgname);
+                Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << std::endl;
+                const char *version = package.CurVersion();
+                ver.push_back(version == NULL ? "NA" : version);
+                const char *candidate = package.CandVersion();
+                cand.push_back(version == NULL ? "NA" : candidate);
+                pkgCache::VerIterator vit = package.VersionList();
+                const char *section = vit.Section(); // FIXME iterator may have multiple
+                sec.push_back(section == NULL ? "NA" : section);
+            }
         }
     }
     // second pass to set proper NA values for R
-    Rcpp::CharacterVector V(ver.size()), S(sec.size()); //, C(cand.size());
+    Rcpp::CharacterVector V(ver.size()), S(sec.size()), C(cand.size());
     for (int i=0; i<V.size(); i++) {
         V[i] = ver[i];
         if (ver[i] == "NA") V[i] = NA_STRING;
         S[i] = sec[i];
         if (sec[i] == "NA") S[i] = NA_STRING;
-        // C[i] = cand[i];
-        // if (cand[i] == "NA") C[i] = NA_STRING;
+        C[i] = cand[i];
+        if (cand[i] == "NA") C[i] = NA_STRING;
     }
 
     return Rcpp::DataFrame::create(Rcpp::Named("Package")      = name,
                                    Rcpp::Named("Installed")    = V,
-                                   //Rcpp::Named("Available")    = C,
+                                   Rcpp::Named("Available")    = C,
                                    Rcpp::Named("Section")      = S);
 }

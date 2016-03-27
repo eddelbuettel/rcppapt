@@ -8,7 +8,7 @@ getPackages(regexp = ".")
 }
 \arguments{
 \item{regexp}{A regular expression for the package name(s) with a
-default of all (".")}
+default of all (".").}
 }
 \value{
 A data frame with columns containing the
@@ -19,6 +19,13 @@ and the section it is installed in (or NA).
 The APT Package Management system uses a data-rich caching
 structure. This accessor function returns the names of installable
 packages for a given regular expression.
+}
+\details{
+Note that the package lookup uses regular expressions. If only a
+single package is desired, append a single \code{$} to terminate
+the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+return results for \code{r-cran-rcpparmadillo} and
+\code{r-cran-rcppeigen}.
 }
 \examples{
 getPackages("^r-(base|doc)-")

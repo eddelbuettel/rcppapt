@@ -18,6 +18,13 @@ The APT Package Management system uses a data-rich caching
 structure. This accessor function returns the Build-Depends for
 a set of packages matching the given regular expression.
 }
+\details{
+Note that the package lookup uses regular expressions. If only a
+single package is desired, append a single \code{$} to terminate
+the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+return results for \code{r-cran-rcpparmadillo} and
+\code{r-cran-rcppeigen}.
+}
 \examples{
 reverseDepends("r-cran-rcpp$")
 }

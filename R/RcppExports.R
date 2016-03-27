@@ -5,9 +5,15 @@
 #' structure. This accessor function returns the names of installable
 #' packages for a given regular expression.
 #'
+#' Note that the package lookup uses regular expressions. If only a
+#' single package is desired, append a single \code{$} to terminate
+#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+#' return results for \code{r-cran-rcpparmadillo} and
+#' \code{r-cran-rcppeigen}.
+#' 
 #' @title Retrieve Names of All Installable Packages
 #' @param regexp A regular expression for the package name(s) with a
-#' default of all (".")
+#' default of all ("."). 
 #' @return A data frame with columns containing the
 #' package name, the installed version (or NA if not installed)
 #' and the section it is installed in (or NA).
@@ -36,6 +42,12 @@ hasPackages <- function(pkg) {
 #' structure. This accessor function returns the Build-Depends for
 #' a set of packages matching the given regular expression. 
 #'
+#' Note that the package lookup uses regular expressions. If only a
+#' single package is desired, append a single \code{$} to terminate
+#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+#' return results for \code{r-cran-rcpparmadillo} and
+#' \code{r-cran-rcppeigen}.
+#'
 #' @title Return Build-Depends for given packages
 #' @param regexp A regular expression for the package name(s) with a
 #' default of all (".")
@@ -51,6 +63,12 @@ reverseDepends <- function(regexp = ".") {
 #' structure. This accessor function displays the information for
 #' a set of packages matching the given regular expression. The
 #' output corresponds to \code{apt-cache showsrc pkgname}.
+#'
+#' Note that the package lookup uses regular expressions. If only a
+#' single package is desired, append a single \code{$} to terminate
+#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+#' return results for \code{r-cran-rcpparmadillo} and
+#' \code{r-cran-rcppeigen}.
 #'
 #' @title Display information for given packages
 #' @param regexp A regular expression for the package name(s) with a
@@ -72,6 +90,12 @@ showSrc <- function(regexp = ".") {
 #' a set of packages matching the given regular expression. It
 #' corresponds somewhat to \code{apt-cache showpkg pkgname} but
 #' displays more information.
+#'
+#' Note that the package lookup uses regular expressions. If only a
+#' single package is desired, append a single \code{$} to terminate
+#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+#' return results for \code{r-cran-rcpparmadillo} and
+#' \code{r-cran-rcppeigen}.
 #'
 #' @title Display information for given packages
 #' @param regexp A regular expression for the package name(s) with a
