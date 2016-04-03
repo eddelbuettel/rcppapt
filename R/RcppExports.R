@@ -2,43 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' The APT Package Management system uses a data-rich caching
-#' structure. This accessor function returns the names of installable
-#' packages for a given regular expression.
-#'
-#' Note that the package lookup uses regular expressions. If only a
-#' single package is desired, append a single \code{$} to terminate
-#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
-#' return results for \code{r-cran-rcpparmadillo} and
-#' \code{r-cran-rcppeigen}.
-#' 
-#' @title Retrieve Names of All Installable Packages
-#' @param regexp A regular expression for the package name(s) with a
-#' default of all ("."). 
-#' @return A data frame with columns containing the
-#' package name, the installed version (or NA if not installed)
-#' and the section it is installed in (or NA).
-#' @author Dirk Eddelbuettel
-#' @examples
-#' getPackages("^r-(base|doc)-")
-getPackages <- function(regexp = ".") {
-    .Call('RcppAPT_getPackages', PACKAGE = 'RcppAPT', regexp)
-}
-
-#' The APT Package Management system uses a data-rich caching
-#' structure. This accessor function tests whether a given package
-#' exists.
-#' @title Test for Existence of Given Package
-#' @param pkg A character vector with name of the package
-#' @return A boolean result vector is returned indicating if the 
-#' package at the given position is available.
-#' @author Dirk Eddelbuettel
-#' @examples
-#' hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
-hasPackages <- function(pkg) {
-    .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
-}
-
-#' The APT Package Management system uses a data-rich caching
 #' structure. This accessor function returns the Build-Depends for
 #' a set of packages matching the given regular expression. 
 #'
@@ -54,9 +17,9 @@ hasPackages <- function(pkg) {
 #' @return A character vector containing package names is returned.
 #' @author Dirk Eddelbuettel
 #' @examples
-#' reverseDepends("r-cran-rcpp$")
-reverseDepends <- function(regexp = ".") {
-    .Call('RcppAPT_reverseDepends', PACKAGE = 'RcppAPT', regexp)
+#' buildDepends("r-cran-rcpp$")
+buildDepends <- function(regexp = ".") {
+    .Call('RcppAPT_buildDepends', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -108,5 +71,42 @@ showSrc <- function(regexp = ".") {
 #' showSrc("^r-(base|doc)-")
 dumpPackages <- function(regexp = ".") {
     .Call('RcppAPT_dumpPackages', PACKAGE = 'RcppAPT', regexp)
+}
+
+#' The APT Package Management system uses a data-rich caching
+#' structure. This accessor function returns the names of installable
+#' packages for a given regular expression.
+#'
+#' Note that the package lookup uses regular expressions. If only a
+#' single package is desired, append a single \code{$} to terminate
+#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+#' return results for \code{r-cran-rcpparmadillo} and
+#' \code{r-cran-rcppeigen}.
+#' 
+#' @title Retrieve Names of All Installable Packages
+#' @param regexp A regular expression for the package name(s) with a
+#' default of all ("."). 
+#' @return A data frame with columns containing the
+#' package name, the installed version (or NA if not installed)
+#' and the section it is installed in (or NA).
+#' @author Dirk Eddelbuettel
+#' @examples
+#' getPackages("^r-(base|doc)-")
+getPackages <- function(regexp = ".") {
+    .Call('RcppAPT_getPackages', PACKAGE = 'RcppAPT', regexp)
+}
+
+#' The APT Package Management system uses a data-rich caching
+#' structure. This accessor function tests whether a given package
+#' exists.
+#' @title Test for Existence of Given Package
+#' @param pkg A character vector with name of the package
+#' @return A boolean result vector is returned indicating if the 
+#' package at the given position is available.
+#' @author Dirk Eddelbuettel
+#' @examples
+#' hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
+hasPackages <- function(pkg) {
+    .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
 }
 

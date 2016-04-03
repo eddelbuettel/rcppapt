@@ -43,9 +43,9 @@
 //' @return A character vector containing package names is returned.
 //' @author Dirk Eddelbuettel
 //' @examples
-//' reverseDepends("r-cran-rcpp$")
+//' buildDepends("r-cran-rcpp$")
 // [[Rcpp::export]]
-std::vector<std::string> reverseDepends(const std::string regexp = ".") {
+std::vector<std::string> buildDepends(const std::string regexp = ".") {
 
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
