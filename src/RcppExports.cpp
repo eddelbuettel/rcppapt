@@ -5,36 +5,14 @@
 
 using namespace Rcpp;
 
-// getPackages
-Rcpp::DataFrame getPackages(const std::string regexp);
-RcppExport SEXP RcppAPT_getPackages(SEXP regexpSEXP) {
+// buildDepends
+std::vector<std::string> buildDepends(const std::string regexp);
+RcppExport SEXP RcppAPT_buildDepends(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
-    __result = Rcpp::wrap(getPackages(regexp));
-    return __result;
-END_RCPP
-}
-// hasPackages
-Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg);
-RcppExport SEXP RcppAPT_hasPackages(SEXP pkgSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type pkg(pkgSEXP);
-    __result = Rcpp::wrap(hasPackages(pkg));
-    return __result;
-END_RCPP
-}
-// reverseDepends
-std::vector<std::string> reverseDepends(const std::string regexp);
-RcppExport SEXP RcppAPT_reverseDepends(SEXP regexpSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
-    __result = Rcpp::wrap(reverseDepends(regexp));
+    __result = Rcpp::wrap(buildDepends(regexp));
     return __result;
 END_RCPP
 }
@@ -57,6 +35,28 @@ BEGIN_RCPP
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
     __result = Rcpp::wrap(dumpPackages(regexp));
+    return __result;
+END_RCPP
+}
+// getPackages
+Rcpp::DataFrame getPackages(const std::string regexp);
+RcppExport SEXP RcppAPT_getPackages(SEXP regexpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
+    __result = Rcpp::wrap(getPackages(regexp));
+    return __result;
+END_RCPP
+}
+// hasPackages
+Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg);
+RcppExport SEXP RcppAPT_hasPackages(SEXP pkgSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type pkg(pkgSEXP);
+    __result = Rcpp::wrap(hasPackages(pkg));
     return __result;
 END_RCPP
 }

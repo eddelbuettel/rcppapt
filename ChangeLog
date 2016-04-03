@@ -1,3 +1,13 @@
+2016-04-03  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Roll minor Version and Date
+
+	* src/buildDepends.cpp (buildDepends): Renamed from reverseDepends as
+	it actually returns buildDepends as planned.
+	* man/buildDepends.Rd: Ditto
+
+	* README.md: Mention buildDepends()
+
 2016-03-27  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Roll minor Version and Date
