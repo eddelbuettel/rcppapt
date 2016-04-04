@@ -35,40 +35,7 @@ which shows that [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) is (of
 course) available, but this (very new) package is (unsurprisingly) not
 available pre-built.
 
-Moreover, we can look at the package information of a given package:
-
-```{.r}
-R> showSrc("r-cran-rcppeigen")                                                                                                                                                                                      
-Package: r-cran-rcppeigen
-Binary: r-cran-rcppeigen
-Version: 0.3.2.5.0-1
-Priority: optional
-Section: universe/misc
-Maintainer: Dirk Eddelbuettel <edd@debian.org>
-Build-Depends: debhelper (>= 7.0.0), r-base-dev (>= 3.2.1), cdbs, r-cran-rcpp (>= 0.11.0), r-cran-matrix (>= 1.1-0), r-cran-pkgkitten
-Architecture: any
-Standards-Version: 3.9.6
-Format: 1.0
-Directory: pool/universe/r/r-cran-rcppeigen
-Files:
- 21fab9cddd6eba9b142d75979e9f9cff 1821 r-cran-rcppeigen_0.3.2.5.0-1.dsc
- bfe590cecab6443ab1ed8e9f7ed3e872 1235077 r-cran-rcppeigen_0.3.2.5.0.orig.tar.gz
- aa4d0bef9eb0b5c435de3a423f25c86b 10044 r-cran-rcppeigen_0.3.2.5.0-1.diff.gz
-Package-List:
- r-cran-rcppeigen deb gnu-r optional arch=any
-Checksums-Sha1:
- 21cbca890a783b6f411e1372853b566f8de3c5d7 1821 r-cran-rcppeigen_0.3.2.5.0-1.dsc
- 8dcd6af5fab034c779c1fcf14ccb6474cfa85c38 1235077 r-cran-rcppeigen_0.3.2.5.0.orig.tar.gz
- 16a9761d7f03493797d1c7bc11d1867e59b5cfe0 10044 r-cran-rcppeigen_0.3.2.5.0-1.diff.gz
-Checksums-Sha256:
- cb8b53b7d98875d9e64bb3d40a874baa1dbb72cde524195ae91573d8616285fe 1821 r-cran-rcppeigen_0.3.2.5.0-1.dsc
- 29ada6457e96d9ec03a7102bdf0f24fe4a186a0a5284c2e37579f3f6e9838f98 1235077 r-cran-rcppeigen_0.3.2.5.0.orig.tar.gz
- ca4fadb4b3cac9c5c1860ca4b54e783b18a78cfbec3efae71255d2678c48afd7 10044 r-cran-rcppeigen_0.3.2.5.0-1.diff.gz
-
-[1] TRUE
-R> 
-```
-
+Moreover, we can look at the package information of a given package.
 The `buildDepends()` function extracts just the build dependencies:
 
 ```{.r}
@@ -77,6 +44,8 @@ R> buildDepends("r-cran-rcppeigen")
 [4] "r-cran-rcpp"      "r-cran-matrix"    "r-cran-pkgkitten"
 R> 
 ```
+
+The `showSrc()` and `dumpPackages()` functions display even more information.
 
 ### Status
 
