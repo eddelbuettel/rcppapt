@@ -65,14 +65,18 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 
     for (pkgCache::PkgIterator pkg = cache->PkgBegin(); !pkg.end(); pkg++) {
         if (pkgre(pkg)) {
-            const std::string pkgstr = pkg.FullName(true);
-
-            for (pkgCache::DepIterator D = pkg.RevDependsList(); D.end() != true; ++D) {
-                res.push_back(D.ParentPkg().FullName(true));
-                if (D->Version != 0)
-                    ver.push_back(localDeNull(D.TargetVer()));
-                else
-                    ver.push_back("");
+            const std::string pkgstr(pkg.Name());
+            for (pkgCache::DepIterator depit = pkg.RevDependsList(); depit.end() != true; ++depit) {
+                std::string candidate = depit.TargetPkg().FullName(true);
+                std::string parent = depit.ParentPkg().FullName(true);
+                if (candidate == pkgstr && parent.find(pkgstr + ":") == std::string::npos) {
+                    res.push_back(parent);
+                    if (depit->Version != 0) {
+                        ver.push_back(localDeNull(depit.TargetVer()));
+                    } else {
+                        ver.push_back("");
+                    }
+                }
             }
 
 
