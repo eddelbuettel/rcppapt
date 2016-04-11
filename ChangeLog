@@ -1,3 +1,7 @@
+2016-04-10  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/reverseDepends.cpp (reverseDepends): New function
+
 2016-04-04  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION: Relase 0.0.2
