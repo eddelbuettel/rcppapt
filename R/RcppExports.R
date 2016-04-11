@@ -110,3 +110,25 @@ hasPackages <- function(pkg) {
     .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
 }
 
+#' The APT Package Management system uses a data-rich caching
+#' structure. This accessor function returns the Reverse-Depends for
+#' a set of packages matching the given regular expression. 
+#'
+#' Note that the package lookup uses regular expressions. If only a
+#' single package is desired, append a single \code{$} to terminate
+#' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
+#' return results for \code{r-cran-rcpparmadillo} and
+#' \code{r-cran-rcppeigen}.
+#'
+#' @title Return Reverse-Depends for given packages
+#' @param regexp A regular expression for the package name(s) with a
+#' default of all (".")
+#' @return A data frame with two column listing packages and, where
+#' available, minimal version. 
+#' @author Dirk Eddelbuettel
+#' @examples
+#' buildDepends("r-cran-rcpp$")
+reverseDepends <- function(regexp = ".") {
+    .Call('RcppAPT_reverseDepends', PACKAGE = 'RcppAPT', regexp)
+}
+
