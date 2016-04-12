@@ -17,8 +17,8 @@ library via [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html).
 We can query packages by regular expression:
 
 ```{.r}
-library(RcppAPT)
-getPackages("^r-base-.")
+R> library(RcppAPT)
+R> getPackages("^r-base-.")
 ``` 
 
 which returns a data frame with name, version (if installed) and section.
@@ -26,9 +26,10 @@ which returns a data frame with name, version (if installed) and section.
 We can also check for installability of a given package or set of packages:
 
 ```{.r}
-hasPackages(c("r-cran-rcpp", "r-cran-rcppapt"))
+R> hasPackages(c("r-cran-rcpp", "r-cran-rcppapt"))
    r-cran-rcpp r-cran-rcppapt 
           TRUE          FALSE 
+R> 
 ```
 
 which shows that [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) is (of
@@ -46,6 +47,22 @@ R>
 ```
 
 The `showSrc()` and `dumpPackages()` functions display even more information.
+
+We can also look at reverse dependencies:
+
+```{.r}
+R> reverseDepends("r-cran-rcpp$")
+               package  version
+1  r-cran-surveillance         
+2     r-cran-rquantlib   0.11.0
+3      r-cran-reshape2         
+4        r-cran-readxl         
+5     r-cran-rcppeigen 0.11.0-1
+6 r-cran-rcpparmadillo   0.11.0
+7          r-cran-plyr         
+8         r-cran-minqa   0.11.0
+R> 
+```
 
 ### Status
 
