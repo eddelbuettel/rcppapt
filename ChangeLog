@@ -1,4 +1,15 @@
+2016-12-04  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Rolled minor version
+
+	* src/Makevars (CXX_STD): Turn on C++11 as g++-6 and (default) C++98
+	create compilation issue
+	* src/getPackages.cpp (getPackages): Beginning of fix towards
+	replacing CandVersion() call; not finalized.
+
 2016-04-10  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Rolled minor version
 
 	* src/reverseDepends.cpp (reverseDepends): New function
 

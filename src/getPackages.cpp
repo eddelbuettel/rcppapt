@@ -59,6 +59,7 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
 
     pkgCacheFile cacheFile;
     pkgCache* cache = cacheFile.GetPkgCache();
+    pkgDepCache dcache(cache);
 
     APT::CacheFilter::PackageNameMatchesRegEx pkgre(regexp);
 
@@ -75,6 +76,9 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
                 ver.push_back(version == NULL ? "NA" : version);
                 const char *candidate = package.CandVersion();
                 cand.push_back(version == NULL ? "NA" : candidate);
+                //  candidate code:
+                //  pkgCache::VerIterator candvit = dcache.GetCandidateVersion(package);
+                //  cand.push_back("NA"); // FIXME: use candvit iterator
                 pkgCache::VerIterator vit = package.VersionList();
                 const char *section = vit.Section(); // FIXME iterator may have multiple
                 sec.push_back(section == NULL ? "NA" : section);
