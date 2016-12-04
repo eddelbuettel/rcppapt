@@ -1,4 +1,4 @@
-## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](http://cran.r-project.org/package=RcppAPT) [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT) [![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
+## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html) [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT) [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT) [![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
 
 Rcpp Interface to APT Package Manager
 
@@ -9,7 +9,7 @@ Rcpp Interface to APT Package Manager
 frontend combination in APT (A Packaging Tool).  Accessible at the
 command-line via front-ends `apt`, `apt-get`, `apt-cache`, ... as well as
 numerous GUI variants, it is implemented using a library `libapt-pkg`.  This
-small package provides [R](http://www.r-project.org) with access to this
+small package provides [R](https://www.r-project.org) with access to this
 library via [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html).
 
 ### Examples
@@ -74,7 +74,7 @@ mostly as a wrapper from R.
 
 ### Installation
 
-The package is on [CRAN](http://cran.r-project.org) so a very standard
+The package is on [CRAN](https://cran.r-project.org) so a very standard
 
 ```{.r}
 install.packages("RcppAPT")

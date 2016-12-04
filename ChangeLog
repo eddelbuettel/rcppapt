@@ -4,6 +4,7 @@
 
 	* src/Makevars (CXX_STD): Turn on C++11 as g++-6 and (default) C++98
 	create compilation issue
+
 	* src/getPackages.cpp (getPackages): Beginning of fix towards
 	replacing CandVersion() call; not finalized. Inverted foo vs foo:i386
 	test
@@ -20,7 +21,7 @@
 	* .codecov.yml (comment): Added
 	* .Rbuildignore: Added .codecov.yml
 
-	* README.md: Added badge
+	* README.md: Added badge, use canonical URLs
 
 2016-04-10  Dirk Eddelbuettel  <edd@debian.org>
 
