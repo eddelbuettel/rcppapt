@@ -5,7 +5,8 @@
 	* src/Makevars (CXX_STD): Turn on C++11 as g++-6 and (default) C++98
 	create compilation issue
 	* src/getPackages.cpp (getPackages): Beginning of fix towards
-	replacing CandVersion() call; not finalized.
+	replacing CandVersion() call; not finalized. Inverted foo vs foo:i386
+	test
 
 	* src/buildDepends.cpp: Add dumpPackages() example
 	* man/dumpPackages.Rd: Ditto
@@ -18,6 +19,8 @@
 	* .travis.yml: Switch to run.sh from our r-travis, added coverage
 	* .codecov.yml (comment): Added
 	* .Rbuildignore: Added .codecov.yml
+
+	* README.md: Added badge
 
 2016-04-10  Dirk Eddelbuettel  <edd@debian.org>
 

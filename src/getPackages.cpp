@@ -41,10 +41,10 @@
 //' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
 //' return results for \code{r-cran-rcpparmadillo} and
 //' \code{r-cran-rcppeigen}.
-//' 
+//'
 //' @title Retrieve Names of All Installable Packages
 //' @param regexp A regular expression for the package name(s) with a
-//' default of all ("."). 
+//' default of all (".").
 //' @return A data frame with columns containing the
 //' package name, the installed version (or NA if not installed)
 //' and the section it is installed in (or NA).
@@ -69,9 +69,9 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
         // if we match the regular expression, collect data
         if (pkgre(package)) {
             std::string pkgname(package.Name());
-            if (package.FullName(true) != pkgname) { 	// we do not want the foo:i386 variant
+            if (package.FullName(true) == pkgname) { 	// we do not want the foo:i386 variant
                 name.push_back(pkgname);
-                Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << std::endl;
+                //Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << std::endl;
                 const char *version = package.CurVersion();
                 ver.push_back(version == NULL ? "NA" : version);
                 const char *candidate = package.CandVersion();

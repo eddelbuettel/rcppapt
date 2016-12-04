@@ -82,10 +82,10 @@ dumpPackages <- function(regexp = ".") {
 #' the expression.  \emph{Ie} \code{r-cran-rcpp$} will \emph{not}
 #' return results for \code{r-cran-rcpparmadillo} and
 #' \code{r-cran-rcppeigen}.
-#' 
+#'
 #' @title Retrieve Names of All Installable Packages
 #' @param regexp A regular expression for the package name(s) with a
-#' default of all ("."). 
+#' default of all (".").
 #' @return A data frame with columns containing the
 #' package name, the installed version (or NA if not installed)
 #' and the section it is installed in (or NA).
