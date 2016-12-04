@@ -7,6 +7,12 @@
 	* src/getPackages.cpp (getPackages): Beginning of fix towards
 	replacing CandVersion() call; not finalized.
 
+	* src/buildDepends.cpp: Add dumpPackages() example
+	* man/dumpPackages.Rd: Ditto
+
+	* src/reverseDepends.cpp: Add reverseDepends() example
+	* man/reverseDepends.Rd: Ditto
+
 2016-04-10  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Rolled minor version

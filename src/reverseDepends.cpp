@@ -48,7 +48,7 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 //' available, minimal version. 
 //' @author Dirk Eddelbuettel
 //' @examples
-//' buildDepends("r-cran-rcpp$")
+//' reverseDepends("r-cran-rcpp$")
 // [[Rcpp::export]]
 Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 

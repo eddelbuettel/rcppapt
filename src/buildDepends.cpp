@@ -182,7 +182,7 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 //' function is invoked ' for the side effect of displaying information.
 //' @author Dirk Eddelbuettel
 //' @examples
-//' showSrc("^r-(base|doc)-")
+//' dumpPackages("^r-(base|doc)-")
 // [[Rcpp::export]]
 bool dumpPackages(const std::string regexp = ".") {
 

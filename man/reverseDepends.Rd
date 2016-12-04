@@ -27,7 +27,7 @@ return results for \code{r-cran-rcpparmadillo} and
 \code{r-cran-rcppeigen}.
 }
 \examples{
-buildDepends("r-cran-rcpp$")
+reverseDepends("r-cran-rcpp$")
 }
 \author{
 Dirk Eddelbuettel

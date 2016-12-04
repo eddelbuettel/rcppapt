@@ -30,7 +30,7 @@ return results for \code{r-cran-rcpparmadillo} and
 \code{r-cran-rcppeigen}.
 }
 \examples{
-showSrc("^r-(base|doc)-")
+dumpPackages("^r-(base|doc)-")
 }
 \author{
 Dirk Eddelbuettel
