@@ -13,6 +13,12 @@
 	* src/reverseDepends.cpp: Add reverseDepends() example
 	* man/reverseDepends.Rd: Ditto
 
+	* tests/simpleTests.R: Added a few simple tests
+
+	* .travis.yml: Switch to run.sh from our r-travis, added coverage
+	* .codecov.yml (comment): Added
+	* .Rbuildignore: Added .codecov.yml
+
 2016-04-10  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Rolled minor version
