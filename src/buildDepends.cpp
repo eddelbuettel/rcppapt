@@ -59,12 +59,12 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
 
     pkgSourceList *List = cacheFile.GetSourceList();
     if (unlikely(List == NULL))
-        return res;
+        return res;             // #nocov
 
     // Create the text record parsers
     pkgSrcRecords SrcRecs(*List);
     if (_error->PendingError() == true)
-        return res;
+        return res;		// #nocov
 
     for (pkgCache::PkgIterator pkg = cache->PkgBegin(); !pkg.end(); pkg++) {
         if (pkgre(pkg)) {
@@ -122,12 +122,12 @@ bool showSrc(const std::string regexp = ".") {
 
     pkgSourceList *List = cacheFile.GetSourceList();
     if (unlikely(List == NULL))
-        return false;
+        return false;		// #nocov
 
     // Create the text record parsers
     pkgSrcRecords SrcRecs(*List);
     if (_error->PendingError() == true)
-        return false;
+        return false;		// #nocov
 
     unsigned found = 0;
 
@@ -154,7 +154,7 @@ bool showSrc(const std::string regexp = ".") {
     }
     if (found == 0)
         //_error->Notice(_("No packages found"));
-        return false;
+        return false;		// #nocov
     return true;
 }
 
