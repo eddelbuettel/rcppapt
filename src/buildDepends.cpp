@@ -121,20 +121,24 @@ bool showSrc(const std::string regexp = ".") {
     APT::CacheFilter::PackageNameMatchesRegEx pkgre(regexp);
 
     pkgSourceList *List = cacheFile.GetSourceList();
-    if (unlikely(List == NULL))
-        return false;		// #nocov
+    if (unlikely(List == NULL)) {		// nocov  start
+        Rcpp::Rcout << "Error: No cached sources list. Maybe you have src-deb entries?\n";
+        return false;
+    } 						// nocov end
 
     // Create the text record parsers
     pkgSrcRecords SrcRecs(*List);
-    if (_error->PendingError() == true)
-        return false;		// #nocov
+    if (_error->PendingError() == true)	{	// nocov  start
+        Rcpp::Rcout << "Error: No sources records. Maybe you have src-deb entries?\n";
+        return false;
+    }						// nocov end
 
     unsigned found = 0;
 
     for (pkgCache::PkgIterator pkg = cache->PkgBegin(); !pkg.end(); pkg++) {
         if (pkgre(pkg)) {
             const std::string pkgstr = pkg.FullName(true);
-            //Rcpp::Rcout << "--" << pkgstr << std::endl;
+            Rcpp::Rcout << "--" << pkgstr << std::endl;
             SrcRecs.Restart();
       
             pkgSrcRecords::Parser *Parse;
@@ -145,11 +149,11 @@ bool showSrc(const std::string regexp = ".") {
                 found_this++;
                 //Rcpp::Rcout << "(" << found << "," << found_this << ")" << std::endl;
             }
-            // if (found_this == 0) {
+            //if (found_this == 0) {
             //     //_error->Warning(_("Unable to locate package %s"),*I);
             //     Rcpp::stop("Unable to locate package");
             //     continue;
-            // }
+            //}
         }
     }
     if (found == 0)

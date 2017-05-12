@@ -74,8 +74,11 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
                 //Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << std::endl;
                 const char *version = package.CurVersion();
                 ver.push_back(version == NULL ? "NA" : version);
-                const char *candidate = package.CandVersion();
-                cand.push_back(version == NULL ? "NA" : candidate);
+                //const char *candidate = package.CandVersion();
+                //pkgCache::VerIterator cit = dcache.GetCandidateVersion(package);
+                //const char *candidate = cit.Section();
+                //cand.push_back(version == NULL ? "NA" : candidate);
+                cand.push_back("NA");
                 //  candidate code:
                 //  pkgCache::VerIterator candvit = dcache.GetCandidateVersion(package);
                 //  cand.push_back("NA"); // FIXME: use candvit iterator

@@ -1,3 +1,10 @@
+2017-05-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/getPackages.cpp (getPackages): Suppress one compiler
+	warning; still needs finalizing
+
+	* src/buildDepends.cpp (showSrc): Added two diagnostics messages
+
 2016-12-08  Dirk Eddelbuettel  <edd@debian.org>
 
 	* src/buildDepends.cpp): Additional #nocov tags
