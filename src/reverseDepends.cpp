@@ -33,7 +33,7 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 
 //' The APT Package Management system uses a data-rich caching
 //' structure. This accessor function returns the Reverse-Depends for
-//' a set of packages matching the given regular expression. 
+//' a set of packages matching the given regular expression.
 //'
 //' Note that the package lookup uses regular expressions. If only a
 //' single package is desired, append a single \code{$} to terminate
@@ -45,7 +45,7 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 //' @param regexp A regular expression for the package name(s) with a
 //' default of all (".")
 //' @return A data frame with two column listing packages and, where
-//' available, minimal version. 
+//' available, minimal version.
 //' @author Dirk Eddelbuettel
 //' @examples
 //' reverseDepends("r-cran-rcpp$")
@@ -88,7 +88,7 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 
 //' The APT Package Management system uses a data-rich caching
 //' structure. This accessor function returns the Depends for
-//' a set of packages matching the given regular expression. 
+//' a set of packages matching the given regular expression.
 //'
 //' Note that the package lookup uses regular expressions. If only a
 //' single package is desired, append a single \code{$} to terminate
@@ -99,8 +99,8 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 //' @title Return Depends for given packages
 //' @param regexp A regular expression for the package name(s) with a
 //' default of all (".")
-//' @return A data frame with three column listing packages, comparison
-//' operator, and, where available, minimal version. 
+//' @return A data frame with four columns listing (source) package, dependend
+//' packages, comparison operator, and, where available, minimal version. 
 //' @author Dirk Eddelbuettel
 //' @examples
 //' reverseDepends("r-cran-rcpp$")
@@ -115,6 +115,7 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
 
     APT::CacheFilter::PackageNameMatchesRegEx pkgre(regexp);
 
+    std::vector<std::string> srcpkg;
     std::vector<std::string> res;
     std::vector<std::string> ver;
     std::vector<int> op;
@@ -132,6 +133,7 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
                             //Rcpp::Rcout << "\t" << Dep.TargetPkg().FullName(true)
                             //            << " (" << (int)Dep->CompareOp << " "
                             //            << localDeNull(Dep.TargetVer()) << ")\n";
+                            srcpkg.push_back(pkgstr);
                             res.push_back(Dep.TargetPkg().FullName(true));
                             ver.push_back(localDeNull(Dep.TargetVer()));
                             op.push_back((int)Dep->CompareOp);
@@ -142,7 +144,9 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
             }
         }
     }
-    return Rcpp::DataFrame::create(Rcpp::Named("package") = res,
-                                   Rcpp::Named("cmpop") = op,
-                                   Rcpp::Named("version") = ver);
+    Rcpp::DataFrame df = Rcpp::DataFrame::create(Rcpp::Named("srcpkg") = srcpkg,
+                                                 Rcpp::Named("deppkg") = res,
+                                                 Rcpp::Named("cmpop") = op,
+                                                 Rcpp::Named("version") = ver);
+    return df;
 }

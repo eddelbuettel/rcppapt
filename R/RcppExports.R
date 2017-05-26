@@ -112,7 +112,7 @@ hasPackages <- function(pkg) {
 
 #' The APT Package Management system uses a data-rich caching
 #' structure. This accessor function returns the Reverse-Depends for
-#' a set of packages matching the given regular expression. 
+#' a set of packages matching the given regular expression.
 #'
 #' Note that the package lookup uses regular expressions. If only a
 #' single package is desired, append a single \code{$} to terminate
@@ -124,7 +124,7 @@ hasPackages <- function(pkg) {
 #' @param regexp A regular expression for the package name(s) with a
 #' default of all (".")
 #' @return A data frame with two column listing packages and, where
-#' available, minimal version. 
+#' available, minimal version.
 #' @author Dirk Eddelbuettel
 #' @examples
 #' reverseDepends("r-cran-rcpp$")
@@ -134,7 +134,7 @@ reverseDepends <- function(regexp = ".") {
 
 #' The APT Package Management system uses a data-rich caching
 #' structure. This accessor function returns the Depends for
-#' a set of packages matching the given regular expression. 
+#' a set of packages matching the given regular expression.
 #'
 #' Note that the package lookup uses regular expressions. If only a
 #' single package is desired, append a single \code{$} to terminate
@@ -146,7 +146,7 @@ reverseDepends <- function(regexp = ".") {
 #' @param regexp A regular expression for the package name(s) with a
 #' default of all (".")
 #' @return A data frame with three column listing packages, comparison
-#' operator, and, where available, minimal version. 
+#' operator, and, where available, minimal version.
 #' @author Dirk Eddelbuettel
 #' @examples
 #' reverseDepends("r-cran-rcpp$")
