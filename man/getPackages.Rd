@@ -33,4 +33,3 @@ getPackages("^r-(base|doc)-")
 \author{
 Dirk Eddelbuettel
 }
-

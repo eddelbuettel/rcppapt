@@ -36,4 +36,3 @@ showSrc("r-cran-rcpp$") # just Rcpp
 \author{
 Dirk Eddelbuettel
 }
-

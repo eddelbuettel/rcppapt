@@ -31,4 +31,3 @@ buildDepends("r-cran-rcpp$")
 \author{
 Dirk Eddelbuettel
 }
-

@@ -71,3 +71,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// getDepends
+Rcpp::DataFrame getDepends(const std::string regexp);
+RcppExport SEXP RcppAPT_getDepends(SEXP regexpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::string >::type regexp(regexpSEXP);
+    rcpp_result_gen = Rcpp::wrap(getDepends(regexp));
+    return rcpp_result_gen;
+END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"RcppAPT_buildDepends", (DL_FUNC) &RcppAPT_buildDepends, 1},
+    {"RcppAPT_showSrc", (DL_FUNC) &RcppAPT_showSrc, 1},
+    {"RcppAPT_dumpPackages", (DL_FUNC) &RcppAPT_dumpPackages, 1},
+    {"RcppAPT_getPackages", (DL_FUNC) &RcppAPT_getPackages, 1},
+    {"RcppAPT_hasPackages", (DL_FUNC) &RcppAPT_hasPackages, 1},
+    {"RcppAPT_reverseDepends", (DL_FUNC) &RcppAPT_reverseDepends, 1},
+    {"RcppAPT_getDepends", (DL_FUNC) &RcppAPT_getDepends, 1},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_RcppAPT(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

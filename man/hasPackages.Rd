@@ -24,4 +24,3 @@ hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
 \author{
 Dirk Eddelbuettel
 }
-

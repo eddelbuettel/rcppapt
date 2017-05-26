@@ -32,4 +32,3 @@ reverseDepends("r-cran-rcpp$")
 \author{
 Dirk Eddelbuettel
 }
-
