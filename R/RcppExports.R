@@ -87,7 +87,7 @@ dumpPackages <- function(regexp = ".") {
 #' @param regexp A regular expression for the package name(s) with a
 #' default of all (".").
 #' @return A data frame with columns containing the
-#' package name, the installed version and the section it is installed in (or NA).
+#' package name and version (or NA if unavailable).
 #' @author Dirk Eddelbuettel
 #' @examples
 #' getPackages("^r-(base|doc)-")

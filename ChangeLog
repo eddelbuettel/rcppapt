@@ -1,6 +1,6 @@
 2017-05-27  Dirk Eddelbuettel  <edd@debian.org>
 
-	* src/getPackages.cpp (getPackages): Now returns version 
+	* src/getPackages.cpp (getPackages): Now returns name and version
 
 2017-05-26  Dirk Eddelbuettel  <edd@debian.org>
 
