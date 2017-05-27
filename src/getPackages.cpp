@@ -46,8 +46,7 @@
 //' @param regexp A regular expression for the package name(s) with a
 //' default of all (".").
 //' @return A data frame with columns containing the
-//' package name, the installed version (or NA if not installed)
-//' and the section it is installed in (or NA).
+//' package name, the installed version and the section it is installed in (or NA).
 //' @author Dirk Eddelbuettel
 //' @examples
 //' getPackages("^r-(base|doc)-")
@@ -72,8 +71,11 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
             if (package.FullName(true) == pkgname) { 	// we do not want the foo:i386 variant
                 name.push_back(pkgname);
                 //Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << std::endl;
-                const char *version = package.CurVersion();
-                ver.push_back(version == NULL ? "NA" : version);
+                for (pkgCache::VerIterator cur = package.VersionList(); cur.end() != true; ++cur) {
+                        //Rcpp::Rcout << "[" << Cur.VerStr() << "]";
+                        ver.push_back(cur.VerStr());
+                }
+                //Rcpp::Rcout << version << "\n";
                 //const char *candidate = package.CandVersion();
                 //pkgCache::VerIterator cit = dcache.GetCandidateVersion(package);
                 //const char *candidate = cit.Section();
@@ -100,7 +102,7 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
     }
 
     return Rcpp::DataFrame::create(Rcpp::Named("Package")      = name,
-                                   Rcpp::Named("Installed")    = V,
-                                   Rcpp::Named("Available")    = C,
+                                   Rcpp::Named("Version")    = V,
+                                   //Rcpp::Named("Available")    = C,
                                    Rcpp::Named("Section")      = S);
 }

@@ -87,8 +87,7 @@ dumpPackages <- function(regexp = ".") {
 #' @param regexp A regular expression for the package name(s) with a
 #' default of all (".").
 #' @return A data frame with columns containing the
-#' package name, the installed version (or NA if not installed)
-#' and the section it is installed in (or NA).
+#' package name, the installed version and the section it is installed in (or NA).
 #' @author Dirk Eddelbuettel
 #' @examples
 #' getPackages("^r-(base|doc)-")
@@ -145,8 +144,8 @@ reverseDepends <- function(regexp = ".") {
 #' @title Return Depends for given packages
 #' @param regexp A regular expression for the package name(s) with a
 #' default of all (".")
-#' @return A data frame with three column listing packages, comparison
-#' operator, and, where available, minimal version.
+#' @return A data frame with four columns listing (source) package, dependend
+#' packages, comparison operator, and, where available, minimal version. 
 #' @author Dirk Eddelbuettel
 #' @examples
 #' reverseDepends("r-cran-rcpp$")

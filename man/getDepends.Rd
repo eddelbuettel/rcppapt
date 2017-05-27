@@ -11,8 +11,8 @@ getDepends(regexp = ".")
 default of all (".")}
 }
 \value{
-A data frame with three column listing packages, comparison
-operator, and, where available, minimal version.
+A data frame with four columns listing (source) package, dependend
+packages, comparison operator, and, where available, minimal version.
 }
 \description{
 The APT Package Management system uses a data-rich caching

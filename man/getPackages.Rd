@@ -12,8 +12,7 @@ default of all (".").}
 }
 \value{
 A data frame with columns containing the
-package name, the installed version (or NA if not installed)
-and the section it is installed in (or NA).
+package name, the installed version and the section it is installed in (or NA).
 }
 \description{
 The APT Package Management system uses a data-rich caching
