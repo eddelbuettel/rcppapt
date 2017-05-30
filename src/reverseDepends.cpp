@@ -128,18 +128,17 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
                     //Rcpp::Rcout << Cur.VerStr() << " -\n";
                     for (pkgCache::DepIterator Dep = Cur.DependsList(); Dep.end() != true; ++Dep) {
                         std::string txt = Dep.TargetPkg().FullName(true);
-                        std::string sub = txt.substr(txt.length()-5, txt.length());
-                        if (sub != std::string(":i386")) {
-                            //Rcpp::Rcout << "\t" << Dep.TargetPkg().FullName(true)
-                            //            << " (" << (int)Dep->CompareOp << " "
-                            //            << localDeNull(Dep.TargetVer()) << ")\n";
+                        if (txt.find(pkgstr + ":") == std::string::npos) {
+                            // Rcpp::Rcout << "\t" << Dep.TargetPkg().FullName(true)
+                            //             << " (" << (int)Dep->CompareOp << " "
+                            //             << localDeNull(Dep.TargetVer()) << ")\n";
                             srcpkg.push_back(pkgstr);
                             res.push_back(Dep.TargetPkg().FullName(true));
                             ver.push_back(localDeNull(Dep.TargetVer()));
                             op.push_back((int)Dep->CompareOp);
                         }
                     }
-                    //Rcpp::Rcout << std::endl;
+                    // Rcpp::Rcout << std::endl;
                 }
             }
         }
