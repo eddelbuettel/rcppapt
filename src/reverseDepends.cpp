@@ -82,8 +82,9 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 
         }
     }
-    return Rcpp::DataFrame::create(Rcpp::Named("package") = res,
-                                   Rcpp::Named("version") = ver);
+    return Rcpp::DataFrame::create(Rcpp::Named("package")          = res,
+                                   Rcpp::Named("version")          = ver,
+                                   Rcpp::Named("stringsAsFactors") = false);
 }
 
 //' The APT Package Management system uses a data-rich caching
@@ -143,9 +144,10 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
             }
         }
     }
-    Rcpp::DataFrame df = Rcpp::DataFrame::create(Rcpp::Named("srcpkg") = srcpkg,
-                                                 Rcpp::Named("deppkg") = res,
-                                                 Rcpp::Named("cmpop") = op,
-                                                 Rcpp::Named("version") = ver);
+    Rcpp::DataFrame df = Rcpp::DataFrame::create(Rcpp::Named("srcpkg")           = srcpkg,
+                                                 Rcpp::Named("deppkg")           = res,
+                                                 Rcpp::Named("cmpop")            = op,
+                                                 Rcpp::Named("version")          = ver,
+                                                 Rcpp::Named("stringsAsFactors") = false);
     return df;
 }

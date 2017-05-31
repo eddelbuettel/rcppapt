@@ -86,6 +86,7 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
         V[i] = ver[i];
         if (ver[i] == "NA") V[i] = NA_STRING;
     }
-    return Rcpp::DataFrame::create(Rcpp::Named("Package")    = N,
-                                   Rcpp::Named("Version")    = V);
+    return Rcpp::DataFrame::create(Rcpp::Named("Package")          = N,
+                                   Rcpp::Named("Version")          = V,
+                                   Rcpp::Named("stringsAsFactors") = false);
 }
