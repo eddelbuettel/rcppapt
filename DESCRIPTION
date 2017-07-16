@@ -12,5 +12,7 @@ SystemRequirements: A Debian-based system with the libapt-pkg-dev package
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.11.0)
 LinkingTo: Rcpp
+Suggests: knitr
+VignetteBuilder: knitr
 OS_type: unix
 RoxygenNote: 6.0.1

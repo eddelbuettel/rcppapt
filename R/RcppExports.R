@@ -19,7 +19,7 @@
 #' @examples
 #' buildDepends("r-cran-rcpp$")
 buildDepends <- function(regexp = ".") {
-    .Call('RcppAPT_buildDepends', PACKAGE = 'RcppAPT', regexp)
+    .Call('_RcppAPT_buildDepends', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -45,7 +45,7 @@ buildDepends <- function(regexp = ".") {
 #' showSrc("r-cran-rcpp")  # also finds RcppEigen and RcppArmadillo
 #' showSrc("r-cran-rcpp$") # just Rcpp
 showSrc <- function(regexp = ".") {
-    .Call('RcppAPT_showSrc', PACKAGE = 'RcppAPT', regexp)
+    .Call('_RcppAPT_showSrc', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -70,7 +70,7 @@ showSrc <- function(regexp = ".") {
 #' @examples
 #' dumpPackages("^r-(base|doc)-")
 dumpPackages <- function(regexp = ".") {
-    .Call('RcppAPT_dumpPackages', PACKAGE = 'RcppAPT', regexp)
+    .Call('_RcppAPT_dumpPackages', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -92,7 +92,7 @@ dumpPackages <- function(regexp = ".") {
 #' @examples
 #' getPackages("^r-(base|doc)-")
 getPackages <- function(regexp = ".") {
-    .Call('RcppAPT_getPackages', PACKAGE = 'RcppAPT', regexp)
+    .Call('_RcppAPT_getPackages', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -106,7 +106,7 @@ getPackages <- function(regexp = ".") {
 #' @examples
 #' hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
 hasPackages <- function(pkg) {
-    .Call('RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
+    .Call('_RcppAPT_hasPackages', PACKAGE = 'RcppAPT', pkg)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -128,7 +128,7 @@ hasPackages <- function(pkg) {
 #' @examples
 #' reverseDepends("r-cran-rcpp$")
 reverseDepends <- function(regexp = ".") {
-    .Call('RcppAPT_reverseDepends', PACKAGE = 'RcppAPT', regexp)
+    .Call('_RcppAPT_reverseDepends', PACKAGE = 'RcppAPT', regexp)
 }
 
 #' The APT Package Management system uses a data-rich caching
@@ -150,6 +150,6 @@ reverseDepends <- function(regexp = ".") {
 #' @examples
 #' reverseDepends("r-cran-rcpp$")
 getDepends <- function(regexp = ".") {
-    .Call('RcppAPT_getDepends', PACKAGE = 'RcppAPT', regexp)
+    .Call('_RcppAPT_getDepends', PACKAGE = 'RcppAPT', regexp)
 }
 

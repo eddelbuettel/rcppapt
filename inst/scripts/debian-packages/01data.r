@@ -40,11 +40,16 @@ setkey(rd, package)
 all <- rd[comp[, c(1,5)]]
 all[order(version),]
 #print(all)
-all[oldVersion==TRUE,][order(version),]    # 169
+all[oldVersion==TRUE,][order(version),]    # 167
 
 all[, cran:=grepl("^r-cran", package) ]
+all[, bioc:=grepl("^r-bioc", package) ]
 
-cand <- all[ oldVersion==TRUE & skip!=TRUE & isCompiled & cran, ]   # 149
+all[bioc==TRUE & oldVersion==TRUE,]                # 17 BioC
+all[bioc!=TRUE & cran!=TRUE & oldVersion==TRUE,]   # 3 other
+
+
+cand <- all[ cran==TRUE & oldVersion==TRUE, ]      # 147
 setkey(cand, package)
 
 db <- tools::CRAN_package_db()
@@ -52,19 +57,19 @@ setDT(db)
 db[, package:=paste0("r-cran-", tolower(Package))]
 setkey(db, package)
 
-
 foo <- db[ cand ]   # inner join
 
 saveRDS(foo[, .(package, Package, Version, NeedsCompilation, oldVersion, skip)], file="debpackages.rds")
 
 ## on another machine, then
 if (FALSE) {
-    deb <- readRDS("~/debpackages.rds")
+    deb <- readRDS("debpackages.rds")
     for (i in 1:nrow(deb)) { deb[i, "dotCorFortran"] <- if (is.na(deb[i, "Package"])) NA else system(paste0("egrep -r -q \"\\.(C|Fortran)\\(\" ", deb[i, "Package"], "/R/*"))==0 }
-    saveRDS(deb, "~/debpackagesout.rds")
+    saveRDS(deb, "debpackagesout.rds")
 }
 
-deb <- readRDS("debpackagesout.rds")
-setDT(deb)
-print(deb[ is.na(deb[, dotCorFortran]) | deb[, dotCorFortran]==TRUE, 1:3])   ## 69
-
+if (FALSE) {
+    deb <- readRDS("debpackagesout.rds")
+    setDT(deb)
+    print(deb[ is.na(deb[, dotCorFortran]) | deb[, dotCorFortran]==TRUE, 1:3])   ## 69
+}

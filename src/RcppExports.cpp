@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // buildDepends
 std::vector<std::string> buildDepends(const std::string regexp);
-RcppExport SEXP RcppAPT_buildDepends(SEXP regexpSEXP) {
+RcppExport SEXP _RcppAPT_buildDepends(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // showSrc
 bool showSrc(const std::string regexp);
-RcppExport SEXP RcppAPT_showSrc(SEXP regexpSEXP) {
+RcppExport SEXP _RcppAPT_showSrc(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,7 +29,7 @@ END_RCPP
 }
 // dumpPackages
 bool dumpPackages(const std::string regexp);
-RcppExport SEXP RcppAPT_dumpPackages(SEXP regexpSEXP) {
+RcppExport SEXP _RcppAPT_dumpPackages(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -40,7 +40,7 @@ END_RCPP
 }
 // getPackages
 Rcpp::DataFrame getPackages(const std::string regexp);
-RcppExport SEXP RcppAPT_getPackages(SEXP regexpSEXP) {
+RcppExport SEXP _RcppAPT_getPackages(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,7 +51,7 @@ END_RCPP
 }
 // hasPackages
 Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg);
-RcppExport SEXP RcppAPT_hasPackages(SEXP pkgSEXP) {
+RcppExport SEXP _RcppAPT_hasPackages(SEXP pkgSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -62,7 +62,7 @@ END_RCPP
 }
 // reverseDepends
 Rcpp::DataFrame reverseDepends(const std::string regexp);
-RcppExport SEXP RcppAPT_reverseDepends(SEXP regexpSEXP) {
+RcppExport SEXP _RcppAPT_reverseDepends(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,7 +73,7 @@ END_RCPP
 }
 // getDepends
 Rcpp::DataFrame getDepends(const std::string regexp);
-RcppExport SEXP RcppAPT_getDepends(SEXP regexpSEXP) {
+RcppExport SEXP _RcppAPT_getDepends(SEXP regexpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,13 +84,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"RcppAPT_buildDepends", (DL_FUNC) &RcppAPT_buildDepends, 1},
-    {"RcppAPT_showSrc", (DL_FUNC) &RcppAPT_showSrc, 1},
-    {"RcppAPT_dumpPackages", (DL_FUNC) &RcppAPT_dumpPackages, 1},
-    {"RcppAPT_getPackages", (DL_FUNC) &RcppAPT_getPackages, 1},
-    {"RcppAPT_hasPackages", (DL_FUNC) &RcppAPT_hasPackages, 1},
-    {"RcppAPT_reverseDepends", (DL_FUNC) &RcppAPT_reverseDepends, 1},
-    {"RcppAPT_getDepends", (DL_FUNC) &RcppAPT_getDepends, 1},
+    {"_RcppAPT_buildDepends", (DL_FUNC) &_RcppAPT_buildDepends, 1},
+    {"_RcppAPT_showSrc", (DL_FUNC) &_RcppAPT_showSrc, 1},
+    {"_RcppAPT_dumpPackages", (DL_FUNC) &_RcppAPT_dumpPackages, 1},
+    {"_RcppAPT_getPackages", (DL_FUNC) &_RcppAPT_getPackages, 1},
+    {"_RcppAPT_hasPackages", (DL_FUNC) &_RcppAPT_hasPackages, 1},
+    {"_RcppAPT_reverseDepends", (DL_FUNC) &_RcppAPT_reverseDepends, 1},
+    {"_RcppAPT_getDepends", (DL_FUNC) &_RcppAPT_getDepends, 1},
     {NULL, NULL, 0}
 };
 
