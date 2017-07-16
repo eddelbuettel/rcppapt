@@ -3,3 +3,4 @@
 ^\.Rproj\.user$
 apt-cache
 ^\.codecov\.yml$
+^docs$
