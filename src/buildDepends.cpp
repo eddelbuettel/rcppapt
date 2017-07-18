@@ -72,7 +72,6 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
             SrcRecs.Restart();
 
             debSrcRecordParser::Parser *Parse;
-            unsigned found_this = 0;
             while ((Parse = SrcRecs.Find(pkgstr.c_str(), false)) != 0) {
                 std::vector<pkgSrcRecords::Parser::BuildDepRec> bdvec;
                 Parse->BuildDepends(bdvec, false);
