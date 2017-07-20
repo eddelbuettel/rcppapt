@@ -3,6 +3,11 @@
 \newcommand{\ghpr}{\href{https://github.com/eddelbuettel/rcppapt/pull/#1}{##1}}
 \newcommand{\ghit}{\href{https://github.com/eddelbuettel/rcppapt/issues/#1}{##1}}
 
+\section{Changes in version 0.0.5 (2017-xx-yy)}{
+  \itemize{
+    \item \code{NAMESPACE} now sets symbol registration
+  }
+}
 \section{Changes in version 0.0.4 (2017-07-16)}{
   \itemize{
     \item New function \code{getDepends}
