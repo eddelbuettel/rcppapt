@@ -73,7 +73,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 class="title toc-ignore">Minimal Set of binnmu Packages</h1>
 <h2 class="subtitle">Combining the R and Debian package systems</h2>
 <h3 class="author">Dirk Eddelbuettel</h3>
-<h3 class="date">2017-Jul-16</h3>
+<h3 class="date">First version 2017-Jul-16; this version 2017-Aug-05</h3>
 </header>
 
 <hr>
@@ -97,9 +97,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>match <code>r-cran-*</code>, <code>r-bioc-*</code> and alike</li>
 <li>contain compiled code (as R-only packages have no native routines)</li>
 <li>use at least one <code>.C()</code> or <code>.Fortran()</code> (but <em>not</em> <code>.Call()</code>) call</li>
+<li>use (the hitherto optional) routine registration (so that the change in behaviour is noticible)</li>
 <li>have <em>not yet</em> been recompiled with R 3.4.0 or R 3.4.1</li>
 </ul>
 <p>This note computes this set and provides the input for a <a href="https://release.debian.org/wanna-build.txt">wanna-build</a> request.</p>
+<p>This version is updated version which reflects the fourth point above which was pointed out to me by Kurt Hornik after I shared the initial version with him. The point he raised (“does it use <code>R_registerRoutines</code> ?”) is important and further reduces the effective set.</p>
 </div>
 </div>
 <div id="step-1-reverse-dependencies-of-r" class="section level2">
@@ -107,20 +109,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="fresh-debian-unstable-session" class="section level3">
 <h3>Fresh Debian unstable session</h3>
 <p>For this we drop into a clean Docker container running Debian unstable. Later, we will need the current sources of the <a href="https://github.com/eddelbuettel/rcppapt"><code>RcppAPT</code></a> package so we start from a local git directory:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="kw">server&gt;</span> cd ~/git <span class="kw">&amp;&amp;</span> <span class="kw">docker</span> run --rm -ti -v <span class="ot">$(</span><span class="kw">pwd</span><span class="ot">)</span>:/mnt debian:unstable</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">server</span><span class="op">&gt;</span> cd ~/git <span class="kw">&amp;&amp;</span> <span class="ex">docker</span> run --rm -ti -v <span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span>:/mnt debian:unstable</code></pre></div>
 </div>
 <div id="update-debian" class="section level3">
 <h3>Update Debian</h3>
 <p>Inside the Docker container, we update the package information and install what is needed to build <a href="https://github.com/eddelbuettel/rcppapt"><code>RcppAPT</code></a> for R.<br />
 This includes Rcpp and <code>libapt-pkg-dev</code>. We also install the data.table package used for aggregating the (R and Debian) package data computed below.</p>
 <p>This step takes a short moment, with the exact time dependent on the network connection and other factors.</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="kw">docker&gt;</span> apt-get update
-<span class="kw">docker&gt;</span> apt-get -y dist-upgrade
+<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">docker</span><span class="op">&gt;</span> apt-get update
+<span class="ex">docker</span><span class="op">&gt;</span> apt-get -y dist-upgrade
 
-<span class="kw">docker&gt;</span> apt-get -y install r-cran-rcpp r-cran-data.table libapt-pkg-dev less 
+<span class="ex">docker</span><span class="op">&gt;</span> apt-get -y install r-cran-rcpp r-cran-data.table libapt-pkg-dev less 
 
-<span class="kw">docker&gt;</span> cd /mnt 
-<span class="kw">docker&gt;</span> R CMD INSTALL rcppapt/       <span class="co"># assuming we're above rcppapt</span></code></pre></div>
+<span class="ex">docker</span><span class="op">&gt;</span> cd /mnt 
+<span class="ex">docker</span><span class="op">&gt;</span> R CMD INSTALL rcppapt/       <span class="co"># assuming we're above rcppapt</span></code></pre></div>
 </div>
 <div id="launch-r" class="section level3">
 <h3>Launch R</h3>
@@ -129,62 +131,61 @@ This includes Rcpp and <code>libapt-pkg-dev</code>. We also install the data.tab
 <p>Inside the same Docker session, we now launch R and run (almost all of) the remainder from R.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span><span class="kw">library</span>(RcppAPT)
 &gt;<span class="st"> </span><span class="kw">library</span>(data.table)
-&gt;<span class="st"> </span>rd &lt;-<span class="st"> </span><span class="kw">reverseDepends</span>(<span class="st">&quot;r-base-core&quot;</span>)         <span class="co"># 514 x 2</span>
-&gt;<span class="st"> </span>rd &lt;-<span class="st"> </span>rd[!<span class="kw">grepl</span>(<span class="st">&quot;r-(doc|base)&quot;</span>, rd[,<span class="dv">1</span>]), ]  <span class="co"># 506 x 2</span>
-&gt;<span class="st"> </span>rd &lt;-<span class="st"> </span>rd[<span class="kw">grepl</span>(<span class="st">&quot;^r-&quot;</span>, rd[,<span class="dv">1</span>]), ]            <span class="co"># 480 x 2</span>
+&gt;<span class="st"> </span>rd &lt;-<span class="st"> </span><span class="kw">reverseDepends</span>(<span class="st">&quot;r-base-core&quot;</span>)         <span class="co"># 516 x 2</span>
+&gt;<span class="st"> </span>rd &lt;-<span class="st"> </span>rd[<span class="kw">grepl</span>(<span class="st">&quot;^r-&quot;</span>, rd[,<span class="dv">1</span>]), ]            <span class="co"># 489 x 2</span>
 &gt;<span class="st"> </span>rd &lt;-<span class="st"> </span>rd[<span class="kw">order</span>(rd[,<span class="dv">2</span>]), ]
 &gt;<span class="st"> </span><span class="kw">setDT</span>(rd)</code></pre></div>
-<p>We use <code>RcppAPT</code> to compute the reverse depends of the main R package providing the R engine: <code>r-base-core</code>. Among those (currently) 514 packages are both other packages from the upstream source (<code>r-base*</code>, <code>r-doc*</code>) which we exclude first as well as other, non-R-package dependencies (such as <code>rpy2</code>) which we also exclude.</p>
-<p>This leaves 480 candidate packages out of the initial 514. The version field tells which r-base-core version was used to build the package—information we need per the setup described above.</p>
+<p>We use <code>RcppAPT</code> to compute the reverse depends of the main R package providing the R engine: <code>r-base-core</code>. Among those (currently) 516 packages are both other packages from the upstream source (<code>r-base*</code>, <code>r-doc*</code>) which we exclude first as well as other, non-R-package dependencies (such as <code>rpy2</code>) which we also exclude.</p>
+<p>This leaves 489 candidate packages out of the initial 514. The version field tells which r-base-core version was used to build the package—information we need per the setup described above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>rd
-                package          version
-  <span class="dv">1</span>:<span class="st">   </span>r-cran-phylobase <span class="fl">3.2.4.20160406</span><span class="dv">-1</span>
-  <span class="dv">2</span>:<span class="st">       </span>r-cran-zelig          <span class="fl">3.0.2</span><span class="dv">-1</span>
-  <span class="dv">3</span>:<span class="st">        </span>r-cran-urca          <span class="fl">3.4.0</span><span class="dv">-1</span>
-  <span class="dv">4</span>:<span class="st">     </span>r-cran-tseries <span class="fl">3.3.3.20170413</span><span class="dv">-1</span>
-  <span class="dv">5</span>:<span class="st">     </span>r-cran-tkrplot <span class="fl">3.3.0.20160615</span><span class="dv">-1</span>
- ---<span class="st">                                    </span>
-<span class="dv">476</span>:<span class="st">      </span>r-cran-bitops          <span class="fl">3.0.1</span><span class="dv">-6</span>
-<span class="dv">477</span>:<span class="st"> </span>r-cran-cairodevice          <span class="fl">3.4.0</span><span class="dv">-1</span>
-<span class="dv">478</span>:<span class="st">        </span>r-cran-boot          <span class="fl">3.4.0</span><span class="dv">-1</span>
-<span class="dv">479</span>:<span class="st">     </span>r-cran-acepack          <span class="fl">3.4.0</span><span class="dv">-1</span>
-<span class="dv">480</span>:<span class="st">       </span>r-cran-abind          <span class="fl">3.3.1</span><span class="dv">-1</span>
+&gt;<span class="st"> </span>rd
+             package version
+  <span class="dv">1</span>:<span class="st">       </span>r-doc-pdf
+  <span class="dv">2</span>:<span class="st">      </span>r-doc-info
+  <span class="dv">3</span>:<span class="st">      </span>r-doc-html
+  <span class="dv">4</span>:<span class="st">     </span>r-base-html
+  <span class="dv">5</span>:<span class="st">     </span>r-other-rot
+ ---
+<span class="dv">485</span>:<span class="st"> </span>r-base-core-dbg <span class="fl">3.4.1</span><span class="dv">-2</span>
+<span class="dv">486</span>:<span class="st">          </span>r-base <span class="fl">3.4.1</span><span class="dv">-2</span>
+<span class="dv">487</span>:<span class="st">     </span>r-cran-mgcv <span class="fl">3.4.1</span><span class="dv">-2</span>
+<span class="dv">488</span>:<span class="st">     </span>r-cran-boot <span class="fl">3.4.1</span><span class="dv">-2</span>
+<span class="dv">489</span>:<span class="st">      </span>r-cran-car <span class="fl">3.4.1</span><span class="dv">-2</span>
 &gt;<span class="st"> </span></code></pre></div>
 <p>Next we need to filter out two versions with unsortable (<em>i.e.</em>,non-semantic) version numbers, and apply a logical filter depending on whether the package was built with R version 3.3.3 or earlier, indicating a possibe required rebuild.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>rd[ version==<span class="st">&quot;3.0.0~20130330-1&quot;</span>, version :<span class="er">=</span><span class="st"> &quot;3.0.0.20130330-1&quot;</span>]
 &gt;<span class="st"> </span>rd[ version==<span class="st">&quot;3.2.4-revised-1&quot;</span>, version :<span class="er">=</span><span class="st"> &quot;3.2.4.1-1&quot;</span>]
 &gt;<span class="st"> </span>rd[version!=<span class="st">&quot;&quot;</span>, oldVersion :<span class="er">=</span><span class="st"> </span>version  &lt;=<span class="st">  </span><span class="kw">package_version</span>(<span class="st">&quot;3.3.3-1&quot;</span>)]
 &gt;<span class="st"> </span>rd[ <span class="kw">is.na</span>(oldVersion), oldVersion :<span class="er">=</span><span class="st"> </span><span class="ot">FALSE</span>]
-&gt;<span class="st"> </span>rd
-                package          version oldVersion
-  <span class="dv">1</span>:<span class="st">   </span>r-cran-phylobase <span class="fl">3.2.4.20160406</span><span class="dv">-1</span>       <span class="ot">TRUE</span>
-  <span class="dv">2</span>:<span class="st">       </span>r-cran-zelig          <span class="fl">3.0.2</span><span class="dv">-1</span>       <span class="ot">TRUE</span>
-  <span class="dv">3</span>:<span class="st">        </span>r-cran-urca          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span>
-  <span class="dv">4</span>:<span class="st">     </span>r-cran-tseries <span class="fl">3.3.3.20170413</span><span class="dv">-1</span>      <span class="ot">FALSE</span>
-  <span class="dv">5</span>:<span class="st">     </span>r-cran-tkrplot <span class="fl">3.3.0.20160615</span><span class="dv">-1</span>       <span class="ot">TRUE</span>
- ---<span class="st">                                               </span>
-<span class="dv">476</span>:<span class="st">      </span>r-cran-bitops          <span class="fl">3.0.1</span><span class="dv">-6</span>       <span class="ot">TRUE</span>
-<span class="dv">477</span>:<span class="st"> </span>r-cran-cairodevice          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span>
-<span class="dv">478</span>:<span class="st">        </span>r-cran-boot          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span>
-<span class="dv">479</span>:<span class="st">     </span>r-cran-acepack          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span>
-<span class="dv">480</span>:<span class="st">       </span>r-cran-abind          <span class="fl">3.3.1</span><span class="dv">-1</span>       <span class="ot">TRUE</span>
-&gt;<span class="st"> </span></code></pre></div>
+&gt;<span class="st"> </span>rd[ !<span class="kw">grepl</span>(<span class="st">&quot;r-(doc|base)&quot;</span>, package), ]
+             package          version oldVersion
+  <span class="dv">1</span>:<span class="st">     </span>r-other-rot                       <span class="ot">FALSE</span>
+  <span class="dv">2</span>:<span class="st"> </span>r-cran-epitools          <span class="fl">3.0.0</span><span class="dv">-2</span>       <span class="ot">TRUE</span>
+  <span class="dv">3</span>:<span class="st"> </span>r-cran-combinat          <span class="fl">3.0.0</span><span class="dv">-2</span>       <span class="ot">TRUE</span>
+  <span class="dv">4</span>:<span class="st">    </span>r-cran-gmaps <span class="fl">3.0.0.20130330</span><span class="dv">-1</span>       <span class="ot">TRUE</span>
+  <span class="dv">5</span>:<span class="st">      </span>r-cran-wdi          <span class="fl">3.0.1</span><span class="dv">-6</span>       <span class="ot">TRUE</span>
+ ---
+<span class="dv">478</span>:<span class="st">   </span>r-recommended          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span>
+<span class="dv">479</span>:<span class="st">       </span>r-mathlib          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span>
+<span class="dv">480</span>:<span class="st">     </span>r-cran-mgcv          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span>
+<span class="dv">481</span>:<span class="st">     </span>r-cran-boot          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span>
+<span class="dv">482</span>:<span class="st">      </span>r-cran-car          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span></code></pre></div>
 <p>To cover some corner case, we derive a <code>skip</code> field:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>rd[ version==<span class="st">&quot;&quot;</span>, skip:<span class="er">=</span><span class="ot">TRUE</span> ]
 &gt;<span class="st"> </span>rd[ <span class="kw">is.na</span>(skip), skip:<span class="er">=</span><span class="ot">FALSE</span>]
-&gt;<span class="st"> </span>rd
-                package          version oldVersion  skip
-  <span class="dv">1</span>:<span class="st">   </span>r-cran-phylobase <span class="fl">3.2.4.20160406</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
-  <span class="dv">2</span>:<span class="st">       </span>r-cran-zelig          <span class="fl">3.0.2</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
-  <span class="dv">3</span>:<span class="st">        </span>r-cran-urca          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
-  <span class="dv">4</span>:<span class="st">     </span>r-cran-tseries <span class="fl">3.3.3.20170413</span><span class="dv">-1</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
-  <span class="dv">5</span>:<span class="st">     </span>r-cran-tkrplot <span class="fl">3.3.0.20160615</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
- ---<span class="st">                                                     </span>
-<span class="dv">476</span>:<span class="st">      </span>r-cran-bitops          <span class="fl">3.0.1</span><span class="dv">-6</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
-<span class="dv">477</span>:<span class="st"> </span>r-cran-cairodevice          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
-<span class="dv">478</span>:<span class="st">        </span>r-cran-boot          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
-<span class="dv">479</span>:<span class="st">     </span>r-cran-acepack          <span class="fl">3.4.0</span><span class="dv">-1</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
-<span class="dv">480</span>:<span class="st">       </span>r-cran-abind          <span class="fl">3.3.1</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
+&gt;<span class="st"> </span>rd[ skip==<span class="ot">FALSE</span>, ]
+             package          version oldVersion  skip
+  <span class="dv">1</span>:<span class="st"> </span>r-cran-epitools          <span class="fl">3.0.0</span><span class="dv">-2</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
+  <span class="dv">2</span>:<span class="st"> </span>r-cran-combinat          <span class="fl">3.0.0</span><span class="dv">-2</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
+  <span class="dv">3</span>:<span class="st">    </span>r-cran-gmaps <span class="fl">3.0.0.20130330</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
+  <span class="dv">4</span>:<span class="st">      </span>r-cran-wdi          <span class="fl">3.0.1</span><span class="dv">-6</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
+  <span class="dv">5</span>:<span class="st">   </span>r-cran-bitops          <span class="fl">3.0.1</span><span class="dv">-6</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>
+ ---
+<span class="dv">480</span>:<span class="st"> </span>r-base-core-dbg          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
+<span class="dv">481</span>:<span class="st">          </span>r-base          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
+<span class="dv">482</span>:<span class="st">     </span>r-cran-mgcv          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
+<span class="dv">483</span>:<span class="st">     </span>r-cran-boot          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
+<span class="dv">484</span>:<span class="st">      </span>r-cran-car          <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>
 &gt;<span class="st"> </span></code></pre></div>
 </div>
 <div id="compiled-packages" class="section level4">
@@ -200,16 +201,15 @@ This includes Rcpp and <code>libapt-pkg-dev</code>. We also install the data.tab
    <span class="dv">3</span>:<span class="st">  </span>r-bioc-hypergraph        r-bioc-graph     <span class="dv">0</span>           (null)
    <span class="dv">4</span>:<span class="st">  </span>r-bioc-hypergraph r-bioc-biocgenerics     <span class="dv">0</span>           (null)
    <span class="dv">5</span>:<span class="st">  </span>r-bioc-hypergraph        r-cran-runit     <span class="dv">0</span>           (null)
-  ---<span class="st">                                                              </span>
-<span class="dv">3690</span>:<span class="st"> </span>r-cran-viridislite             r-api<span class="dv">-3</span>     <span class="dv">0</span>           (null)
-<span class="dv">3691</span>:<span class="st">      </span>r-cran-xtable         r-base-core     <span class="dv">2</span>          <span class="fl">3.2.5</span><span class="dv">-1</span>
-<span class="dv">3692</span>:<span class="st">      </span>r-cran-xtable             r-api<span class="dv">-3</span>     <span class="dv">0</span>           (null)
-<span class="dv">3693</span>:<span class="st">   </span>r-cran-pkgkitten         r-base-core     <span class="dv">2</span>          <span class="fl">3.3.2</span><span class="dv">-1</span>
-<span class="dv">3694</span>:<span class="st">   </span>r-cran-pkgkitten             r-api<span class="dv">-3</span>     <span class="dv">0</span>           (null)
+  ---
+<span class="dv">3744</span>:<span class="st"> </span>r-cran-viridislite             r-api<span class="dv">-3</span>     <span class="dv">0</span>           (null)
+<span class="dv">3745</span>:<span class="st">      </span>r-cran-xtable         r-base-core     <span class="dv">2</span>          <span class="fl">3.2.5</span><span class="dv">-1</span>
+<span class="dv">3746</span>:<span class="st">      </span>r-cran-xtable             r-api<span class="dv">-3</span>     <span class="dv">0</span>           (null)
+<span class="dv">3747</span>:<span class="st">   </span>r-cran-pkgkitten         r-base-core     <span class="dv">2</span>          <span class="fl">3.3.2</span><span class="dv">-1</span>
+<span class="dv">3748</span>:<span class="st">   </span>r-cran-pkgkitten             r-api<span class="dv">-3</span>     <span class="dv">0</span>           (null)
 &gt;<span class="st"> </span></code></pre></div>
 <p>Next we subset to those have <code>libc6</code> as a Depends, meaning they are compiled packages. This excludes all the R packages having only R code.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>comp &lt;-<span class="st"> </span>dep[deppkg==<span class="st">&quot;libc6&quot;</span>]   <span class="co"># about 241</span>
-&gt;<span class="st"> </span>comp[, isCompiled:<span class="er">=</span><span class="ot">TRUE</span>]
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>comp &lt;-<span class="st"> </span>dep[deppkg==<span class="st">&quot;libc6&quot;</span>]   <span class="co"># 242</span>
 &gt;<span class="st"> </span>comp
                  srcpkg deppkg cmpop version isCompiled
   <span class="dv">1</span>:<span class="st">  </span>r-bioc-makecdfenv  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
@@ -217,13 +217,13 @@ This includes Rcpp and <code>libapt-pkg-dev</code>. We also install the data.tab
   <span class="dv">3</span>:<span class="st">   </span>r-bioc-rsamtools  libc6     <span class="dv">2</span>    <span class="fl">2.15</span>       <span class="ot">TRUE</span>
   <span class="dv">4</span>:<span class="st">     </span>r-cran-foreign  libc6     <span class="dv">2</span>    <span class="fl">2.14</span>       <span class="ot">TRUE</span>
   <span class="dv">5</span>:<span class="st">    </span>r-bioc-multtest  libc6     <span class="dv">2</span>    <span class="fl">2.14</span>       <span class="ot">TRUE</span>
- ---<span class="st">                                                   </span>
-<span class="dv">237</span>:<span class="st">     </span>r-cran-nleqslv  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
-<span class="dv">238</span>:<span class="st"> </span>r-other-amsmercury  libc6     <span class="dv">2</span>    <span class="fl">2.14</span>       <span class="ot">TRUE</span>
-<span class="dv">239</span>:<span class="st">         </span>r-cran-gnm  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
-<span class="dv">240</span>:<span class="st">         </span>r-cran-gsl  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
-<span class="dv">241</span>:<span class="st">         </span>r-cran-gss  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
-&gt;<span class="st"> </span></code></pre></div>
+ ---
+<span class="dv">238</span>:<span class="st">     </span>r-cran-nleqslv  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
+<span class="dv">239</span>:<span class="st"> </span>r-other-amsmercury  libc6     <span class="dv">2</span>    <span class="fl">2.14</span>       <span class="ot">TRUE</span>
+<span class="dv">240</span>:<span class="st">         </span>r-cran-gnm  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
+<span class="dv">241</span>:<span class="st">         </span>r-cran-gsl  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
+<span class="dv">242</span>:<span class="st">         </span>r-cran-gss  libc6     <span class="dv">2</span>     <span class="fl">2.4</span>       <span class="ot">TRUE</span>
+&gt;</code></pre></div>
 <p>We are now getting closer. We set keys on the <code>data.table</code> objects, and then do an inner join:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span><span class="kw">setkey</span>(comp, srcpkg)
 &gt;<span class="st"> </span><span class="kw">setkey</span>(rd, package)
@@ -235,14 +235,14 @@ This includes Rcpp and <code>libapt-pkg-dev</code>. We also install the data.tab
   <span class="dv">3</span>:<span class="st"> </span>r-other-mott-happy.hbrem <span class="fl">3.0.2</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
   <span class="dv">4</span>:<span class="st">             </span>r-cran-amore <span class="fl">3.1.0</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
   <span class="dv">5</span>:<span class="st">              </span>r-cran-deal <span class="fl">3.1.0</span><span class="dv">-1</span>       <span class="ot">TRUE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
- ---<span class="st">                                                             </span>
-<span class="dv">237</span>:<span class="st">           </span>r-cran-statmod <span class="fl">3.4.1</span><span class="dv">-1</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
-<span class="dv">238</span>:<span class="st">               </span>r-cran-ape <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
-<span class="dv">239</span>:<span class="st">           </span>r-cran-nleqslv <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
-<span class="dv">240</span>:<span class="st">            </span>r-cran-rmysql <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
-<span class="dv">241</span>:<span class="st">                </span>r-mathlib <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
+ ---
+<span class="dv">238</span>:<span class="st">              </span>r-cran-rcpp <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
+<span class="dv">239</span>:<span class="st">            </span>r-cran-rmysql <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
+<span class="dv">240</span>:<span class="st">         </span>r-cran-rsymphony <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
+<span class="dv">241</span>:<span class="st">               </span>r-cran-ttr <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
+<span class="dv">242</span>:<span class="st">                </span>r-mathlib <span class="fl">3.4.1</span><span class="dv">-2</span>      <span class="ot">FALSE</span> <span class="ot">FALSE</span>       <span class="ot">TRUE</span>
 &gt;<span class="st"> </span></code></pre></div>
-<p>We have 241 <em>potential</em> rebuilds, down from 514 reverse depends at the outset.</p>
+<p>We have 242 <em>potential</em> rebuilds, down from 514 reverse depends at the outset.</p>
 </div>
 <div id="version-check" class="section level4">
 <h4>Version check</h4>
@@ -336,267 +336,214 @@ This includes Rcpp and <code>libapt-pkg-dev</code>. We also install the data.tab
 </div>
 <div id="step-2-grep" class="section level2">
 <h2>Step 2: Grep</h2>
-<p>On another machine with access to all CRAN package sources (which I happen to have access to), we use the list of 147 candidate packages and run a recursive grep for each. We store the output from <code>egrep</code>, called via <code>system()</code>, directly in the same data structure:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">deb &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;debpackages.rds&quot;</span>)
-for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(deb)) { 
+<p>On another machine with access to all CRAN package sources (which I happen to have access to), we use the list of 147 candidate packages and run a recursive grep for each. We store the output from two <code>egrep</code> runs, called via <code>system()</code>, directly in the same data structure. The first checks for <code>.C()</code> or <code>.Fortran()</code> calls in the R scripts; the second checks for <code>R_registerRoutines()</code> in the compiled C code (with thanks again to Kurt Hornik for the suggestion)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">deb &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;~/debpackages.rds&quot;</span>)
+for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(deb)) {
     deb[i, <span class="st">&quot;dotCorFortran&quot;</span>] &lt;-<span class="st"> </span>if (<span class="kw">is.na</span>(deb[i, <span class="st">&quot;Package&quot;</span>])) <span class="ot">NA</span> 
-                               else <span class="kw">system</span>(<span class="kw">paste0</span>(<span class="st">&quot;egrep -r -q </span><span class="ch">\&quot;\\</span><span class="st">.(C|Fortran)</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\&quot;</span><span class="st"> &quot;</span>, deb[i, <span class="st">&quot;Package&quot;</span>], <span class="st">&quot;/R/*&quot;</span>))==<span class="dv">0</span> 
+                               else <span class="kw">system</span>(<span class="kw">paste0</span>(<span class="st">&quot;egrep -r -q </span><span class="ch">\&quot;\\</span><span class="st">.(C|Fortran)</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\&quot;</span><span class="st"> &quot;</span>, deb[i, <span class="st">&quot;Package&quot;</span>], <span class="st">&quot;/R/*&quot;</span>))==<span class="dv">0</span>
+    deb[i, <span class="st">&quot;hasRegistration&quot;</span>] &lt;-<span class="st"> </span>if (<span class="kw">is.na</span>(deb[i, <span class="st">&quot;Package&quot;</span>])) <span class="ot">NA</span> 
+                               else <span class="kw">system</span>(<span class="kw">paste0</span>(<span class="st">&quot;egrep -r -q </span><span class="ch">\&quot;</span><span class="st">R_registerRoutines</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\&quot;</span><span class="st"> &quot;</span>, deb[i, <span class="st">&quot;Package&quot;</span>], <span class="st">&quot;/src/*&quot;</span>))==<span class="dv">0</span>
 }
-<span class="kw">saveRDS</span>(deb, <span class="st">&quot;debpackagesout.rds&quot;</span>)</code></pre></div>
+<span class="kw">saveRDS</span>(deb, <span class="st">&quot;~/debpackagesout.rds&quot;</span>)</code></pre></div>
 </div>
 <div id="step-3-finalize" class="section level2">
 <h2>Step 3: Finalize</h2>
 <p>We read the data back in and subset on those for which the recursive grep found actual uses of <code>.C()</code> or <code>.Fortran()</code>. The list contains 72 packages.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>deb &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;debpackagesout.rds&quot;</span>)
 &gt;<span class="st"> </span><span class="kw">setDT</span>(deb)
-&gt;<span class="st"> </span>deb[ <span class="kw">is.na</span>(deb[, dotCorFortran]) |<span class="st"> </span>deb[, dotCorFortran]==<span class="ot">TRUE</span>, <span class="dv">1</span>:<span class="dv">3</span>]   ## 72
-                    package           Package  Version
+&gt;<span class="st"> </span>deb[ <span class="kw">is.na</span>(dotCorFortran) |(dotCorFortran &amp;<span class="st"> </span>hasRegistration), <span class="dv">1</span>:<span class="dv">3</span>]                               
+                     package           Package  Version
  <span class="dv">1</span>:<span class="st">              </span>r-cran-ade4              ade4    <span class="fl">1.7</span><span class="dv">-6</span>
- <span class="dv">2</span>:<span class="st">          </span>r-cran-adegenet          adegenet    <span class="fl">2.0.1</span>
- <span class="dv">3</span>:<span class="st">          </span>r-cran-adephylo          adephylo   <span class="fl">1.1</span><span class="dv">-10</span>
- <span class="dv">4</span>:<span class="st">            </span>r-cran-amelia            Amelia    <span class="fl">1.7.4</span>
- <span class="dv">5</span>:<span class="st">            </span>r-cran-bayesm            bayesm    <span class="fl">3.1</span><span class="dv">-0</span>
- <span class="dv">6</span>:<span class="st">            </span>r-cran-bitops            bitops    <span class="fl">1.0</span><span class="dv">-6</span>
- <span class="dv">7</span>:<span class="st">     </span>r-cran-blockmodeling     blockmodeling    <span class="fl">0.1.9</span>
- <span class="dv">8</span>:<span class="st">           </span>r-cran-boolnet           BoolNet    <span class="fl">2.1.3</span>
- <span class="dv">9</span>:<span class="st">             </span>r-cran-brglm             brglm    <span class="fl">0.6.1</span>
-<span class="dv">10</span>:<span class="st">             </span>r-cran-caret             caret   <span class="fl">6.0</span><span class="dv">-76</span>
-<span class="dv">11</span>:<span class="st">           </span>r-cran-catools           caTools   <span class="fl">1.17.1</span>
-<span class="dv">12</span>:<span class="st">            </span>r-cran-cmprsk            cmprsk    <span class="fl">2.2</span><span class="dv">-7</span>
-<span class="dv">13</span>:<span class="st">              </span>r-cran-coin              coin    <span class="fl">1.2</span><span class="dv">-0</span>
-<span class="dv">14</span>:<span class="st">          </span>r-cran-contfrac          contfrac   <span class="fl">1.1</span><span class="dv">-11</span>
-<span class="dv">15</span>:<span class="st">        </span>r-cran-data.table        data.table   <span class="fl">1.10.4</span>
-<span class="dv">16</span>:<span class="st">              </span>r-cran-deal              deal   <span class="fl">1.2</span><span class="dv">-37</span>
-<span class="dv">17</span>:<span class="st">            </span>r-cran-deldir            deldir   <span class="fl">0.1</span><span class="dv">-14</span>
-<span class="dv">18</span>:<span class="st">           </span>r-cran-desolve           deSolve     <span class="fl">1.20</span>
-<span class="dv">19</span>:<span class="st">       </span>r-cran-dosefinding       DoseFinding   <span class="fl">0.9</span><span class="dv">-15</span>
-<span class="dv">20</span>:<span class="st">               </span>r-cran-eco               eco    <span class="fl">3.1</span><span class="dv">-7</span>
-<span class="dv">21</span>:<span class="st">               </span>r-cran-erm               eRm   <span class="fl">0.15</span><span class="dv">-7</span>
-<span class="dv">22</span>:<span class="st">               </span>r-cran-etm               etm    <span class="fl">0.6</span><span class="dv">-2</span>
-<span class="dv">23</span>:<span class="st">               </span>r-cran-evd               evd    <span class="fl">2.3</span><span class="dv">-2</span>
-<span class="dv">24</span>:<span class="st">              </span>r-cran-expm              expm  <span class="fl">0.999</span><span class="dv">-2</span>
-<span class="dv">25</span>:<span class="st">            </span>r-cran-fields            fields      <span class="fl">9.0</span>
-<span class="dv">26</span>:<span class="st">               </span>r-cran-gam               gam   <span class="fl">1.14</span><span class="dv">-4</span>
-<span class="dv">27</span>:<span class="st">           </span>r-cran-genabel           GenABEL    <span class="fl">1.8</span><span class="dv">-0</span>
-<span class="dv">28</span>:<span class="st">            </span>r-cran-glmnet            glmnet   <span class="fl">2.0</span><span class="dv">-10</span>
-<span class="dv">29</span>:<span class="st">           </span>r-cran-goftest           goftest    <span class="fl">1.1</span><span class="dv">-1</span>
-<span class="dv">30</span>:<span class="st">               </span>r-cran-gsl               gsl <span class="fl">1.9-10.3</span>
-<span class="dv">31</span>:<span class="st">       </span>r-cran-haplo.stats       haplo.stats    <span class="fl">1.7.7</span>
-<span class="dv">32</span>:<span class="st">              </span>r-cran-hdf5                <span class="ot">NA</span>       <span class="ot">NA</span>
-<span class="dv">33</span>:<span class="st">            </span>r-cran-hexbin            hexbin   <span class="fl">1.27.1</span>
-<span class="dv">34</span>:<span class="st">            </span>r-cran-igraph            igraph    <span class="fl">1.0.1</span>
-<span class="dv">35</span>:<span class="st">               </span>r-cran-lhs               lhs     <span class="fl">0.14</span>
-<span class="dv">36</span>:<span class="st">         </span>r-cran-logspline         logspline    <span class="fl">2.1.9</span>
-<span class="dv">37</span>:<span class="st">           </span>r-cran-mapproj           mapproj    <span class="fl">1.2</span><span class="dv">-5</span>
-<span class="dv">38</span>:<span class="st">              </span>r-cran-maps              maps    <span class="fl">3.2.0</span>
-<span class="dv">39</span>:<span class="st">          </span>r-cran-maptools          maptools    <span class="fl">0.9</span><span class="dv">-2</span>
-<span class="dv">40</span>:<span class="st">              </span>r-cran-mcmc              mcmc    <span class="fl">0.9</span><span class="dv">-5</span>
-<span class="dv">41</span>:<span class="st">          </span>r-cran-mcmcpack          MCMCpack    <span class="fl">1.4</span><span class="dv">-0</span>
-<span class="dv">42</span>:<span class="st">      </span>r-cran-medadherence                <span class="ot">NA</span>       <span class="ot">NA</span>
-<span class="dv">43</span>:<span class="st">          </span>r-cran-mixtools          mixtools    <span class="fl">1.1.0</span>
-<span class="dv">44</span>:<span class="st">           </span>r-cran-mlbench           mlbench    <span class="fl">2.1</span><span class="dv">-1</span>
-<span class="dv">45</span>:<span class="st">               </span>r-cran-mnp               MNP    <span class="fl">3.0</span><span class="dv">-2</span>
-<span class="dv">46</span>:<span class="st">               </span>r-cran-msm               msm    <span class="fl">1.6.4</span>
-<span class="dv">47</span>:<span class="st">             </span>r-cran-ncdf4             ncdf4     <span class="fl">1.16</span>
-<span class="dv">48</span>:<span class="st">              </span>r-cran-nnls              nnls      <span class="fl">1.4</span>
-<span class="dv">49</span>:<span class="st">          </span>r-cran-pbivnorm          pbivnorm    <span class="fl">0.6.0</span>
-<span class="dv">50</span>:<span class="st">          </span>r-cran-phangorn          phangorn    <span class="fl">2.2.0</span>
-<span class="dv">51</span>:<span class="st">         </span>r-cran-phylobase         phylobase    <span class="fl">0.8.4</span>
-<span class="dv">52</span>:<span class="st">           </span>r-cran-polycub           polyCub    <span class="fl">0.6.0</span>
-<span class="dv">53</span>:<span class="st">         </span>r-cran-princurve         princurve   <span class="fl">1.1</span><span class="dv">-12</span>
-<span class="dv">54</span>:<span class="st">              </span>r-cran-pscl              pscl    <span class="fl">1.4.9</span>
-<span class="dv">55</span>:<span class="st">               </span>r-cran-qtl               qtl   <span class="fl">1.41</span><span class="dv">-6</span>
-<span class="dv">56</span>:<span class="st">      </span>r-cran-randomfields      RandomFields   <span class="fl">3.1.50</span>
-<span class="dv">57</span>:<span class="st"> </span>r-cran-randomfieldsutils RandomFieldsUtils   <span class="fl">0.3.25</span>
-<span class="dv">58</span>:<span class="st">      </span>r-cran-randomforest      randomForest   <span class="fl">4.6</span><span class="dv">-12</span>
-<span class="dv">59</span>:<span class="st">      </span>r-cran-raschsampler      RaschSampler    <span class="fl">0.8</span><span class="dv">-8</span>
-<span class="dv">60</span>:<span class="st">             </span>r-cran-rcurl             RCurl <span class="fl">1.95-4.8</span>
-<span class="dv">61</span>:<span class="st">         </span>r-cran-rniftilib                <span class="ot">NA</span>       <span class="ot">NA</span>
-<span class="dv">62</span>:<span class="st">                </span>r-cran-sp                sp    <span class="fl">1.2</span><span class="dv">-5</span>
-<span class="dv">63</span>:<span class="st">              </span>r-cran-spam              spam    <span class="fl">2.1</span><span class="dv">-1</span>
-<span class="dv">64</span>:<span class="st">          </span>r-cran-spatstat          spatstat   <span class="fl">1.51</span><span class="dv">-0</span>
-<span class="dv">65</span>:<span class="st">               </span>r-cran-spc               spc    <span class="fl">0.5.3</span>
-<span class="dv">66</span>:<span class="st">             </span>r-cran-spdep             spdep   <span class="fl">0.6</span><span class="dv">-13</span>
-<span class="dv">67</span>:<span class="st">      </span>r-cran-surveillance      surveillance   <span class="fl">1.14.0</span>
-<span class="dv">68</span>:<span class="st">               </span>r-cran-tgp               tgp   <span class="fl">2.4</span><span class="dv">-14</span>
-<span class="dv">69</span>:<span class="st">        </span>r-cran-tikzdevice        tikzDevice   <span class="fl">0.10</span><span class="dv">-1</span>
-<span class="dv">70</span>:<span class="st">         </span>r-cran-treescape                <span class="ot">NA</span>       <span class="ot">NA</span>
-<span class="dv">71</span>:<span class="st">             </span>r-cran-vegan             vegan    <span class="fl">2.4</span><span class="dv">-3</span>
-<span class="dv">72</span>:<span class="st">              </span>r-cran-vgam              VGAM    <span class="fl">1.0</span><span class="dv">-3</span>
+ <span class="dv">2</span>:<span class="st">            </span>r-cran-bayesm            bayesm  <span class="fl">3.1-0.1</span>
+ <span class="dv">3</span>:<span class="st">     </span>r-cran-blockmodeling     blockmodeling    <span class="fl">0.1.9</span>
+ <span class="dv">4</span>:<span class="st">             </span>r-cran-brglm             brglm    <span class="fl">0.6.1</span>
+ <span class="dv">5</span>:<span class="st">             </span>r-cran-caret             caret   <span class="fl">6.0</span><span class="dv">-76</span>
+ <span class="dv">6</span>:<span class="st">              </span>r-cran-coin              coin    <span class="fl">1.2</span><span class="dv">-1</span>
+ <span class="dv">7</span>:<span class="st">          </span>r-cran-contfrac          contfrac   <span class="fl">1.1</span><span class="dv">-11</span>
+ <span class="dv">8</span>:<span class="st">        </span>r-cran-data.table        data.table   <span class="fl">1.10.4</span>
+ <span class="dv">9</span>:<span class="st">            </span>r-cran-deldir            deldir   <span class="fl">0.1</span><span class="dv">-14</span>
+<span class="dv">10</span>:<span class="st">           </span>r-cran-desolve           deSolve     <span class="fl">1.20</span>
+<span class="dv">11</span>:<span class="st">               </span>r-cran-eco               eco    <span class="fl">4.0</span><span class="dv">-1</span>
+<span class="dv">12</span>:<span class="st">              </span>r-cran-expm              expm  <span class="fl">0.999</span><span class="dv">-2</span>
+<span class="dv">13</span>:<span class="st">            </span>r-cran-fields            fields      <span class="fl">9.0</span>
+<span class="dv">14</span>:<span class="st">               </span>r-cran-gam               gam   <span class="fl">1.14</span><span class="dv">-4</span>
+<span class="dv">15</span>:<span class="st">            </span>r-cran-glmnet            glmnet   <span class="fl">2.0</span><span class="dv">-10</span>
+<span class="dv">16</span>:<span class="st">           </span>r-cran-goftest           goftest    <span class="fl">1.1</span><span class="dv">-1</span>
+<span class="dv">17</span>:<span class="st">              </span>r-cran-hdf5                <span class="ot">NA</span>       <span class="ot">NA</span>
+<span class="dv">18</span>:<span class="st">            </span>r-cran-igraph            igraph    <span class="fl">1.1.2</span>
+<span class="dv">19</span>:<span class="st">           </span>r-cran-mapproj           mapproj    <span class="fl">1.2</span><span class="dv">-5</span>
+<span class="dv">20</span>:<span class="st">              </span>r-cran-maps              maps    <span class="fl">3.2.0</span>
+<span class="dv">21</span>:<span class="st">          </span>r-cran-maptools          maptools    <span class="fl">0.9</span><span class="dv">-2</span>
+<span class="dv">22</span>:<span class="st">              </span>r-cran-mcmc              mcmc    <span class="fl">0.9</span><span class="dv">-5</span>
+<span class="dv">23</span>:<span class="st">          </span>r-cran-mcmcpack          MCMCpack    <span class="fl">1.4</span><span class="dv">-0</span>
+<span class="dv">24</span>:<span class="st">      </span>r-cran-medadherence                <span class="ot">NA</span>       <span class="ot">NA</span>
+<span class="dv">25</span>:<span class="st">          </span>r-cran-mixtools          mixtools    <span class="fl">1.1.0</span>
+<span class="dv">26</span>:<span class="st">               </span>r-cran-mnp               MNP    <span class="fl">3.0</span><span class="dv">-2</span>
+<span class="dv">27</span>:<span class="st">             </span>r-cran-ncdf4             ncdf4     <span class="fl">1.16</span>
+<span class="dv">28</span>:<span class="st">          </span>r-cran-phangorn          phangorn    <span class="fl">2.2.0</span>
+<span class="dv">29</span>:<span class="st">         </span>r-cran-phylobase         phylobase    <span class="fl">0.8.4</span>
+<span class="dv">30</span>:<span class="st">               </span>r-cran-qtl               qtl   <span class="fl">1.41</span><span class="dv">-6</span>
+<span class="dv">31</span>:<span class="st">      </span>r-cran-randomfields      RandomFields   <span class="fl">3.1.50</span>
+<span class="dv">32</span>:<span class="st"> </span>r-cran-randomfieldsutils RandomFieldsUtils   <span class="fl">0.3.25</span>
+<span class="dv">33</span>:<span class="st">             </span>r-cran-rcurl             RCurl <span class="fl">1.95-4.8</span>
+<span class="dv">34</span>:<span class="st">         </span>r-cran-rniftilib                <span class="ot">NA</span>       <span class="ot">NA</span>
+<span class="dv">35</span>:<span class="st">                </span>r-cran-sp                sp    <span class="fl">1.2</span><span class="dv">-5</span>
+<span class="dv">36</span>:<span class="st">              </span>r-cran-spam              spam    <span class="fl">2.1</span><span class="dv">-1</span>
+<span class="dv">37</span>:<span class="st">          </span>r-cran-spatstat          spatstat   <span class="fl">1.51</span><span class="dv">-0</span>
+<span class="dv">38</span>:<span class="st">             </span>r-cran-spdep             spdep   <span class="fl">0.6</span><span class="dv">-13</span>
+<span class="dv">39</span>:<span class="st">      </span>r-cran-surveillance      surveillance   <span class="fl">1.14.0</span>
+<span class="dv">40</span>:<span class="st">         </span>r-cran-treescape                <span class="ot">NA</span>       <span class="ot">NA</span>
+<span class="dv">41</span>:<span class="st">             </span>r-cran-vegan             vegan    <span class="fl">2.4</span><span class="dv">-3</span>
+<span class="dv">42</span>:<span class="st">              </span>r-cran-vgam              VGAM    <span class="fl">1.0</span><span class="dv">-4</span>
                      package           Package  Version
 &gt;<span class="st"> </span></code></pre></div>
-<p>These 72, along with the 17 BioC and 3 ‘other’ packages are our target set.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>nmu &lt;-<span class="st"> </span>deb[ <span class="kw">is.na</span>(deb[, dotCorFortran]) |<span class="st"> </span>deb[, dotCorFortran]==<span class="ot">TRUE</span>, <span class="dv">1</span>]
-&gt;<span class="st"> </span>nmu &lt;-<span class="st"> </span><span class="kw">rbind</span>(nmu,  all[bioc!=<span class="ot">TRUE</span> &amp;<span class="st"> </span>cran!=<span class="ot">TRUE</span> &amp;<span class="st"> </span>oldVersion==<span class="ot">TRUE</span>, <span class="dv">1</span>]) <span class="co"># 'other'</span>
-&gt;<span class="st"> </span>nmu &lt;-<span class="st"> </span><span class="kw">rbind</span>(nmu,  all[bioc==<span class="ot">TRUE</span> &amp;<span class="st"> </span>oldVersion==<span class="ot">TRUE</span>, <span class="dv">1</span>])              <span class="co"># BioC</span>
-&gt;<span class="st">              </span>
-<span class="er">&gt;</span><span class="st"> </span><span class="kw">options</span>(<span class="st">&quot;width&quot;</span>=<span class="dv">80</span>)
-&gt;<span class="st"> </span>nmu[[<span class="dv">1</span>]]
- [<span class="dv">1</span>] <span class="st">&quot;r-cran-ade4&quot;</span>              <span class="st">&quot;r-cran-adegenet&quot;</span>         
- [<span class="dv">3</span>] <span class="st">&quot;r-cran-adephylo&quot;</span>          <span class="st">&quot;r-cran-amelia&quot;</span>           
- [<span class="dv">5</span>] <span class="st">&quot;r-cran-bayesm&quot;</span>            <span class="st">&quot;r-cran-bitops&quot;</span>           
- [<span class="dv">7</span>] <span class="st">&quot;r-cran-blockmodeling&quot;</span>     <span class="st">&quot;r-cran-boolnet&quot;</span>          
- [<span class="dv">9</span>] <span class="st">&quot;r-cran-brglm&quot;</span>             <span class="st">&quot;r-cran-caret&quot;</span>            
-[<span class="dv">11</span>] <span class="st">&quot;r-cran-catools&quot;</span>           <span class="st">&quot;r-cran-cmprsk&quot;</span>           
-[<span class="dv">13</span>] <span class="st">&quot;r-cran-coin&quot;</span>              <span class="st">&quot;r-cran-contfrac&quot;</span>         
-[<span class="dv">15</span>] <span class="st">&quot;r-cran-data.table&quot;</span>        <span class="st">&quot;r-cran-deal&quot;</span>             
-[<span class="dv">17</span>] <span class="st">&quot;r-cran-deldir&quot;</span>            <span class="st">&quot;r-cran-desolve&quot;</span>          
-[<span class="dv">19</span>] <span class="st">&quot;r-cran-dosefinding&quot;</span>       <span class="st">&quot;r-cran-eco&quot;</span>              
-[<span class="dv">21</span>] <span class="st">&quot;r-cran-erm&quot;</span>               <span class="st">&quot;r-cran-etm&quot;</span>              
-[<span class="dv">23</span>] <span class="st">&quot;r-cran-evd&quot;</span>               <span class="st">&quot;r-cran-expm&quot;</span>             
-[<span class="dv">25</span>] <span class="st">&quot;r-cran-fields&quot;</span>            <span class="st">&quot;r-cran-gam&quot;</span>              
-[<span class="dv">27</span>] <span class="st">&quot;r-cran-genabel&quot;</span>           <span class="st">&quot;r-cran-glmnet&quot;</span>           
-[<span class="dv">29</span>] <span class="st">&quot;r-cran-goftest&quot;</span>           <span class="st">&quot;r-cran-gsl&quot;</span>              
-[<span class="dv">31</span>] <span class="st">&quot;r-cran-haplo.stats&quot;</span>       <span class="st">&quot;r-cran-hdf5&quot;</span>             
-[<span class="dv">33</span>] <span class="st">&quot;r-cran-hexbin&quot;</span>            <span class="st">&quot;r-cran-igraph&quot;</span>           
-[<span class="dv">35</span>] <span class="st">&quot;r-cran-lhs&quot;</span>               <span class="st">&quot;r-cran-logspline&quot;</span>        
-[<span class="dv">37</span>] <span class="st">&quot;r-cran-mapproj&quot;</span>           <span class="st">&quot;r-cran-maps&quot;</span>             
-[<span class="dv">39</span>] <span class="st">&quot;r-cran-maptools&quot;</span>          <span class="st">&quot;r-cran-mcmc&quot;</span>             
-[<span class="dv">41</span>] <span class="st">&quot;r-cran-mcmcpack&quot;</span>          <span class="st">&quot;r-cran-medadherence&quot;</span>     
-[<span class="dv">43</span>] <span class="st">&quot;r-cran-mixtools&quot;</span>          <span class="st">&quot;r-cran-mlbench&quot;</span>          
-[<span class="dv">45</span>] <span class="st">&quot;r-cran-mnp&quot;</span>               <span class="st">&quot;r-cran-msm&quot;</span>              
-[<span class="dv">47</span>] <span class="st">&quot;r-cran-ncdf4&quot;</span>             <span class="st">&quot;r-cran-nnls&quot;</span>             
-[<span class="dv">49</span>] <span class="st">&quot;r-cran-pbivnorm&quot;</span>          <span class="st">&quot;r-cran-phangorn&quot;</span>         
-[<span class="dv">51</span>] <span class="st">&quot;r-cran-phylobase&quot;</span>         <span class="st">&quot;r-cran-polycub&quot;</span>          
-[<span class="dv">53</span>] <span class="st">&quot;r-cran-princurve&quot;</span>         <span class="st">&quot;r-cran-pscl&quot;</span>             
-[<span class="dv">55</span>] <span class="st">&quot;r-cran-qtl&quot;</span>               <span class="st">&quot;r-cran-randomfields&quot;</span>     
-[<span class="dv">57</span>] <span class="st">&quot;r-cran-randomfieldsutils&quot;</span> <span class="st">&quot;r-cran-randomforest&quot;</span>     
-[<span class="dv">59</span>] <span class="st">&quot;r-cran-raschsampler&quot;</span>      <span class="st">&quot;r-cran-rcurl&quot;</span>            
-[<span class="dv">61</span>] <span class="st">&quot;r-cran-rniftilib&quot;</span>         <span class="st">&quot;r-cran-sp&quot;</span>               
-[<span class="dv">63</span>] <span class="st">&quot;r-cran-spam&quot;</span>              <span class="st">&quot;r-cran-spatstat&quot;</span>         
-[<span class="dv">65</span>] <span class="st">&quot;r-cran-spc&quot;</span>               <span class="st">&quot;r-cran-spdep&quot;</span>            
-[<span class="dv">67</span>] <span class="st">&quot;r-cran-surveillance&quot;</span>      <span class="st">&quot;r-cran-tgp&quot;</span>              
-[<span class="dv">69</span>] <span class="st">&quot;r-cran-tikzdevice&quot;</span>        <span class="st">&quot;r-cran-treescape&quot;</span>        
-[<span class="dv">71</span>] <span class="st">&quot;r-cran-vegan&quot;</span>             <span class="st">&quot;r-cran-vgam&quot;</span>             
-[<span class="dv">73</span>] <span class="st">&quot;r-other-amsmercury&quot;</span>       <span class="st">&quot;r-other-iwrlars&quot;</span>         
-[<span class="dv">75</span>] <span class="st">&quot;r-other-mott-happy.hbrem&quot;</span> <span class="st">&quot;r-bioc-affy&quot;</span>             
-[<span class="dv">77</span>] <span class="st">&quot;r-bioc-affyio&quot;</span>            <span class="st">&quot;r-bioc-biobase&quot;</span>          
-[<span class="dv">79</span>] <span class="st">&quot;r-bioc-biovizbase&quot;</span>        <span class="st">&quot;r-bioc-deseq2&quot;</span>           
-[<span class="dv">81</span>] <span class="st">&quot;r-bioc-dnacopy&quot;</span>           <span class="st">&quot;r-bioc-edger&quot;</span>            
-[<span class="dv">83</span>] <span class="st">&quot;r-bioc-genefilter&quot;</span>        <span class="st">&quot;r-bioc-graph&quot;</span>            
-[<span class="dv">85</span>] <span class="st">&quot;r-bioc-hilbertvis&quot;</span>        <span class="st">&quot;r-bioc-limma&quot;</span>            
-[<span class="dv">87</span>] <span class="st">&quot;r-bioc-makecdfenv&quot;</span>        <span class="st">&quot;r-bioc-multtest&quot;</span>         
-[<span class="dv">89</span>] <span class="st">&quot;r-bioc-preprocesscore&quot;</span>    <span class="st">&quot;r-bioc-rbgl&quot;</span>             
-[<span class="dv">91</span>] <span class="st">&quot;r-bioc-rtracklayer&quot;</span>       <span class="st">&quot;r-bioc-snpstats&quot;</span>  
+<p>Similarly, the 17 BioC and 3 other packages can be tested via recursive greps (not shown) in a directory filled with <code>apt-get source</code> downloads:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pkgs &lt;-<span class="st"> </span><span class="kw">rbind</span>(all[bioc!=<span class="ot">TRUE</span> &amp;<span class="st"> </span>cran!=<span class="ot">TRUE</span> &amp;<span class="st"> </span>oldVersion==<span class="ot">TRUE</span>, <span class="dv">1</span>],
+              all[bioc==<span class="ot">TRUE</span> &amp;<span class="st"> </span>oldVersion==<span class="ot">TRUE</span>, <span class="dv">1</span>])[[<span class="dv">1</span>]]
+
+<span class="kw">dir.create</span>(<span class="st">&quot;/tmp/scratch&quot;</span>)
+<span class="kw">setwd</span>(<span class="st">&quot;/tmp/scratch&quot;</span>)
+
+<span class="kw">cat</span>(<span class="st">&quot;deb-src http://deb.debian.org/debian unstable main</span><span class="ch">\n</span><span class="st">&quot;</span>,
+    <span class="dt">file=</span><span class="st">&quot;/etc/apt/sources.list&quot;</span>, <span class="dt">append=</span><span class="ot">TRUE</span>)
+<span class="kw">system</span>(<span class="st">&quot;apt-get update&quot;</span>)
+
+for (p in pkgs) <span class="kw">system</span>(<span class="kw">paste</span>(<span class="st">&quot;apt-get source&quot;</span>, p))
+
+df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">package=</span>pkgs, <span class="dt">stringsAsFactors=</span><span class="ot">FALSE</span>)
+for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(df)) {
+    p &lt;-<span class="st"> </span>df[i, <span class="dv">1</span>]
+    df[i, <span class="st">&quot;dotCorFortran&quot;</span>] &lt;-<span class="st"> </span><span class="kw">system</span>(<span class="kw">paste0</span>(<span class="st">&quot;egrep -r -q </span><span class="ch">\&quot;\\</span><span class="st">.(C|Fortran)</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\&quot;</span><span class="st"> &quot;</span>, p, <span class="st">&quot;*/R/*&quot;</span>))==<span class="dv">0</span>
+    df[i, <span class="st">&quot;hasRegistration&quot;</span>] &lt;-<span class="st"> </span><span class="kw">system</span>(<span class="kw">paste0</span>(<span class="st">&quot;egrep -r -q </span><span class="ch">\&quot;</span><span class="st">R_registerRoutines</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\&quot;</span><span class="st"> &quot;</span>, p, <span class="st">&quot;*/src/*&quot;</span>))==<span class="dv">0</span>
+}
+
+<span class="kw">setDT</span>(df)</code></pre></div>
+<p>This leads to a further four packages:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>df[dotCorFortran &amp;<span class="st"> </span>hasRegistration, <span class="dv">1</span>]     
+                     pkg
+<span class="dv">1</span>:<span class="st">           </span>r-bioc-affy
+<span class="dv">2</span>:<span class="st">          </span>r-bioc-edger
+<span class="dv">3</span>:<span class="st">     </span>r-bioc-genefilter
+<span class="dv">4</span>:<span class="st"> </span>r-bioc-preprocesscore
 &gt;<span class="st"> </span></code></pre></div>
+<p>These 42, along with the 4 (from the initally 17 BioC and 3 ‘other’) packages are our target set.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>nmu &lt;-<span class="st"> </span>deb[ <span class="kw">is.na</span>(dotCorFortran) |<span class="st"> </span>(dotCorFortran &amp;<span class="st"> </span>hasRegistration), <span class="dv">1</span>] <span class="co">#42</span>
+&gt;<span class="st"> </span>oth &lt;-<span class="st"> </span>df[dotCorFortran &amp;<span class="st"> </span>hasRegistration, <span class="dv">1</span>]
+&gt;
+<span class="er">&gt;</span><span class="st"> </span>nmu &lt;-<span class="st"> </span><span class="kw">rbind</span>(nmu, oth)  ## 46
+&gt;<span class="st"> </span>nmu
+                     package
+ <span class="dv">1</span>:<span class="st">              </span>r-cran-ade4
+ <span class="dv">2</span>:<span class="st">            </span>r-cran-bayesm
+ <span class="dv">3</span>:<span class="st">     </span>r-cran-blockmodeling
+ <span class="dv">4</span>:<span class="st">             </span>r-cran-brglm
+ <span class="dv">5</span>:<span class="st">             </span>r-cran-caret
+ <span class="dv">6</span>:<span class="st">              </span>r-cran-coin
+ <span class="dv">7</span>:<span class="st">          </span>r-cran-contfrac
+ <span class="dv">8</span>:<span class="st">        </span>r-cran-data.table
+ <span class="dv">9</span>:<span class="st">            </span>r-cran-deldir
+<span class="dv">10</span>:<span class="st">           </span>r-cran-desolve
+<span class="dv">11</span>:<span class="st">               </span>r-cran-eco
+<span class="dv">12</span>:<span class="st">              </span>r-cran-expm
+<span class="dv">13</span>:<span class="st">            </span>r-cran-fields
+<span class="dv">14</span>:<span class="st">               </span>r-cran-gam
+<span class="dv">15</span>:<span class="st">            </span>r-cran-glmnet
+<span class="dv">16</span>:<span class="st">           </span>r-cran-goftest
+<span class="dv">17</span>:<span class="st">              </span>r-cran-hdf5
+<span class="dv">18</span>:<span class="st">            </span>r-cran-igraph
+<span class="dv">19</span>:<span class="st">           </span>r-cran-mapproj
+<span class="dv">20</span>:<span class="st">              </span>r-cran-maps
+<span class="dv">21</span>:<span class="st">          </span>r-cran-maptools
+<span class="dv">22</span>:<span class="st">              </span>r-cran-mcmc
+<span class="dv">23</span>:<span class="st">          </span>r-cran-mcmcpack
+<span class="dv">24</span>:<span class="st">      </span>r-cran-medadherence
+<span class="dv">25</span>:<span class="st">          </span>r-cran-mixtools
+<span class="dv">26</span>:<span class="st">               </span>r-cran-mnp
+<span class="dv">27</span>:<span class="st">             </span>r-cran-ncdf4
+<span class="dv">28</span>:<span class="st">          </span>r-cran-phangorn
+<span class="dv">29</span>:<span class="st">         </span>r-cran-phylobase
+<span class="dv">30</span>:<span class="st">               </span>r-cran-qtl
+<span class="dv">31</span>:<span class="st">      </span>r-cran-randomfields
+<span class="dv">32</span>:<span class="st"> </span>r-cran-randomfieldsutils
+<span class="dv">33</span>:<span class="st">             </span>r-cran-rcurl
+<span class="dv">34</span>:<span class="st">         </span>r-cran-rniftilib
+<span class="dv">35</span>:<span class="st">                </span>r-cran-sp
+<span class="dv">36</span>:<span class="st">              </span>r-cran-spam
+<span class="dv">37</span>:<span class="st">          </span>r-cran-spatstat
+<span class="dv">38</span>:<span class="st">             </span>r-cran-spdep
+<span class="dv">39</span>:<span class="st">      </span>r-cran-surveillance
+<span class="dv">40</span>:<span class="st">         </span>r-cran-treescape
+<span class="dv">41</span>:<span class="st">             </span>r-cran-vegan
+<span class="dv">42</span>:<span class="st">              </span>r-cran-vgam
+<span class="dv">43</span>:<span class="st">              </span>r-bioc-affy
+<span class="dv">44</span>:<span class="st">             </span>r-bioc-edger
+<span class="dv">45</span>:<span class="st">        </span>r-bioc-genefilter
+<span class="dv">46</span>:<span class="st">    </span>r-bioc-preprocesscore
+                     package
+&gt;
+<span class="er">&gt;</span><span class="st"> </span></code></pre></div>
 <p>We need to retrieve the version number in Debian unstable of these packages by once agaim relying of a function from <a href="https://github.com/eddelbuettel/rcppapt"><code>RcppAPT</code></a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>regexp &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="kw">paste0</span>(<span class="st">&quot;^&quot;</span>, nmu[[<span class="dv">1</span>]], <span class="st">&quot;$&quot;</span>), <span class="dt">collapse=</span><span class="st">&quot;|&quot;</span>)
-&gt;<span class="st"> </span>res &lt;-<span class="st"> </span><span class="kw">getPackages</span>(regexp)
-&gt;<span class="st"> </span>res
+&gt;
+<span class="er">&gt;</span><span class="st"> </span>res &lt;-<span class="st"> </span><span class="kw">getPackages</span>(regexp)
 &gt;<span class="st"> </span>res
                     Package         Version
-<span class="dv">1</span>         r-bioc-makecdfenv        <span class="fl">1.50.0</span><span class="dv">-1</span>
-<span class="dv">2</span>           r-bioc-multtest        <span class="fl">2.30.0</span><span class="dv">-1</span>
-<span class="dv">3</span>              r-bioc-edger   <span class="fl">3.14.0</span>+dfsg<span class="dv">-1</span>
-<span class="dv">4</span>            r-cran-boolnet         <span class="fl">2.1.3</span><span class="dv">-1</span>
-<span class="dv">5</span>         r-cran-tikzdevice        <span class="fl">0.10</span><span class="dv">-1-1</span>
-<span class="dv">6</span>          r-cran-logspline         <span class="fl">2.1.9</span><span class="dv">-1</span>
-<span class="dv">7</span>            r-cran-genabel      <span class="fl">1.8</span><span class="dv">-0-1</span>+b1
-<span class="dv">8</span>                r-cran-lhs          <span class="fl">0.14</span><span class="dv">-1</span>
-<span class="dv">9</span>              r-bioc-limma   <span class="fl">3.30.8</span>+dfsg<span class="dv">-1</span>
-<span class="dv">10</span>              r-cran-coin         <span class="fl">1.1</span><span class="dv">-3-1</span>
-<span class="dv">11</span>          r-other-iwrlars         <span class="fl">0.9</span><span class="dv">-5-2</span>
-<span class="dv">12</span>               r-cran-mnp         <span class="fl">2.6</span><span class="dv">-4-1</span>
-<span class="dv">13</span>               r-cran-msm         <span class="fl">1.6.4</span><span class="dv">-1</span>
-<span class="dv">14</span>            r-cran-fields          <span class="fl">8.10</span><span class="dv">-1</span>
-<span class="dv">15</span>           r-cran-desolve          <span class="fl">1.14</span><span class="dv">-1</span>
-<span class="dv">16</span>          r-cran-adephylo        <span class="fl">1.1</span><span class="dv">-10-2</span>
-<span class="dv">17</span>       r-cran-dosefinding        <span class="fl">0.9</span><span class="dv">-15-1</span>
-<span class="dv">18</span>            r-cran-deldir        <span class="fl">0.1</span><span class="dv">-12-1</span>
-<span class="dv">19</span>         r-cran-rniftilib    <span class="fl">0.0-35.</span>r79<span class="dv">-2</span>
-<span class="dv">20</span>        r-cran-data.table        <span class="fl">1.10.0</span><span class="dv">-1</span>
-<span class="dv">21</span>               r-cran-qtl        <span class="fl">1.40</span><span class="dv">-8-1</span>
-<span class="dv">22</span>    r-bioc-preprocesscore        <span class="fl">1.36.0</span><span class="dv">-1</span>
-<span class="dv">23</span>          r-cran-contfrac        <span class="fl">1.1</span><span class="dv">-10-1</span>
-<span class="dv">24</span>            r-cran-glmnet         <span class="fl">2.0</span><span class="dv">-5-1</span>
-<span class="dv">25</span>            r-cran-bitops         <span class="fl">1.0</span><span class="dv">-6-1</span>
-<span class="dv">26</span>                r-cran-sp       <span class="dv">1</span>:<span class="fl">1.2</span><span class="dv">-4-1</span>
-<span class="dv">27</span>               r-cran-spc       <span class="dv">1</span>:<span class="fl">0.5.3</span><span class="dv">-1</span>
-<span class="dv">28</span>          r-bioc-snpstats   <span class="fl">1.24.0</span>+dfsg<span class="dv">-1</span>
-<span class="dv">29</span>               r-cran-tgp        <span class="fl">2.4</span><span class="dv">-14-2</span>
-<span class="dv">30</span>             r-cran-brglm         <span class="fl">0.5</span><span class="dv">-9-1</span>
-<span class="dv">31</span>            r-cran-cmprsk         <span class="fl">2.2</span><span class="dv">-7-2</span>
-<span class="dv">32</span>              r-bioc-affy        <span class="fl">1.52.0</span><span class="dv">-1</span>
-<span class="dv">33</span>             r-cran-ncdf4       <span class="fl">1.15</span><span class="dv">-1</span>+b2
-<span class="dv">34</span>         r-cran-treescape       <span class="fl">1.10.18</span><span class="dv">-6</span>
-<span class="dv">35</span>              r-bioc-rbgl  <span class="fl">1.50.0</span>+dfsg1<span class="dv">-1</span>
-<span class="dv">36</span>       r-bioc-rtracklayer        <span class="fl">1.34.1</span><span class="dv">-1</span>
-<span class="dv">37</span>            r-cran-hexbin        <span class="fl">1.27.1</span><span class="dv">-1</span>
-<span class="dv">38</span>         r-cran-princurve        <span class="fl">1.1</span><span class="dv">-12-1</span>
-<span class="dv">39</span>           r-cran-mapproj         <span class="fl">1.2</span><span class="dv">-4-1</span>
-<span class="dv">40</span>     r-cran-blockmodeling         <span class="fl">0.1.8</span><span class="dv">-1</span>
-<span class="dv">41</span>              r-cran-hdf5     <span class="fl">1.6.10</span><span class="dv">-4</span>+b1
-<span class="dv">42</span>              r-cran-pscl         <span class="fl">1.4.9</span><span class="dv">-1</span>
-<span class="dv">43</span>              r-cran-ade4         <span class="fl">1.7</span><span class="dv">-5-1</span>
-<span class="dv">44</span>              r-cran-vgam         <span class="fl">1.0</span><span class="dv">-3-1</span>
-<span class="dv">45</span>          r-cran-adegenet         <span class="fl">2.0.1</span><span class="dv">-1</span>
-<span class="dv">46</span>          r-cran-mixtools         <span class="fl">1.0.4</span><span class="dv">-1</span>
-<span class="dv">47</span>         r-cran-phylobase         <span class="fl">0.8.2</span><span class="dv">-1</span>
-<span class="dv">48</span>            r-cran-amelia         <span class="fl">1.7.4</span><span class="dv">-1</span>
-<span class="dv">49</span>              r-cran-spam         <span class="fl">1.4</span><span class="dv">-0-1</span>
-<span class="dv">50</span>      r-cran-medadherence          <span class="fl">1.03</span><span class="dv">-2</span>
-<span class="dv">51</span>           r-bioc-biobase        <span class="fl">2.34.0</span><span class="dv">-1</span>
-<span class="dv">52</span>      r-cran-surveillance        <span class="fl">1.13.0</span><span class="dv">-1</span>
-<span class="dv">53</span> r-cran-randomfieldsutils        <span class="fl">0.3.15</span><span class="dv">-1</span>
-<span class="dv">54</span>              r-cran-deal      <span class="dv">1</span>:<span class="fl">1.2</span><span class="dv">-37-2</span>
-<span class="dv">55</span>        r-bioc-hilbertvis        <span class="fl">1.32.0</span><span class="dv">-1</span>
-<span class="dv">56</span>             r-cran-rcurl      <span class="fl">1.95-4.8</span><span class="dv">-2</span>
-<span class="dv">57</span> r-other-mott-happy.hbrem           <span class="fl">2.4</span><span class="dv">-1</span>
-<span class="dv">58</span>          r-cran-mcmcpack         <span class="fl">1.3</span><span class="dv">-8-1</span>
-<span class="dv">59</span>          r-cran-spatstat        <span class="fl">1.48</span><span class="dv">-0-1</span>
-<span class="dv">60</span>             r-cran-vegan         <span class="fl">2.4</span><span class="dv">-2-1</span>
-<span class="dv">61</span>       r-cran-haplo.stats         <span class="fl">1.7.7</span><span class="dv">-1</span>
-<span class="dv">62</span>            r-cran-bayesm         <span class="fl">3.0</span><span class="dv">-2-2</span>
-<span class="dv">63</span>              r-cran-expm       <span class="fl">0.999</span><span class="dv">-0-1</span>
-<span class="dv">64</span>           r-bioc-dnacopy        <span class="fl">1.48.0</span><span class="dv">-1</span>
-<span class="dv">65</span>          r-cran-phangorn         <span class="fl">2.1.1</span><span class="dv">-1</span>
-<span class="dv">66</span>          r-cran-maptools <span class="dv">1</span>:<span class="fl">0.8</span><span class="dv">-41</span>+dfsg<span class="dv">-1</span>
-<span class="dv">67</span>           r-cran-mlbench         <span class="fl">2.1</span><span class="dv">-1-1</span>
-<span class="dv">68</span>            r-bioc-affyio        <span class="fl">1.44.0</span><span class="dv">-1</span>
-<span class="dv">69</span>             r-bioc-graph        <span class="fl">1.52.0</span><span class="dv">-1</span>
-<span class="dv">70</span>           r-cran-polycub         <span class="fl">0.5</span><span class="dv">-2-1</span>
-<span class="dv">71</span>            r-bioc-deseq2        <span class="fl">1.14.1</span><span class="dv">-1</span>
-<span class="dv">72</span>          r-cran-pbivnorm         <span class="fl">0.6.0</span><span class="dv">-1</span>
-<span class="dv">73</span>             r-cran-caret  <span class="fl">6.0</span><span class="dv">-73</span>+dfsg1<span class="dv">-1</span>
-<span class="dv">74</span>        r-bioc-biovizbase        <span class="fl">1.22.0</span><span class="dv">-2</span>
-<span class="dv">75</span>              r-cran-nnls           <span class="fl">1.4</span><span class="dv">-1</span>
-<span class="dv">76</span>           r-cran-goftest         <span class="fl">1.0</span><span class="dv">-3-1</span>
-<span class="dv">77</span>            r-cran-igraph         <span class="fl">1.0.1</span><span class="dv">-1</span>
-<span class="dv">78</span>              r-cran-maps         <span class="fl">3.1.1</span><span class="dv">-1</span>
-<span class="dv">79</span>               r-cran-eco         <span class="fl">3.1</span><span class="dv">-7-1</span>
-<span class="dv">80</span>           r-cran-catools     <span class="fl">1.17.1</span><span class="dv">-1</span>+b1
-<span class="dv">81</span>      r-cran-randomfields        <span class="fl">3.1.36</span><span class="dv">-1</span>
-<span class="dv">82</span>               r-cran-erm        <span class="fl">0.15</span><span class="dv">-7-1</span>
-<span class="dv">83</span>               r-cran-etm         <span class="fl">0.6</span><span class="dv">-2-3</span>
-<span class="dv">84</span>      r-cran-randomforest        <span class="fl">4.6</span><span class="dv">-12-1</span>
-<span class="dv">85</span>               r-cran-evd         <span class="fl">2.3</span><span class="dv">-2-1</span>
-<span class="dv">86</span>      r-cran-raschsampler         <span class="fl">0.8</span><span class="dv">-8-1</span>
-<span class="dv">87</span>        r-bioc-genefilter        <span class="fl">1.56.0</span><span class="dv">-1</span>
-<span class="dv">88</span>              r-cran-mcmc         <span class="fl">0.9</span><span class="dv">-4-2</span>
-<span class="dv">89</span>             r-cran-spdep         <span class="fl">0.6</span><span class="dv">-9-1</span>
-<span class="dv">90</span>               r-cran-gam          <span class="fl">1.14</span><span class="dv">-1</span>
-<span class="dv">91</span>       r-other-amsmercury         <span class="fl">1.3.0</span><span class="dv">-2</span>
-<span class="dv">92</span>               r-cran-gsl      <span class="fl">1.9-10.3</span><span class="dv">-1</span>
-&gt;<span class="st"> </span></code></pre></div>
+<span class="dv">1</span>              r-bioc-edger   <span class="fl">3.14.0</span>+dfsg<span class="dv">-1</span>
+<span class="dv">2</span>               r-cran-coin         <span class="fl">1.1</span><span class="dv">-3-1</span>
+<span class="dv">3</span>                r-cran-mnp         <span class="fl">2.6</span><span class="dv">-4-1</span>
+<span class="dv">4</span>             r-cran-fields          <span class="fl">8.10</span><span class="dv">-1</span>
+<span class="dv">5</span>            r-cran-desolve          <span class="fl">1.14</span><span class="dv">-1</span>
+<span class="dv">6</span>             r-cran-deldir        <span class="fl">0.1</span><span class="dv">-12-1</span>
+<span class="dv">7</span>          r-cran-rniftilib    <span class="fl">0.0-35.</span>r79<span class="dv">-2</span>
+<span class="dv">8</span>         r-cran-data.table        <span class="fl">1.10.0</span><span class="dv">-1</span>
+<span class="dv">9</span>                r-cran-qtl        <span class="fl">1.40</span><span class="dv">-8-1</span>
+<span class="dv">10</span>    r-bioc-preprocesscore        <span class="fl">1.36.0</span><span class="dv">-1</span>
+<span class="dv">11</span>          r-cran-contfrac        <span class="fl">1.1</span><span class="dv">-10-1</span>
+<span class="dv">12</span>            r-cran-glmnet         <span class="fl">2.0</span><span class="dv">-5-1</span>
+<span class="dv">13</span>                r-cran-sp       <span class="dv">1</span>:<span class="fl">1.2</span><span class="dv">-4-1</span>
+<span class="dv">14</span>             r-cran-brglm         <span class="fl">0.5</span><span class="dv">-9-1</span>
+<span class="dv">15</span>              r-bioc-affy        <span class="fl">1.52.0</span><span class="dv">-1</span>
+<span class="dv">16</span>             r-cran-ncdf4       <span class="fl">1.15</span><span class="dv">-1</span>+b2
+<span class="dv">17</span>         r-cran-treescape       <span class="fl">1.10.18</span><span class="dv">-6</span>
+<span class="dv">18</span>           r-cran-mapproj         <span class="fl">1.2</span><span class="dv">-4-1</span>
+<span class="dv">19</span>     r-cran-blockmodeling         <span class="fl">0.1.8</span><span class="dv">-1</span>
+<span class="dv">20</span>              r-cran-hdf5     <span class="fl">1.6.10</span><span class="dv">-4</span>+b1
+<span class="dv">21</span>              r-cran-ade4         <span class="fl">1.7</span><span class="dv">-5-1</span>
+<span class="dv">22</span>              r-cran-vgam         <span class="fl">1.0</span><span class="dv">-3-1</span>
+<span class="dv">23</span>          r-cran-mixtools         <span class="fl">1.0.4</span><span class="dv">-1</span>
+<span class="dv">24</span>         r-cran-phylobase         <span class="fl">0.8.2</span><span class="dv">-1</span>
+<span class="dv">25</span>              r-cran-spam         <span class="fl">1.4</span><span class="dv">-0-1</span>
+<span class="dv">26</span>      r-cran-medadherence          <span class="fl">1.03</span><span class="dv">-2</span>
+<span class="dv">27</span>      r-cran-surveillance        <span class="fl">1.13.0</span><span class="dv">-1</span>
+<span class="dv">28</span> r-cran-randomfieldsutils        <span class="fl">0.3.15</span><span class="dv">-1</span>
+<span class="dv">29</span>             r-cran-rcurl      <span class="fl">1.95-4.8</span><span class="dv">-2</span>
+<span class="dv">30</span>          r-cran-mcmcpack         <span class="fl">1.3</span><span class="dv">-8-1</span>
+<span class="dv">31</span>          r-cran-spatstat        <span class="fl">1.48</span><span class="dv">-0-1</span>
+<span class="dv">32</span>             r-cran-vegan         <span class="fl">2.4</span><span class="dv">-2-1</span>
+<span class="dv">33</span>            r-cran-bayesm         <span class="fl">3.0</span><span class="dv">-2-2</span>
+<span class="dv">34</span>              r-cran-expm       <span class="fl">0.999</span><span class="dv">-0-1</span>
+<span class="dv">35</span>          r-cran-phangorn         <span class="fl">2.1.1</span><span class="dv">-1</span>
+<span class="dv">36</span>          r-cran-maptools <span class="dv">1</span>:<span class="fl">0.8</span><span class="dv">-41</span>+dfsg<span class="dv">-1</span>
+<span class="dv">37</span>             r-cran-caret  <span class="fl">6.0</span><span class="dv">-73</span>+dfsg1<span class="dv">-1</span>
+<span class="dv">38</span>           r-cran-goftest         <span class="fl">1.0</span><span class="dv">-3-1</span>
+<span class="dv">39</span>            r-cran-igraph         <span class="fl">1.0.1</span><span class="dv">-1</span>
+<span class="dv">40</span>              r-cran-maps         <span class="fl">3.1.1</span><span class="dv">-1</span>
+<span class="dv">41</span>               r-cran-eco         <span class="fl">3.1</span><span class="dv">-7-1</span>
+<span class="dv">42</span>      r-cran-randomfields        <span class="fl">3.1.36</span><span class="dv">-1</span>
+<span class="dv">43</span>        r-bioc-genefilter        <span class="fl">1.56.0</span><span class="dv">-1</span>
+<span class="dv">44</span>              r-cran-mcmc         <span class="fl">0.9</span><span class="dv">-4-2</span>
+<span class="dv">45</span>             r-cran-spdep         <span class="fl">0.6</span><span class="dv">-9-1</span>
+<span class="dv">46</span>               r-cran-gam          <span class="fl">1.14</span><span class="dv">-1</span>
+&gt;</code></pre></div>
 <p>With this, we can write out the content of the NMU request:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(res)) <span class="kw">cat</span>(<span class="st">&quot;nmu&quot;</span>, <span class="kw">paste</span>(res[i,], <span class="dt">collapse=</span><span class="st">&quot;_&quot;</span>), <span class="st">&quot;. ANY . -m 'Rebuild against R 3.4.*, see #861333'</span><span class="ch">\n</span><span class="st">&quot;</span>)
-nmu r-bioc-makecdfenv_1<span class="fl">.50.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-multtest_2<span class="fl">.30.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span>
+<span class="er">&gt;</span><span class="st"> </span>for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(res))
++<span class="st">     </span><span class="kw">cat</span>(<span class="st">&quot;nmu&quot;</span>, <span class="kw">paste</span>(res[i,], <span class="dt">collapse=</span><span class="st">&quot;_&quot;</span>), <span class="st">&quot;. ANY . -m 'Rebuild against R 3.4.*, see #861333'</span><span class="ch">\n</span><span class="st">&quot;</span>)
 nmu r-bioc-edger_3<span class="fl">.14.0</span>+dfsg<span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-boolnet_2<span class="fl">.1.3</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-tikzdevice_0<span class="fl">.10</span><span class="dv">-1-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-logspline_2<span class="fl">.1.9</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-genabel_1<span class="fl">.8</span><span class="dv">-0-1</span>+b1 . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-lhs_0<span class="fl">.14</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-limma_3<span class="fl">.30.8</span>+dfsg<span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-coin_1<span class="fl">.1</span><span class="dv">-3-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-other-iwrlars_0<span class="fl">.9</span><span class="dv">-5-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-mnp_2<span class="fl">.6</span><span class="dv">-4-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-msm_1<span class="fl">.6.4</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-fields_8<span class="fl">.10</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-desolve_1<span class="fl">.14</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-adephylo_1<span class="fl">.1</span><span class="dv">-10-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-dosefinding_0<span class="fl">.9</span><span class="dv">-15-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-deldir_0<span class="fl">.1</span><span class="dv">-12-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-rniftilib_0<span class="fl">.0-35.</span>r79<span class="dv">-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-data.table_1<span class="fl">.10.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
@@ -604,79 +551,57 @@ nmu r-cran-qtl_1<span class="fl">.40</span><span class="dv">-8-1</span> . ANY . 
 nmu r-bioc-preprocesscore_1<span class="fl">.36.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-contfrac_1<span class="fl">.1</span><span class="dv">-10-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-glmnet_2<span class="fl">.0</span><span class="dv">-5-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-bitops_1<span class="fl">.0</span><span class="dv">-6-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-sp_1:<span class="fl">1.2</span><span class="dv">-4-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-spc_1:<span class="fl">0.5.3</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-snpstats_1<span class="fl">.24.0</span>+dfsg<span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-tgp_2<span class="fl">.4</span><span class="dv">-14-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-brglm_0<span class="fl">.5</span><span class="dv">-9-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-cmprsk_2<span class="fl">.2</span><span class="dv">-7-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-bioc-affy_1<span class="fl">.52.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-ncdf4_1<span class="fl">.15</span><span class="dv">-1</span>+b2 . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-treescape_1<span class="fl">.10.18</span><span class="dv">-6</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-rbgl_1<span class="fl">.50.0</span>+dfsg1<span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-rtracklayer_1<span class="fl">.34.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-hexbin_1<span class="fl">.27.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-princurve_1<span class="fl">.1</span><span class="dv">-12-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-mapproj_1<span class="fl">.2</span><span class="dv">-4-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-blockmodeling_0<span class="fl">.1.8</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-hdf5_1<span class="fl">.6.10</span><span class="dv">-4</span>+b1 . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-pscl_1<span class="fl">.4.9</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-ade4_1<span class="fl">.7</span><span class="dv">-5-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-vgam_1<span class="fl">.0</span><span class="dv">-3-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-adegenet_2<span class="fl">.0.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-mixtools_1<span class="fl">.0.4</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-phylobase_0<span class="fl">.8.2</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-amelia_1<span class="fl">.7.4</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-spam_1<span class="fl">.4</span><span class="dv">-0-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-medadherence_1<span class="fl">.03</span><span class="dv">-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-biobase_2<span class="fl">.34.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-surveillance_1<span class="fl">.13.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-randomfieldsutils_0<span class="fl">.3.15</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-deal_1:<span class="fl">1.2</span><span class="dv">-37-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-hilbertvis_1<span class="fl">.32.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-rcurl_1<span class="fl">.95-4.8</span><span class="dv">-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-other-mott-happy.hbrem_2<span class="fl">.4</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-mcmcpack_1<span class="fl">.3</span><span class="dv">-8-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-spatstat_1<span class="fl">.48</span><span class="dv">-0-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-vegan_2<span class="fl">.4</span><span class="dv">-2-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-haplo.stats_1<span class="fl">.7.7</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-bayesm_3<span class="fl">.0</span><span class="dv">-2-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-expm_0<span class="fl">.999</span><span class="dv">-0-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-dnacopy_1<span class="fl">.48.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-phangorn_2<span class="fl">.1.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-maptools_1:<span class="fl">0.8</span><span class="dv">-41</span>+dfsg<span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-mlbench_2<span class="fl">.1</span><span class="dv">-1-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-affyio_1<span class="fl">.44.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-graph_1<span class="fl">.52.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-polycub_0<span class="fl">.5</span><span class="dv">-2-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-deseq2_1<span class="fl">.14.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-pbivnorm_0<span class="fl">.6.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-caret_6<span class="fl">.0</span><span class="dv">-73</span>+dfsg1<span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-bioc-biovizbase_1<span class="fl">.22.0</span><span class="dv">-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-nnls_1<span class="fl">.4</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-goftest_1<span class="fl">.0</span><span class="dv">-3-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-igraph_1<span class="fl">.0.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-maps_3<span class="fl">.1.1</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-eco_3<span class="fl">.1</span><span class="dv">-7-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-catools_1<span class="fl">.17.1</span><span class="dv">-1</span>+b1 . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-randomfields_3<span class="fl">.1.36</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-erm_0<span class="fl">.15</span><span class="dv">-7-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-etm_0<span class="fl">.6</span><span class="dv">-2-3</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-randomforest_4<span class="fl">.6</span><span class="dv">-12-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-evd_2<span class="fl">.3</span><span class="dv">-2-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-raschsampler_0<span class="fl">.8</span><span class="dv">-8-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-bioc-genefilter_1<span class="fl">.56.0</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-mcmc_0<span class="fl">.9</span><span class="dv">-4-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-spdep_0<span class="fl">.6</span><span class="dv">-9-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
 nmu r-cran-gam_1<span class="fl">.14</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-other-amsmercury_1<span class="fl">.3.0</span><span class="dv">-2</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-nmu r-cran-gsl_1<span class="fl">.9-10.3</span><span class="dv">-1</span> . ANY . -m <span class="st">'Rebuild against R 3.4.*, see #861333'</span>
-&gt;<span class="st"> </span></code></pre></div>
+&gt;</code></pre></div>
 </div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>The finalu set of 92 NMUs is the minimal change required, and reasonable relative to the over 500 reverse dependencies of R itself. We are able to narrow the set of packages requiring a rebuild down by a combining data from the R package system, the Debian package system and (some) package sources we were able to access on a CRAN-related server.</p>
+<p>The final set of 46 NMUs is the minimal change required, and reasonable relative to the 516 reverse dependencies of R itself. We are able to narrow the set of packages requiring a rebuild down by a combining data from the R package system, the Debian package system and (some) package sources we were able to access on a CRAN-related server.</p>
+<div id="acknowledgements" class="section level3">
+<h3>Acknowledgements</h3>
+<p>Thanks for Kurt Hornik for pointing out the additional check for <code>R_registerRoutine</code> in the in C code, leading to a further reduction from 90+ packages to 46.</p>
+</div>
+<div id="history" class="section level3">
+<h3>History</h3>
+<p>The first published version (Julyu 2017) did not check for <code>R_registerRoutines</code>. The second version (August 2017) does, leading to 46 suggested NMUs.</p>
+</div>
+<div id="see-also" class="section level3">
+<h3>See Also</h3>
+<p>The <a href="https://github.com/eddelbuettel/rcppapt/blob/master/vignettes/binnmuAfterR340.Rmd">source file</a> is on GitHub as is the <a href="https://github.com/eddelbuettel/rcppapt/commits/master/vignettes/binnmuAfterR340.Rmd">revision history</a>. The <a href="https://bugs.debian.org/868558">corresponding Debian bug report</a> is based on this analysis.</p>
+</div>
 </div>
 </div>
 </div>
