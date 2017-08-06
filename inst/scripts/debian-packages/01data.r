@@ -4,8 +4,8 @@ library(RcppAPT)
 library(data.table)
 
 
-rd <- reverseDepends("r-base-core")     # 514 x 2
-rd <- rd[grepl("^r-", rd[,1]), ]        # 487 x 2
+rd <- reverseDepends("r-base-core")     # 516 x 2
+rd <- rd[grepl("^r-", rd[,1]), ]        # 489 x 2
 
 rd <- rd[order(rd[,2]), ]
 
@@ -30,7 +30,7 @@ dep <- getDepends(regexp)
 setDT(dep)
 #print(dep)
 
-comp <- dep[deppkg=="libc6"]   # around 241
+comp <- dep[deppkg=="libc6"]   # around 242
 comp[, isCompiled:=TRUE]
 #print(comp)
 
@@ -63,13 +63,17 @@ saveRDS(foo[, .(package, Package, Version, NeedsCompilation, oldVersion, skip)],
 
 ## on another machine, then
 if (FALSE) {
-    deb <- readRDS("debpackages.rds")
-    for (i in 1:nrow(deb)) { deb[i, "dotCorFortran"] <- if (is.na(deb[i, "Package"])) NA else system(paste0("egrep -r -q \"\\.(C|Fortran)\\(\" ", deb[i, "Package"], "/R/*"))==0 }
-    saveRDS(deb, "debpackagesout.rds")
+    deb <- readRDS("~/debpackages.rds")
+    for (i in 1:nrow(deb)) {
+        deb[i, "dotCorFortran"] <- if (is.na(deb[i, "Package"])) NA else system(paste0("egrep -r -q \"\\.(C|Fortran)\\(\" ", deb[i, "Package"], "/R/*"))==0
+        deb[i, "hasRegistration"] <- if (is.na(deb[i, "Package"])) NA else system(paste0("egrep -r -q \"R_registerRoutines\\(\" ", deb[i, "Package"], "/src/*"))==0
+    }
+    saveRDS(deb, "~/debpackagesout.rds")
 }
 
 if (FALSE) {
     deb <- readRDS("debpackagesout.rds")
     setDT(deb)
-    print(deb[ is.na(deb[, dotCorFortran]) | deb[, dotCorFortran]==TRUE, 1:3])   ## 69
+    #print(deb[ is.na(deb[, dotCorFortran]) | deb[, dotCorFortran]==TRUE | deb , 1:3])   ## 69
+    print(deb[ is.na(dotCorFortran) | (dotCorFortran==TRUE & hasRegistration), 1:3])    ## 42
 }

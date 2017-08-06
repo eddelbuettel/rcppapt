@@ -1,71 +1,44 @@
                      package           Package  Version
  1:              r-cran-ade4              ade4    1.7-6
- 2:          r-cran-adegenet          adegenet    2.0.1
- 3:          r-cran-adephylo          adephylo   1.1-10
- 4:            r-cran-amelia            Amelia    1.7.4
- 5:               r-cran-ape               ape      4.1
- 6:            r-cran-bayesm            bayesm    3.0-2
- 7:            r-cran-bitops            bitops    1.0-6
- 8:     r-cran-blockmodeling     blockmodeling    0.1.8
- 9:           r-cran-boolnet           BoolNet    2.1.3
-10:             r-cran-brglm             brglm    0.5-9
-11:             r-cran-caret             caret   6.0-76
-12:           r-cran-catools           caTools   1.17.1
-13:            r-cran-cmprsk            cmprsk    2.2-7
-14:              r-cran-coin              coin    1.2-0
-15:          r-cran-contfrac          contfrac   1.1-10
-16:        r-cran-data.table        data.table   1.10.4
-17:              r-cran-deal              deal   1.2-37
-18:            r-cran-deldir            deldir   0.1-14
-19:           r-cran-desolve           deSolve     1.14
-20:       r-cran-dosefinding       DoseFinding   0.9-15
-21:               r-cran-eco               eco    3.1-7
-22:               r-cran-erm               eRm   0.15-7
-23:               r-cran-etm               etm    0.6-2
-24:               r-cran-evd               evd    2.3-2
-25:              r-cran-expm              expm  0.999-2
-26:            r-cran-fields            fields      9.0
-27:               r-cran-gam               gam   1.14-4
-28:           r-cran-genabel           GenABEL    1.8-0
-29:            r-cran-glmnet            glmnet   2.0-10
-30:           r-cran-goftest           goftest    1.1-1
-31:               r-cran-gsl               gsl 1.9-10.3
-32:       r-cran-haplo.stats       haplo.stats    1.7.7
-33:            r-cran-hexbin            hexbin   1.27.1
-34:            r-cran-igraph            igraph    1.0.1
-35:               r-cran-lhs               lhs     0.14
-36:         r-cran-logspline         logspline    2.1.9
-37:           r-cran-mapproj           mapproj    1.2-5
-38:              r-cran-maps              maps    3.2.0
-39:          r-cran-maptools          maptools    0.9-2
-40:              r-cran-mcmc              mcmc    0.9-5
-41:          r-cran-mcmcpack          MCMCpack    1.4-0
-42:          r-cran-mixtools          mixtools    1.1.0
-43:           r-cran-mlbench           mlbench    2.1-1
-44:               r-cran-mnp               MNP    3.0-1
-45:               r-cran-msm               msm    1.6.4
-46:             r-cran-ncdf4             ncdf4     1.16
-47:              r-cran-nnls              nnls      1.4
-48:          r-cran-pbivnorm          pbivnorm    0.6.0
-49:          r-cran-phangorn          phangorn    2.2.0
-50:         r-cran-phylobase         phylobase    0.8.4
-51:           r-cran-polycub           polyCub    0.6.0
-52:         r-cran-princurve         princurve   1.1-12
-53:              r-cran-pscl              pscl    1.4.9
-54:               r-cran-qtl               qtl   1.41-6
-55:      r-cran-randomfields      RandomFields   3.1.50
-56: r-cran-randomfieldsutils RandomFieldsUtils   0.3.25
-57:      r-cran-randomforest      randomForest   4.6-12
-58:      r-cran-raschsampler      RaschSampler    0.8-8
-59:             r-cran-rcurl             RCurl 1.95-4.8
-60:                r-cran-sp                sp    1.2-4
-61:              r-cran-spam              spam    1.4-0
-62:          r-cran-spatstat          spatstat   1.51-0
-63:               r-cran-spc               spc    0.5.3
-64:             r-cran-spdep             spdep   0.6-13
-65:      r-cran-surveillance      surveillance   1.13.1
-66:               r-cran-tgp               tgp   2.4-14
-67:        r-cran-tikzdevice        tikzDevice   0.10-1
-68:             r-cran-vegan             vegan    2.4-3
-69:              r-cran-vgam              VGAM    1.0-3
+ 2:            r-cran-bayesm            bayesm  3.1-0.1
+ 3:     r-cran-blockmodeling     blockmodeling    0.1.9
+ 4:             r-cran-brglm             brglm    0.6.1
+ 5:             r-cran-caret             caret   6.0-76
+ 6:              r-cran-coin              coin    1.2-1
+ 7:          r-cran-contfrac          contfrac   1.1-11
+ 8:        r-cran-data.table        data.table   1.10.4
+ 9:            r-cran-deldir            deldir   0.1-14
+10:           r-cran-desolve           deSolve     1.20
+11:               r-cran-eco               eco    4.0-1
+12:              r-cran-expm              expm  0.999-2
+13:            r-cran-fields            fields      9.0
+14:               r-cran-gam               gam   1.14-4
+15:            r-cran-glmnet            glmnet   2.0-10
+16:           r-cran-goftest           goftest    1.1-1
+17:              r-cran-hdf5                NA       NA
+18:            r-cran-igraph            igraph    1.1.2
+19:           r-cran-mapproj           mapproj    1.2-5
+20:              r-cran-maps              maps    3.2.0
+21:          r-cran-maptools          maptools    0.9-2
+22:              r-cran-mcmc              mcmc    0.9-5
+23:          r-cran-mcmcpack          MCMCpack    1.4-0
+24:      r-cran-medadherence                NA       NA
+25:          r-cran-mixtools          mixtools    1.1.0
+26:               r-cran-mnp               MNP    3.0-2
+27:             r-cran-ncdf4             ncdf4     1.16
+28:          r-cran-phangorn          phangorn    2.2.0
+29:         r-cran-phylobase         phylobase    0.8.4
+30:               r-cran-qtl               qtl   1.41-6
+31:      r-cran-randomfields      RandomFields   3.1.50
+32: r-cran-randomfieldsutils RandomFieldsUtils   0.3.25
+33:             r-cran-rcurl             RCurl 1.95-4.8
+34:         r-cran-rniftilib                NA       NA
+35:                r-cran-sp                sp    1.2-5
+36:              r-cran-spam              spam    2.1-1
+37:          r-cran-spatstat          spatstat   1.51-0
+38:             r-cran-spdep             spdep   0.6-13
+39:      r-cran-surveillance      surveillance   1.14.0
+40:         r-cran-treescape                NA       NA
+41:             r-cran-vegan             vegan    2.4-3
+42:              r-cran-vgam              VGAM    1.0-4
                      package           Package  Version

@@ -1,3 +1,8 @@
+2017-08-06  Dirk Eddelbuettel  <edd@debian.org>
+
+	* vignettes/binnmuAfterR340.Rmd: Updated and expanded analysis
+	* inst/scripts/debian-packages/*: Ditto
+
 2017-07-20  Dirk Eddelbuettel  <edd@debian.org>
 
 	* NAMESPACE: Use .registration=TRUE
