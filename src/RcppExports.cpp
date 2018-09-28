@@ -82,6 +82,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// suitable
+bool suitable();
+RcppExport SEXP _RcppAPT_suitable() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(suitable());
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RcppAPT_buildDepends", (DL_FUNC) &_RcppAPT_buildDepends, 1},
@@ -91,6 +101,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RcppAPT_hasPackages", (DL_FUNC) &_RcppAPT_hasPackages, 1},
     {"_RcppAPT_reverseDepends", (DL_FUNC) &_RcppAPT_reverseDepends, 1},
     {"_RcppAPT_getDepends", (DL_FUNC) &_RcppAPT_getDepends, 1},
+    {"_RcppAPT_suitable", (DL_FUNC) &_RcppAPT_suitable, 0},
     {NULL, NULL, 0}
 };
 

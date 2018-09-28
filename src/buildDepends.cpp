@@ -19,11 +19,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with RcppAPT.  If not, see <http://www.gnu.org/licenses/>.
 
+#if defined(RcppAPT_Good_System)
 #include <apt-pkg/init.h>
 #include <apt-pkg/cachefile.h>
 #include <apt-pkg/cachefilter.h>
 #include <apt-pkg/pkgcache.h>
 #include <apt-pkg/debsrcrecords.h>
+#endif
 
 #include <Rcpp.h>
 
@@ -47,6 +49,8 @@
 // [[Rcpp::export]]
 std::vector<std::string> buildDepends(const std::string regexp = ".") {
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -83,6 +87,14 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
         }
     }
     return res;
+
+#else
+    
+    std::vector<std::string> vs{""};
+    return vs;
+    
+#endif
+    
 }
 
 
@@ -111,6 +123,8 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
 // [[Rcpp::export]]
 bool showSrc(const std::string regexp = ".") {
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -155,10 +169,18 @@ bool showSrc(const std::string regexp = ".") {
             //}
         }
     }
-    if (found == 0)
+    if (found == 0) {
         //_error->Notice(_("No packages found"));
         return false;		// #nocov
+    }
     return true;
+
+#else
+
+    return false;
+
+#endif
+    
 }
 
 // The DeNull function is in the current source version of libapt-pkg-dev but
@@ -189,6 +211,8 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 // [[Rcpp::export]]
 bool dumpPackages(const std::string regexp = ".") {
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -252,4 +276,11 @@ bool dumpPackages(const std::string regexp = ".") {
         }
     }
     return true;
+
+#else
+
+    return false;
+
+#endif    
+    
 }

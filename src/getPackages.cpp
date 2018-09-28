@@ -25,10 +25,12 @@
 //
 //  Dirk Eddelbuettel, Feb 2015
 
+#if defined(RcppAPT_Good_System)
 #include <apt-pkg/init.h>
 #include <apt-pkg/cachefile.h>
 #include <apt-pkg/cachefilter.h>
 #include <apt-pkg/pkgcache.h>
+#endif
 
 #include <Rcpp.h>
 
@@ -53,6 +55,8 @@
 // [[Rcpp::export]]
 Rcpp::DataFrame getPackages(const std::string regexp = ".") {
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -89,4 +93,14 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
     return Rcpp::DataFrame::create(Rcpp::Named("Package")          = N,
                                    Rcpp::Named("Version")          = V,
                                    Rcpp::Named("stringsAsFactors") = false);
+
+#else
+
+    std::vector<std::string> vs{""};
+    return Rcpp::DataFrame::create(Rcpp::Named("Package")          = vs,
+                                   Rcpp::Named("Version")          = vs,
+                                   Rcpp::Named("stringsAsFactors") = false);
+
+#endif    
+    
 }

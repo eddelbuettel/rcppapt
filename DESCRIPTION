@@ -1,8 +1,8 @@
 Package: RcppAPT
 Type: Package
 Title: 'Rcpp' Interface to the APT Package Manager
-Version: 0.0.4
-Date: 2017-07-16
+Version: 0.0.4.1
+Date: 2018-09-27
 Author: Dirk Eddelbuettel
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Description: The 'APT Package Management System' provides Debian and
@@ -15,4 +15,4 @@ LinkingTo: Rcpp
 Suggests: knitr
 VignetteBuilder: knitr
 OS_type: unix
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

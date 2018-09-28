@@ -2,7 +2,9 @@
 
 complainAndExit() {
     echo $1
-    exit -1
+    sed -e 's/@compilearg@/-DRcppAPT_Wrong_System/' -e 's/@linkarg@//' \
+        src/Makevars.in > src/Makevars
+    exit 0
 }          
 
 [ ! -f /usr/bin/dpkg ] && \
@@ -13,5 +15,8 @@ complainAndExit() {
 
 [ ! -d /usr/include/apt-pkg ] && \
     complainAndExit "No /usr/include/apt-pkg/ directory. Is libapt-pkg-dev installed?"
+
+sed -e 's/@compilearg@/-DRcppAPT_Good_System/' -e 's/@linkarg@/-lapt-pkg/' \
+    src/Makevars.in > src/Makevars
 
 exit 0

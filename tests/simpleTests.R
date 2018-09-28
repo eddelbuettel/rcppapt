@@ -1,31 +1,35 @@
 
 library(RcppAPT)
 
-## buildDepends
-bd <- buildDepends("r-cran-rcpp$")
-print(bd)
-stopifnot(length(bd) > 0)               	# conservative test
-stopifnot(is.element("r-base-dev", bd))		# key component
+if (suitable()) {
 
-## dumpPackages
-txt <- capture.output(res <- dumpPackages("littler"))
-stopifnot(res)
-stopifnot(length(txt) > 10)
+    ## buildDepends
+    bd <- buildDepends("r-cran-rcpp$")
+    print(bd)
+    stopifnot(length(bd) > 0)               	# conservative test
+    stopifnot(is.element("r-base-dev", bd))		# key component
 
-## getPackages
-pkg <- getPackages("^r-(base|doc)-")
-stopifnot(inherits(pkg, "data.frame"))
+    ## dumpPackages
+    txt <- capture.output(res <- dumpPackages("littler"))
+    stopifnot(res)
+    stopifnot(length(txt) > 10)
 
-## hasPackages
-res <- hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
-stopifnot(any(res))
+    ## getPackages
+    pkg <- getPackages("^r-(base|doc)-")
+    stopifnot(inherits(pkg, "data.frame"))
 
-## reverseDepends
-rd <- reverseDepends("r-cran-rcpp$")
-stopifnot(inherits(rd, "data.frame"))
-stopifnot(nrow(rd) > 5)                      # conservative test (ie get 11 as Nov 2016)
+    ## hasPackages
+    res <- hasPackages(c("r-base-core", "somethingThatDoesNotExist"))
+    stopifnot(any(res))
 
-## showSrc
-txt <- capture.output(res <- showSrc("r-cran-rcpp"))
-stopifnot(res)
-stopifnot(length(txt) > 10)
+    ## reverseDepends
+    rd <- reverseDepends("r-cran-rcpp$")
+    stopifnot(inherits(rd, "data.frame"))
+    stopifnot(nrow(rd) > 5)                      # conservative test (ie get 11 as Nov 2016)
+
+    ## showSrc
+    txt <- capture.output(res <- showSrc("r-cran-rcpp"))
+    stopifnot(res)
+    stopifnot(length(txt) > 10)
+
+}
