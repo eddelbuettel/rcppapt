@@ -30,7 +30,7 @@
 
 //' The APT Package Management system uses a data-rich caching
 //' structure. This accessor function returns the Build-Depends for
-//' a set of packages matching the given regular expression. 
+//' a set of packages matching the given regular expression.
 //'
 //' Note that the package lookup uses regular expressions. If only a
 //' single package is desired, append a single \code{$} to terminate
@@ -49,7 +49,7 @@
 std::vector<std::string> buildDepends(const std::string regexp = ".") {
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -88,12 +88,12 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
     return res;
 
 #else
-    
+
     std::vector<std::string> vs{""};
     return vs;
-    
+
 #endif
-    
+
 }
 
 
@@ -123,7 +123,7 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
 bool showSrc(const std::string regexp = ".") {
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -133,17 +133,17 @@ bool showSrc(const std::string regexp = ".") {
     APT::CacheFilter::PackageNameMatchesRegEx pkgre(regexp);
 
     pkgSourceList *List = cacheFile.GetSourceList();
-    if (unlikely(List == NULL)) {		// nocov  start
+    if (unlikely(List == NULL)) {		// #nocov  start
         Rcpp::Rcout << "Error: No cached sources list. Maybe you have src-deb entries?\n";
         return false;
-    } 						// nocov end
+    } 									// #nocov end
 
     // Create the text record parsers
     pkgSrcRecords SrcRecs(*List);
-    if (_error->PendingError() == true)	{	// nocov  start
+    if (_error->PendingError() == true)	{	// #nocov  start
         Rcpp::Rcout << "Error: No sources records. Maybe you have src-deb entries?\n";
         return false;
-    }						// nocov end
+    }										// #nocov end
 
     unsigned found = 0;
 
@@ -152,7 +152,7 @@ bool showSrc(const std::string regexp = ".") {
             const std::string pkgstr = pkg.FullName(true);
             Rcpp::Rcout << "--" << pkgstr << std::endl;
             SrcRecs.Restart();
-      
+
             pkgSrcRecords::Parser *Parse;
             unsigned found_this = 0;
             while ((Parse = SrcRecs.Find(pkgstr.c_str(), false)) != 0) {
@@ -179,7 +179,7 @@ bool showSrc(const std::string regexp = ".") {
     return false;
 
 #endif
-    
+
 }
 
 // The DeNull function is in the current source version of libapt-pkg-dev but
@@ -211,7 +211,7 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 bool dumpPackages(const std::string regexp = ".") {
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -238,9 +238,9 @@ bool dumpPackages(const std::string regexp = ".") {
                 }
                 Rcpp::Rcout << std::endl;
             }
-      
+
             Rcpp::Rcout << std::endl;
-      
+
             Rcpp::Rcout << "Reverse Depends: " << std::endl;
             for (pkgCache::DepIterator D = pkg.RevDependsList(); D.end() != true; ++D) {
                 Rcpp::Rcout << "  " << D.ParentPkg().FullName(true)
@@ -250,7 +250,7 @@ bool dumpPackages(const std::string regexp = ".") {
                 else
                     Rcpp::Rcout << std::endl;
             }
-      
+
             Rcpp::Rcout << "Dependencies: " << std::endl;
             for (pkgCache::VerIterator Cur = pkg.VersionList(); Cur.end() != true; ++Cur) {
                 Rcpp::Rcout << Cur.VerStr() << " - ";
@@ -259,7 +259,7 @@ bool dumpPackages(const std::string regexp = ".") {
                                 << " (" << (int)Dep->CompareOp << " "
                                 << localDeNull(Dep.TargetVer()) << ") ";
                 Rcpp::Rcout << std::endl;
-            }      
+            }
 
             Rcpp::Rcout << "Provides: " << std::endl;
             for (pkgCache::VerIterator Cur = pkg.VersionList(); Cur.end() != true; ++Cur) {
@@ -280,6 +280,6 @@ bool dumpPackages(const std::string regexp = ".") {
 
     return false;
 
-#endif    
-    
+#endif
+
 }

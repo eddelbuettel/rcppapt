@@ -30,7 +30,7 @@
 
 // The DeNull function is in the current source version of libapt-pkg-dev but
 // not all older ones so we create a variant here
-inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
+inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}  // #nocov
 
 //' The APT Package Management system uses a data-rich caching
 //' structure. This accessor function returns the Reverse-Depends for
@@ -119,7 +119,7 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 //' @examples
 //' reverseDepends("r-cran-rcpp$")
 // [[Rcpp::export]]
-Rcpp::DataFrame getDepends(const std::string regexp = ".") {
+Rcpp::DataFrame getDepends(const std::string regexp = ".") {       // #nocov start
 
 #if defined(RcppAPT_Good_System)
     
@@ -177,4 +177,4 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
 
 #endif    
     
-}
+} // #nocov end

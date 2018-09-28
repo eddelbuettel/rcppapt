@@ -20,6 +20,6 @@
 .onAttach <- function(libname, pkgname) {
     if (interactive() && !suitable())
         ## With apologies to HAL 9000 ...
-        packageStartupMessage("I'm sorry, Dave. I'm afraid I can't do that.")
+        packageStartupMessage("I'm sorry, Dave. I'm afraid I can't do that.")  # #nocov
     NULL
 }
