@@ -1,8 +1,7 @@
-// -*- mode: C++; c-indent-level: 4; c-basic-offset: 4;  -*-
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2016  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -19,17 +18,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with RcppAPT.  If not, see <http://www.gnu.org/licenses/>.
 
+#if defined(RcppAPT_Good_System)
 #include <apt-pkg/init.h>
 #include <apt-pkg/cachefile.h>
 #include <apt-pkg/cachefilter.h>
 #include <apt-pkg/pkgcache.h>
 #include <apt-pkg/debsrcrecords.h>
+#endif
 
 #include <Rcpp.h>
 
 // The DeNull function is in the current source version of libapt-pkg-dev but
 // not all older ones so we create a variant here
-inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
+inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}  // #nocov
 
 //' The APT Package Management system uses a data-rich caching
 //' structure. This accessor function returns the Reverse-Depends for
@@ -52,6 +53,8 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}
 // [[Rcpp::export]]
 Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -85,6 +88,16 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
     return Rcpp::DataFrame::create(Rcpp::Named("package")          = res,
                                    Rcpp::Named("version")          = ver,
                                    Rcpp::Named("stringsAsFactors") = false);
+
+#else
+
+    std::vector<std::string> vs{""};
+    return Rcpp::DataFrame::create(Rcpp::Named("package")          = vs,
+                                   Rcpp::Named("version")          = vs,
+                                   Rcpp::Named("stringsAsFactors") = false);
+
+#endif    
+    
 }
 
 //' The APT Package Management system uses a data-rich caching
@@ -106,8 +119,10 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 //' @examples
 //' reverseDepends("r-cran-rcpp$")
 // [[Rcpp::export]]
-Rcpp::DataFrame getDepends(const std::string regexp = ".") {
+Rcpp::DataFrame getDepends(const std::string regexp = ".") {       // #nocov start
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -150,4 +165,16 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {
                                                  Rcpp::Named("version")          = ver,
                                                  Rcpp::Named("stringsAsFactors") = false);
     return df;
-}
+
+#else
+
+    std::vector<std::string> vs{""};
+    return Rcpp::DataFrame::create(Rcpp::Named("srcpkg")           = vs,
+                                   Rcpp::Named("deppkg")           = vs,
+                                   Rcpp::Named("cmpop")            = vs,
+                                   Rcpp::Named("version")          = vs,
+                                   Rcpp::Named("stringsAsFactors") = false);
+
+#endif    
+    
+} // #nocov end

@@ -1,3 +1,47 @@
+2018-09-28  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Description): Rewritten clearly stating need for
+	libapt-pkg-dev for proper functionality
+	* DESCRIPTION (SystemRequirements, OS_type): Removed
+
+	* R/init.R: Show warning for wrong system if in interactive mode
+
+	* src/Makevars.win (PKG_CXXFLAGS): Added, with 'wrong' system default
+
+	* src/buildDepends.cpp: Updated copyright, removed Emacs settings
+	* src/getPackages.cpp: Idem
+	* src/hasPackage.cpp: Idem
+	* src/reverseDepends.cpp: Idem
+
+	* .editorconfig: Added
+
+2018-09-27  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): New minor version
+
+	* configure: Detect if apt and libapt-pkg-dev can be available and
+	set corresponding true or false -D definition in src/Makevars
+	* src/Makevars.in: Allow for configure to set -D definition
+
+	* src/utils.cpp (suitable): New helper function 'suitable()' to
+	return boolean reflecting the cponfiguration check
+	* man/suitable.Rd: Documentation
+
+	* src/buildDepends.cpp: Condition #include and behaviour on #define
+	* src/getPackages.cpp: Idem
+	* src/hasPackage.cpp: Idem
+	* src/reverseDepends.cpp: Idem
+
+	* tests/simpleTests.R: Only run tests if suitable() returns true
+
+	* src/RcppExports.cpp: Regenerated
+	* R/RcppExports.R: Idem
+
+	* vignettes/binnmuAfterR340.Rmd: Add missing VignetteIndexEntry
+
+	* .Rbuildignore: Do not include top-level *.tar.gz files
+	* .travis.yml: Cosmetic edit
+
 2017-08-20  Dirk Eddelbuettel  <edd@debian.org>
 
 	* .travis.yml (before_install): Switch to https download

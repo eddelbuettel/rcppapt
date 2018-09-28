@@ -1,8 +1,7 @@
-// -*- mode: C++; c-indent-level: 4; c-basic-offset: 4;  -*-
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015           Dirk Eddelbuettel 
+//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel 
 //
 //  This file is part of RcppAPT
 //
@@ -25,9 +24,11 @@
 //
 //  Dirk Eddelbuettel, Feb 2015
 
+#if defined(RcppAPT_Good_System)
 #include <apt-pkg/init.h>
 #include <apt-pkg/cachefile.h>
 #include <apt-pkg/pkgcache.h>
+#endif
 
 #include <Rcpp.h>
 
@@ -44,6 +45,8 @@
 // [[Rcpp::export]]
 Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg) {
 
+#if defined(RcppAPT_Good_System)
+    
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -59,4 +62,11 @@ Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg) {
     }
     res.names() = pkg;
     return res;
+
+#else
+
+    return Rcpp::LogicalVector::create(false);
+
+#endif    
+
 }

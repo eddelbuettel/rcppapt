@@ -8,7 +8,8 @@ output:
     theme: tactile
     highlight: github
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Minimal Set of binnmu Packages}
+  %\VignettePackage{RcppAPT}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

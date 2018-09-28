@@ -3,9 +3,11 @@
 \newcommand{\ghpr}{\href{https://github.com/eddelbuettel/rcppapt/pull/#1}{##1}}
 \newcommand{\ghit}{\href{https://github.com/eddelbuettel/rcppapt/issues/#1}{##1}}
 
-\section{Changes in version 0.0.5 (2017-xx-yy)}{
+\section{Changes in version 0.0.5 (2017-09-29)}{
   \itemize{
     \item \code{NAMESPACE} now sets symbol registration
+    \item Build-time configuration rewritten to detect a suitable system
+    but not error if none found but rather set good/bad \code{define} for build
   }
 }
 \section{Changes in version 0.0.4 (2017-07-16)}{
