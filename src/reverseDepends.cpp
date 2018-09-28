@@ -1,8 +1,7 @@
-// -*- mode: C++; c-indent-level: 4; c-basic-offset: 4;  -*-
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2016  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //

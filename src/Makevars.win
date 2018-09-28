@@ -3,5 +3,4 @@
 CXX_STD = CXX11
 
 ## These are filled-in by configure
-PKG_CXXFLAGS = -DRcppAPT_Good_System
-PKG_LIBS = -lapt-pkg
+PKG_CXXFLAGS = -DRcppAPT_Wrong_System

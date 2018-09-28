@@ -5,3 +5,4 @@ apt-cache
 ^\.codecov\.yml$
 ^docs$
 ^.*\.tar.gz$
+^.editorconfig$
