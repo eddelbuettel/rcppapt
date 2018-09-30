@@ -6,10 +6,18 @@
 \section{Changes in version 0.0.5 (2017-09-29)}{
   \itemize{
     \item \code{NAMESPACE} now sets symbol registration
-    \item Build-time configuration rewritten to detect a suitable system
-    but not error if none found but rather set good/bad \code{define} for build
+    \item \code{configure} checks for suitable system, no longer errors
+    if none found, but sets good/bad \code{define} for the build
+    \item Existing C++ code is now conditional on having a 'good' build
+    system, or else alternate code is used (which succeeds everywhere)
+    \item Added \code{suitable()} returning a boolean with configure
+    result
+    \item Tests are conditional of \code{suitable()} to test good builds
+    \item The Travis setup was updated
+    \item The vignette was updated and expanded
   }
 }
+
 \section{Changes in version 0.0.4 (2017-07-16)}{
   \itemize{
     \item New function \code{getDepends}
