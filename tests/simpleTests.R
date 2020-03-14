@@ -5,9 +5,10 @@ if (suitable()) {
 
     ## buildDepends
     bd <- buildDepends("r-cran-rcpp$")
-    print(bd)
-    stopifnot(length(bd) > 0)               	# conservative test
-    stopifnot(is.element("r-base-dev", bd))		# key component
+    ## this comes back as zero length if the (optional !!)
+    ## 'deb-src' entries are commented out so not enforcing this
+    #stopifnot(length(bd) > 0)               	# conservative test
+    #stopifnot(is.element("r-base-dev", bd))		# key component
 
     ## dumpPackages
     txt <- capture.output(res <- dumpPackages("littler"))
@@ -29,7 +30,9 @@ if (suitable()) {
 
     ## showSrc
     txt <- capture.output(res <- showSrc("r-cran-rcpp"))
-    stopifnot(res)
-    stopifnot(length(txt) > 10)
+    ## this comes back as FALSE and zero length if the (optional !!)
+    ## 'deb-src' entries are commented out so not enforcing this
+    #stopifnot(res)
+    #stopifnot(length(txt) > 10)
 
 }
