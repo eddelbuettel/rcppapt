@@ -1,3 +1,11 @@
+2020-03-14  Dirk Eddelbuettel  <edd@debian.org>
+
+	* inst/scripts/configure.bash: Generalize existing configure script
+	and also check package version of 'apt-pkg' via pkg-config
+	* configure: Turned into wrapper / caller of additional script
+	* src/Makevars.in (PKG_CXXFLAGS): Set compiler define for Apt 2.0 (or
+	rather, 1.9.0 or later) if found by configure script
+
 2018-09-29  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.5
@@ -249,4 +257,3 @@
 	* DESCRIPTION: Very first version and commit
 
 	* src/getPackages.cpp: Simple accessor for known packages
-

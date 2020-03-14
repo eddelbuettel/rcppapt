@@ -1,22 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 
-complainAndExit() {
-    echo $1
-    sed -e 's/@compilearg@/-DRcppAPT_Wrong_System/' -e 's/@linkarg@//' \
-        src/Makevars.in > src/Makevars
-    exit 0
-}          
-
-[ ! -f /usr/bin/dpkg ] && \
-    complainAndExit "No dpkg binary. Is this a Debian-based system?"
-
-[ ! -d /etc/apt ] && \
-    complainAndExit "No /etc/apt directory. Is this a Debian-based system?"
-
-[ ! -d /usr/include/apt-pkg ] && \
-    complainAndExit "No /usr/include/apt-pkg/ directory. Is libapt-pkg-dev installed?"
-
-sed -e 's/@compilearg@/-DRcppAPT_Good_System/' -e 's/@linkarg@/-lapt-pkg/' \
-    src/Makevars.in > src/Makevars
-
-exit 0
+bash inst/scripts/configure.bash
