@@ -5,7 +5,7 @@
 
 \section{Changes in version 0.0.6 (2020-03-14)}{
   \itemize{
-    \item Accomodate Apt 2.0 code changes by including more header files
+    \item Accommodate Apt 2.0 code changes by including more header files
     \item Change is backwards compatible and conditional
     \item Added configure call using \code{pkg-config} and package
     version comparison (using R) to determine if the define is needed
