@@ -6,6 +6,11 @@
 	* src/Makevars.in (PKG_CXXFLAGS): Set compiler define for Apt 2.0 (or
 	rather, 1.9.0 or later) if found by configure script
 
+	* src/buildDepends.cpp: Use additional includes for Apt 2.0
+        * src/getPackages.cpp: Ditto
+        * src/hasPackage.cpp: Ditto
+        * src/reverseDepends.cpp: Ditto
+
 2018-09-29  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Release 0.0.5

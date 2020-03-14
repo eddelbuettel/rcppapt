@@ -1,7 +1,7 @@
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2020  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -19,11 +19,16 @@
 //  along with RcppAPT.  If not, see <http://www.gnu.org/licenses/>.
 
 #if defined(RcppAPT_Good_System)
-#include <apt-pkg/init.h>
-#include <apt-pkg/cachefile.h>
-#include <apt-pkg/cachefilter.h>
-#include <apt-pkg/pkgcache.h>
-#include <apt-pkg/debsrcrecords.h>
+  #include <apt-pkg/init.h>
+  #include <apt-pkg/cachefile.h>
+  #include <apt-pkg/cachefilter.h>
+  #include <apt-pkg/pkgcache.h>
+  #include <apt-pkg/debsrcrecords.h>
+  #if defined(APT_Version2)
+    #include <apt-pkg/error.h>
+    #include <apt-pkg/macros.h>
+    #include <apt-pkg/pkgsystem.h>
+  #endif
 #endif
 
 #include <Rcpp.h>

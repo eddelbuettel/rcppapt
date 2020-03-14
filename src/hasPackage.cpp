@@ -1,7 +1,7 @@
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel 
+//  Copyright (C) 2015 - 2020  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -25,9 +25,14 @@
 //  Dirk Eddelbuettel, Feb 2015
 
 #if defined(RcppAPT_Good_System)
-#include <apt-pkg/init.h>
-#include <apt-pkg/cachefile.h>
-#include <apt-pkg/pkgcache.h>
+  #include <apt-pkg/init.h>
+  #include <apt-pkg/cachefile.h>
+  #include <apt-pkg/pkgcache.h>
+  #if defined(APT_Version2)
+    #include <apt-pkg/error.h>
+    #include <apt-pkg/macros.h>
+    #include <apt-pkg/pkgsystem.h>
+  #endif
 #endif
 
 #include <Rcpp.h>
@@ -37,7 +42,7 @@
 //' exists.
 //' @title Test for Existence of Given Package
 //' @param pkg A character vector with name of the package
-//' @return A boolean result vector is returned indicating if the 
+//' @return A boolean result vector is returned indicating if the
 //' package at the given position is available.
 //' @author Dirk Eddelbuettel
 //' @examples
@@ -46,19 +51,19 @@
 Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg) {
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
     pkgCacheFile cacheFile;
     pkgCache* cache = cacheFile.GetPkgCache();
- 
+
     Rcpp::LogicalVector res(pkg.size());
     for (int i=0; i<res.size(); i++) {
         std::string p(pkg[i]);
         pkgCache::PkgIterator package = cache->FindPkg(p);
         // if iterator not at end, a match was found
-        res[i] = (package.end() != true); 
+        res[i] = (package.end() != true);
     }
     res.names() = pkg;
     return res;
@@ -67,6 +72,6 @@ Rcpp::LogicalVector hasPackages(Rcpp::CharacterVector pkg) {
 
     return Rcpp::LogicalVector::create(false);
 
-#endif    
+#endif
 
 }

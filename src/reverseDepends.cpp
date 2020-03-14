@@ -1,7 +1,7 @@
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2020  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -19,11 +19,14 @@
 //  along with RcppAPT.  If not, see <http://www.gnu.org/licenses/>.
 
 #if defined(RcppAPT_Good_System)
-#include <apt-pkg/init.h>
-#include <apt-pkg/cachefile.h>
-#include <apt-pkg/cachefilter.h>
-#include <apt-pkg/pkgcache.h>
-#include <apt-pkg/debsrcrecords.h>
+  #include <apt-pkg/init.h>
+  #include <apt-pkg/cachefile.h>
+  #include <apt-pkg/cachefilter.h>
+  #include <apt-pkg/pkgcache.h>
+  #include <apt-pkg/debsrcrecords.h>
+  #if defined(APT_Version2)
+    #include <apt-pkg/pkgsystem.h>
+  #endif
 #endif
 
 #include <Rcpp.h>
@@ -54,7 +57,7 @@ inline const char *localDeNull(const char *s) {return (s == 0?"(null)":s);}  // 
 Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -96,8 +99,8 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
                                    Rcpp::Named("version")          = vs,
                                    Rcpp::Named("stringsAsFactors") = false);
 
-#endif    
-    
+#endif
+
 }
 
 //' The APT Package Management system uses a data-rich caching
@@ -114,7 +117,7 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 //' @param regexp A regular expression for the package name(s) with a
 //' default of all (".")
 //' @return A data frame with four columns listing (source) package, dependend
-//' packages, comparison operator, and, where available, minimal version. 
+//' packages, comparison operator, and, where available, minimal version.
 //' @author Dirk Eddelbuettel
 //' @examples
 //' reverseDepends("r-cran-rcpp$")
@@ -122,7 +125,7 @@ Rcpp::DataFrame reverseDepends(const std::string regexp = ".") {
 Rcpp::DataFrame getDepends(const std::string regexp = ".") {       // #nocov start
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -175,6 +178,6 @@ Rcpp::DataFrame getDepends(const std::string regexp = ".") {       // #nocov sta
                                    Rcpp::Named("version")          = vs,
                                    Rcpp::Named("stringsAsFactors") = false);
 
-#endif    
-    
+#endif
+
 } // #nocov end

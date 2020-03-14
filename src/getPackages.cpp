@@ -1,7 +1,7 @@
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2018  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2020  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -25,10 +25,13 @@
 //  Dirk Eddelbuettel, Feb 2015
 
 #if defined(RcppAPT_Good_System)
-#include <apt-pkg/init.h>
-#include <apt-pkg/cachefile.h>
-#include <apt-pkg/cachefilter.h>
-#include <apt-pkg/pkgcache.h>
+  #include <apt-pkg/init.h>
+  #include <apt-pkg/cachefile.h>
+  #include <apt-pkg/cachefilter.h>
+  #include <apt-pkg/pkgcache.h>
+  #if defined(APT_Version2)
+    #include <apt-pkg/pkgsystem.h>
+  #endif
 #endif
 
 #include <Rcpp.h>
@@ -55,7 +58,7 @@
 Rcpp::DataFrame getPackages(const std::string regexp = ".") {
 
 #if defined(RcppAPT_Good_System)
-    
+
     pkgInitConfig(*_config);    	// _config, _system defined as extern and in library
     pkgInitSystem(*_config, _system);
 
@@ -83,7 +86,7 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
         }
     }
     // second pass to set proper NA values for R
-    Rcpp::CharacterVector N(ver.size()), V(ver.size()); 
+    Rcpp::CharacterVector N(ver.size()), V(ver.size());
     for (int i=0; i<V.size(); i++) {
         N[i] = name[i];
         V[i] = ver[i];
@@ -100,6 +103,6 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
                                    Rcpp::Named("Version")          = vs,
                                    Rcpp::Named("stringsAsFactors") = false);
 
-#endif    
-    
+#endif
+
 }
