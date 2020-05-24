@@ -1,6 +1,12 @@
-## RcppAPT [![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt) [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html) [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT) [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT) [![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
+## RcppAPT: Rcpp Interface to APT Package Manager
 
-Rcpp Interface to APT Package Manager
+[![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt)
+[![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT)
+[![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT)
+[![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
+[![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rcppapt)](https://github.com/eddelbuettel/rcppapt
+)
 
 ### Background
 
@@ -19,7 +25,7 @@ We can query packages by regular expression:
 ```{.r}
 R> library(RcppAPT)
 R> getPackages("^r-base-.")
-``` 
+```
 
 which returns a data frame with name, version (if installed) and section.
 
@@ -27,9 +33,9 @@ We can also check for installability of a given package or set of packages:
 
 ```{.r}
 R> hasPackages(c("r-cran-rcpp", "r-cran-rcppapt"))
-   r-cran-rcpp r-cran-rcppapt 
-          TRUE          FALSE 
-R> 
+   r-cran-rcpp r-cran-rcppapt
+          TRUE          FALSE
+R>
 ```
 
 which shows that [Rcpp](http://dirk.eddelbuettel.com/code/rcpp.html) is (of
@@ -41,9 +47,9 @@ The `buildDepends()` function extracts just the build dependencies:
 
 ```{.r}
 R> buildDepends("r-cran-rcppeigen")
-[1] "debhelper"        "r-base-dev"       "cdbs"            
+[1] "debhelper"        "r-base-dev"       "cdbs"
 [4] "r-cran-rcpp"      "r-cran-matrix"    "r-cran-pkgkitten"
-R> 
+R>
 ```
 
 The `showSrc()` and `dumpPackages()` functions display even more information.
@@ -53,15 +59,15 @@ We can also look at reverse dependencies:
 ```{.r}
 R> reverseDepends("r-cran-rcpp$")
                package  version
-1  r-cran-surveillance         
+1  r-cran-surveillance
 2     r-cran-rquantlib   0.11.0
-3      r-cran-reshape2         
-4        r-cran-readxl         
+3      r-cran-reshape2
+4        r-cran-readxl
 5     r-cran-rcppeigen 0.11.0-1
 6 r-cran-rcpparmadillo   0.11.0
-7          r-cran-plyr         
+7          r-cran-plyr
 8         r-cran-minqa   0.11.0
-R> 
+R>
 ```
 
 ### Status
@@ -81,7 +87,7 @@ install.packages("RcppAPT")
 ```
 
 will do. Make sure you install the
-[libapt-pkg-dev](https://packages.debian.org/sid/libapt-pkg-dev) 
+[libapt-pkg-dev](https://packages.debian.org/sid/libapt-pkg-dev)
 package first as it is a build-dependency.
 
 Versions of the package may also be available via
@@ -95,9 +101,8 @@ install.packages("RcppAPT")
 
 ### Author
 
-Dirk Eddelbuettel 
+Dirk Eddelbuettel
 
 ### License
 
 GPL (>= 2)
-
