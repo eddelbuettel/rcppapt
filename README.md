@@ -5,8 +5,7 @@
 [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT)
 [![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
-[![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rcppapt)](https://github.com/eddelbuettel/rcppapt
-)
+[![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rcppapt)](https://github.com/eddelbuettel/rcppapt)
 
 ### Background
 
