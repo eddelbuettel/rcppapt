@@ -6,3 +6,4 @@ apt-cache
 ^docs$
 ^.*\.tar.gz$
 ^.editorconfig$
+^\.github
