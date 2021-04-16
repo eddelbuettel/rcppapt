@@ -4,14 +4,14 @@
 [![CI](https://github.com/eddelbuettel/rcppapt/workflows/ci/badge.svg)](https://github.com/eddelbuettel/rcppapt/actions?query=workflow%3Aci)
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT)
-[![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](http://www.r-pkg.org/pkg/RcppAPT)
+[![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](https://www.r-pkg.org:443/pkg/RcppAPT)
 [![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
 [![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rcppapt)](https://github.com/eddelbuettel/rcppapt)
 
 ### Background
 
 [Debian](http://www.debian.org) and its derivatives like
-[Ubuntu](http://www.ubuntu.com) utilize a powerful package managing backend /
+[Ubuntu](https://ubuntu.com/) utilize a powerful package managing backend /
 frontend combination in APT (A Packaging Tool).  Accessible at the
 command-line via front-ends `apt`, `apt-get`, `apt-cache`, ... as well as
 numerous GUI variants, it is implemented using a library `libapt-pkg`.  This
