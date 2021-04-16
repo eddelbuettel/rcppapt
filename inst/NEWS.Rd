@@ -3,6 +3,15 @@
 \newcommand{\ghpr}{\href{https://github.com/eddelbuettel/rcppapt/pull/#1}{##1}}
 \newcommand{\ghit}{\href{https://github.com/eddelbuettel/rcppapt/issues/#1}{##1}}
 
+\section{Changes in version 0.0.7 (2021-04-16)}{
+  \itemize{
+    \item Add rmarkdown to Suggests: as an implicit conditional dependency
+    \item Switch vignette to minidown and its water framework, add
+    minidown to Suggests as well
+    \item Update two URLs in the README.md file
+  }
+}
+
 \section{Changes in version 0.0.6 (2020-03-14)}{
   \itemize{
     \item Accommodate Apt 2.0 code changes by including more header files
