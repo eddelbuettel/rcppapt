@@ -4,9 +4,10 @@ subtitle: "Combining the R and Debian package systems"
 author: "Dirk Eddelbuettel"
 date: "First version 2017-Jul-16; this version 2017-Aug-05"
 output:
-  prettydoc::html_pretty:
-    theme: tactile
-    highlight: github
+  minidown::mini_document:
+    framework: water
+    toc: true
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{Minimal Set of binnmu Packages}
   %\VignettePackage{RcppAPT}
@@ -25,8 +26,8 @@ R 3.4.0, released in April, included the following paragraph in its NEWS file:
    to be re-installed for this version (unless installed with
    R-devel SVN revision r72375 or later).
 
-This transition has no fallback behavior (as is more common with R changes) 
-and requires a rebuild.  Packages build under older R version still _load_ 
+This transition has no fallback behavior (as is more common with R changes)
+and requires a rebuild.  Packages build under older R version still _load_
 and function partially, but will be unable to access any native (_i.e._, compiled)
 routines.
 
@@ -40,11 +41,11 @@ For the Debian packages, this means that we need to consider the set of packages
 - use (the hitherto optional) routine registration (so that the change in behaviour is noticible)
 - have _not yet_ been recompiled with R 3.4.0 or R 3.4.1
 
-This note computes this set and provides the input for a 
+This note computes this set and provides the input for a
 [wanna-build](https://release.debian.org/wanna-build.txt) request.
 
 This version is updated version which reflects the fourth point above which was pointed out to
-me by Kurt Hornik after I shared the initial version with him.  The point he raised ("does it use 
+me by Kurt Hornik after I shared the initial version with him.  The point he raised ("does it use
 `R_registerRoutines` ?") is important and further reduces the effective set.
 
 ## Step 1: Reverse Dependencies of R
@@ -52,7 +53,7 @@ me by Kurt Hornik after I shared the initial version with him.  The point he rai
 ### Fresh Debian unstable session
 
 For this we drop into a clean Docker container running Debian unstable. Later, we will need
-the current sources of the [`RcppAPT`](https://github.com/eddelbuettel/rcppapt) package so 
+the current sources of the [`RcppAPT`](https://github.com/eddelbuettel/rcppapt) package so
 we start from a local git directory:
 
 ```sh
@@ -62,20 +63,20 @@ server> cd ~/git && docker run --rm -ti -v $(pwd):/mnt debian:unstable
 ### Update Debian
 
 Inside the Docker container, we update the package information and install what
-is needed to build [`RcppAPT`](https://github.com/eddelbuettel/rcppapt) for R.  
+is needed to build [`RcppAPT`](https://github.com/eddelbuettel/rcppapt) for R.
 This includes Rcpp and `libapt-pkg-dev`.  We also install the data.table package
 used for aggregating the (R and Debian) package data computed below.
 
-This step takes a short moment, with the exact time dependent on the network 
+This step takes a short moment, with the exact time dependent on the network
 connection and other factors.
 
 ```sh
 docker> apt-get update
 docker> apt-get -y dist-upgrade
 
-docker> apt-get -y install r-cran-rcpp r-cran-data.table libapt-pkg-dev less 
+docker> apt-get -y install r-cran-rcpp r-cran-data.table libapt-pkg-dev less
 
-docker> cd /mnt 
+docker> cd /mnt
 docker> R CMD INSTALL rcppapt/       # assuming we're above rcppapt
 ```
 
@@ -116,11 +117,11 @@ was used to build the package---information we need per the setup described abov
 487:     r-cran-mgcv 3.4.1-2
 488:     r-cran-boot 3.4.1-2
 489:      r-cran-car 3.4.1-2
-> 
+>
 ```
 
 Next we need to filter out two versions with unsortable (_i.e._,non-semantic) version numbers,
-and apply a logical filter depending on whether the package was built with R version 3.3.3 or 
+and apply a logical filter depending on whether the package was built with R version 3.3.3 or
 earlier, indicating a possibe required rebuild.
 
 ```{r, eval=FALSE}
@@ -161,7 +162,7 @@ To cover some corner case, we derive a `skip` field:
 482:     r-cran-mgcv          3.4.1-2      FALSE FALSE
 483:     r-cran-boot          3.4.1-2      FALSE FALSE
 484:      r-cran-car          3.4.1-2      FALSE FALSE
-> 
+>
 ```
 
 #### Compiled Packages
@@ -188,7 +189,7 @@ a large regular expression which we feed into `RcppAPT::getDepends()`
 3746:      r-cran-xtable             r-api-3     0           (null)
 3747:   r-cran-pkgkitten         r-base-core     2          3.3.2-1
 3748:   r-cran-pkgkitten             r-api-3     0           (null)
-> 
+>
 ```
 
 Next we subset to those have `libc6` as a Depends, meaning they are compiled packages.
@@ -212,7 +213,7 @@ This excludes all the R packages having only R code.
 >
 ```
 
-We are now getting closer.  We set keys on the `data.table` objects, and then do 
+We are now getting closer.  We set keys on the `data.table` objects, and then do
 an inner join:
 
 ```{r, eval=FALSE}
@@ -232,7 +233,7 @@ an inner join:
 240:         r-cran-rsymphony 3.4.1-2      FALSE FALSE       TRUE
 241:               r-cran-ttr 3.4.1-2      FALSE FALSE       TRUE
 242:                r-mathlib 3.4.1-2      FALSE FALSE       TRUE
-> 
+>
 ```
 
 We have 242 _potential_ rebuilds, down from 514 reverse depends at the outset.
@@ -251,13 +252,13 @@ a rebuild:
   3: r-other-mott-happy.hbrem 3.0.2-1       TRUE FALSE       TRUE
   4:             r-cran-amore 3.1.0-1       TRUE FALSE       TRUE
   5:              r-cran-deal 3.1.0-1       TRUE FALSE       TRUE
- ---                                                             
+ ---
 163:           r-cran-rcppgsl 3.3.3-1       TRUE FALSE       TRUE
 164:             r-cran-rodbc 3.3.3-1       TRUE FALSE       TRUE
 165:         r-cran-snowballc 3.3.3-1       TRUE FALSE       TRUE
 166:                r-cran-v8 3.3.3-1       TRUE FALSE       TRUE
 167:               r-cran-zoo 3.3.3-1       TRUE FALSE       TRUE
-> 
+>
 ```
 
 Now we are down to 167 packages.
@@ -284,11 +285,11 @@ Now we are down to 167 packages.
 15:           r-bioc-rbgl          3.3.2-1       TRUE FALSE       TRUE FALSE TRUE
 16:    r-bioc-rtracklayer          3.3.2-1       TRUE FALSE       TRUE FALSE TRUE
 17:       r-bioc-snpstats 3.3.1.20161024-1       TRUE FALSE       TRUE FALSE TRUE
-> 
+>
 ```
 
-Among these are 17 BioConductor packages.  This is a superset as we do not know which of these 
-use only `.Call()` meaning that no rebuild would be required.   
+Among these are 17 BioConductor packages.  This is a superset as we do not know which of these
+use only `.Call()` meaning that no rebuild would be required.
 
 
 ```{r, eval=FALSE}
@@ -297,7 +298,7 @@ use only `.Call()` meaning that no rebuild would be required.
 1:       r-other-amsmercury 3.3.2-1       TRUE FALSE       TRUE FALSE FALSE
 2:          r-other-iwrlars 3.3.2-1       TRUE FALSE       TRUE FALSE FALSE
 3: r-other-mott-happy.hbrem 3.0.2-1       TRUE FALSE       TRUE FALSE FALSE
-> 
+>
 ```
 
 There are also three which are neither BioC nor CRAN.
@@ -311,13 +312,13 @@ There are also three which are neither BioC nor CRAN.
   3: r-cran-adephylo 3.3.2-1       TRUE FALSE       TRUE TRUE FALSE
   4:   r-cran-amelia 3.2.3-1       TRUE FALSE       TRUE TRUE FALSE
   5:    r-cran-amore 3.1.0-1       TRUE FALSE       TRUE TRUE FALSE
- ---                                                               
+ ---
 143:    r-cran-vegan 3.3.2-1       TRUE FALSE       TRUE TRUE FALSE
 144:     r-cran-vgam 3.3.2-1       TRUE FALSE       TRUE TRUE FALSE
 145:     r-cran-xml2 3.3.2-1       TRUE FALSE       TRUE TRUE FALSE
 146:     r-cran-yaml 3.3.2-1       TRUE FALSE       TRUE TRUE FALSE
 147:      r-cran-zoo 3.3.3-1       TRUE FALSE       TRUE TRUE FALSE
-> 
+>
 ```
 
 We have 147 possible NMUs based off CRAN.
@@ -337,13 +338,13 @@ Next, we mix this with information from CRAN.
   3: r-cran-adephylo adephylo  1.1-10              yes       TRUE FALSE
   4:   r-cran-amelia   Amelia   1.7.4              yes       TRUE FALSE
   5:    r-cran-amore    AMORE  0.2-15              yes       TRUE FALSE
- ---                                                                   
+ ---
 143:    r-cran-vegan    vegan   2.4-3              yes       TRUE FALSE
 144:     r-cran-vgam     VGAM   1.0-3              yes       TRUE FALSE
 145:     r-cran-xml2     xml2   1.1.1              yes       TRUE FALSE
 146:     r-cran-yaml     yaml  2.1.14              yes       TRUE FALSE
 147:      r-cran-zoo      zoo   1.8-0              yes       TRUE FALSE
-> 
+>
 ```
 
 This is our set of 147 candidate packages with their CRAN name, Debian name and upstream version.
@@ -356,17 +357,17 @@ We save this file to be used on another machine.
 
 ## Step 2: Grep
 
-On another machine with access to all CRAN package sources (which I happen to have access to), we use the list 
-of 147 candidate packages and run a recursive grep for each.  We store the output from two `egrep` runs, called via `system()`, 
+On another machine with access to all CRAN package sources (which I happen to have access to), we use the list
+of 147 candidate packages and run a recursive grep for each.  We store the output from two `egrep` runs, called via `system()`,
 directly in the same data structure.  The first checks for `.C()` or `.Fortran()` calls in the R scripts; the second checks
 for `R_registerRoutines()` in the compiled C code (with thanks again to Kurt Hornik for the suggestion)
 
 ```{r, eval=FALSE}
 deb <- readRDS("~/debpackages.rds")
 for (i in 1:nrow(deb)) {
-    deb[i, "dotCorFortran"] <- if (is.na(deb[i, "Package"])) NA 
+    deb[i, "dotCorFortran"] <- if (is.na(deb[i, "Package"])) NA
                                else system(paste0("egrep -r -q \"\\.(C|Fortran)\\(\" ", deb[i, "Package"], "/R/*"))==0
-    deb[i, "hasRegistration"] <- if (is.na(deb[i, "Package"])) NA 
+    deb[i, "hasRegistration"] <- if (is.na(deb[i, "Package"])) NA
                                else system(paste0("egrep -r -q \"R_registerRoutines\\(\" ", deb[i, "Package"], "/src/*"))==0
 }
 saveRDS(deb, "~/debpackagesout.rds")
@@ -380,7 +381,7 @@ We read the data back in and subset on those for which the recursive grep found 
 ```{r, eval=FALSE}
 > deb <- readRDS("debpackagesout.rds")
 > setDT(deb)
-> deb[ is.na(dotCorFortran) |(dotCorFortran & hasRegistration), 1:3]                               
+> deb[ is.na(dotCorFortran) |(dotCorFortran & hasRegistration), 1:3]
                      package           Package  Version
  1:              r-cran-ade4              ade4    1.7-6
  2:            r-cran-bayesm            bayesm  3.1-0.1
@@ -425,7 +426,7 @@ We read the data back in and subset on those for which the recursive grep found 
 41:             r-cran-vegan             vegan    2.4-3
 42:              r-cran-vgam              VGAM    1.0-4
                      package           Package  Version
-> 
+>
 ```
 
 Similarly, the 17 BioC and 3 other packages can be tested via recursive greps (not shown) in a directory
@@ -457,13 +458,13 @@ setDT(df)
 This leads to a further four packages:
 
 ```{r, eval=FALSE}
-> df[dotCorFortran & hasRegistration, 1]     
+> df[dotCorFortran & hasRegistration, 1]
                      pkg
 1:           r-bioc-affy
 2:          r-bioc-edger
 3:     r-bioc-genefilter
 4: r-bioc-preprocesscore
-> 
+>
 ```
 
 These 42, along with the 4 (from the initally 17 BioC and 3 'other') packages are our target set.
@@ -523,11 +524,11 @@ These 42, along with the 4 (from the initally 17 BioC and 3 'other') packages ar
 46:    r-bioc-preprocesscore
                      package
 >
-> 
+>
 ```
 
 We need to retrieve the version number in Debian unstable of these packages by once agaim
-relying of a function from [`RcppAPT`](https://github.com/eddelbuettel/rcppapt) 
+relying of a function from [`RcppAPT`](https://github.com/eddelbuettel/rcppapt)
 
 ```{r, eval=FALSE}
 > regexp <- paste(paste0("^", nmu[[1]], "$"), collapse="|")
@@ -587,7 +588,7 @@ relying of a function from [`RcppAPT`](https://github.com/eddelbuettel/rcppapt)
 With this, we can write out the content of the NMU request:
 
 ```{r, eval=FALSE}
-> 
+>
 > for (i in 1:nrow(res))
 +     cat("nmu", paste(res[i,], collapse="_"), ". ANY . -m 'Rebuild against R 3.4.*, see #861333'\n")
 nmu r-bioc-edger_3.14.0+dfsg-1 . ANY . -m 'Rebuild against R 3.4.*, see #861333'
@@ -641,23 +642,23 @@ nmu r-cran-gam_1.14-1 . ANY . -m 'Rebuild against R 3.4.*, see #861333'
 
 ## Summary
 
-The final set of 46 NMUs is the minimal change required, and reasonable relative to the 
+The final set of 46 NMUs is the minimal change required, and reasonable relative to the
 516 reverse dependencies of R itself.  We are able to narrow the set of packages requiring
 a rebuild down by a combining data from the R package system, the Debian package system
 and (some) package sources we were able to access on a CRAN-related server.
 
-### Acknowledgements 
+### Acknowledgements
 
 Thanks for Kurt Hornik for pointing out the additional check for `R_registerRoutine` in the in C code, leading
 to a further reduction from 90+ packages to 46.
 
 ### History
 
-The first published version (Julyu 2017) did not check for `R_registerRoutines`. The second version (August 2017) 
+The first published version (Julyu 2017) did not check for `R_registerRoutines`. The second version (August 2017)
 does, leading to 46 suggested NMUs.
 
 ### See Also
 
-The [source file](https://github.com/eddelbuettel/rcppapt/blob/master/vignettes/binnmuAfterR340.Rmd) is on GitHub 
+The [source file](https://github.com/eddelbuettel/rcppapt/blob/master/vignettes/binnmuAfterR340.Rmd) is on GitHub
 as is the  [revision history](https://github.com/eddelbuettel/rcppapt/commits/master/vignettes/binnmuAfterR340.Rmd).
 The [corresponding Debian bug report](https://bugs.debian.org/868558) is based on this analysis.

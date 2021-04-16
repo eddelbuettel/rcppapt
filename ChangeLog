@@ -2,6 +2,10 @@
 
 	* DESCRIPTION (Suggests): Add implicit dependency rmarkdown
 
+	* vignettes/binnmuAfterR340.Rmd: Switch to minidown::mini_document
+	and framework: water
+	* DESCRIPTION (Suggests): Add minidown
+
 2021-04-13  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (URL, BugRreports): Added to DESCRIPTION file

@@ -13,7 +13,7 @@ Description: The 'APT Package Management System' provides Debian and
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.11.0)
 LinkingTo: Rcpp
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, minidown
 URL: https://github.com/eddelbuettel/rcppapt, https://dirk.eddelbuettel.com/code/rcpp.apt.html
 BugReports: https://github.com/eddelbuettel/rcppapt/issues
 VignetteBuilder: knitr
