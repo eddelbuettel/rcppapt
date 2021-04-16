@@ -1,3 +1,7 @@
+2021-04-16  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Suggests): Add implicit dependency rmarkdown
+
 2021-04-13  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (URL, BugRreports): Added to DESCRIPTION file
