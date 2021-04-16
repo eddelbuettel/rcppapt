@@ -8,6 +8,8 @@
 
 	* README.md: Update two URLs to https
 
+	* tests/version.R: Add test for matching version in inst/NEWS.Rd
+
 2021-04-13  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (URL, BugRreports): Added to DESCRIPTION file
