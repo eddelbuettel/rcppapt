@@ -1,3 +1,7 @@
+2021-07-10  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/version.R: Make test for NEWS version skip on CI
+
 2021-04-16  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Suggests): Add implicit dependency on rmarkdown
