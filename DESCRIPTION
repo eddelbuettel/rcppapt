@@ -1,8 +1,8 @@
 Package: RcppAPT
 Type: Package
 Title: 'Rcpp' Interface to the APT Package Manager
-Version: 0.0.7
-Date: 2021-04-16
+Version: 0.0.7.1
+Date: 2021-11-28
 Author: Dirk Eddelbuettel
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Description: The 'APT Package Management System' provides Debian and
@@ -13,8 +13,8 @@ Description: The 'APT Package Management System' provides Debian and
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.11.0)
 LinkingTo: Rcpp
-Suggests: knitr, rmarkdown, minidown
+Suggests: simplermarkdown
+VignetteBuilder: simplermarkdown
 URL: https://github.com/eddelbuettel/rcppapt, https://dirk.eddelbuettel.com/code/rcpp.apt.html
 BugReports: https://github.com/eddelbuettel/rcppapt/issues
-VignetteBuilder: knitr
 RoxygenNote: 6.1.0

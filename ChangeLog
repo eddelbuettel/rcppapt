@@ -1,8 +1,18 @@
+2021-11-28  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Roll minor version and date
+
+	* vignettes/binnmuAfterR340.md: Switch to simplermarkdown
+	* DESCRIPTION: Idem
+	* vignettes/water.css: Added
+
 2021-07-10  Dirk Eddelbuettel  <edd@debian.org>
 
 	* tests/version.R: Make test for NEWS version skip on CI
 
 2021-04-16  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Release 0.0.7
 
 	* DESCRIPTION (Suggests): Add implicit dependency on rmarkdown
 

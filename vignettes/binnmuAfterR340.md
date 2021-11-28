@@ -1,20 +1,15 @@
+<!--
+%\VignetteIndexEntry{Combining Drat and Travis CI}
+%\VignetteEngine{simplermarkdown::mdweave_to_html}
+%\VignetteEncoding{UTF-8}
+-->
 ---
 title: "Minimal Set of binnmu Packages"
 subtitle: "Combining the R and Debian package systems"
 author: "Dirk Eddelbuettel"
 date: "First version 2017-Jul-16; this version 2017-Aug-05"
-output:
-  minidown::mini_document:
-    framework: water
-    toc: true
-    toc_float: true
-vignette: >
-  %\VignetteIndexEntry{Minimal Set of binnmu Packages}
-  %\VignettePackage{RcppAPT}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+css: "water.css"
 ---
-
 
 ## Step 0: Problem Definition
 
@@ -86,7 +81,7 @@ docker> R CMD INSTALL rcppapt/       # assuming we're above rcppapt
 
 Inside the same Docker session, we now launch R and run (almost all of) the remainder from R.
 
-```{r, eval=FALSE}
+```r
 > library(RcppAPT)
 > library(data.table)
 > rd <- reverseDepends("r-base-core")         # 516 x 2
@@ -102,7 +97,7 @@ we exclude first as well as other, non-R-package dependencies (such as `rpy2`) w
 This leaves 489 candidate packages out of the initial 514.  The version field tells which r-base-core version
 was used to build the package---information we need per the setup described above.
 
-```{r, eval=FALSE}
+```r
 > rd
 > rd
              package version
@@ -124,7 +119,7 @@ Next we need to filter out two versions with unsortable (_i.e._,non-semantic) ve
 and apply a logical filter depending on whether the package was built with R version 3.3.3 or
 earlier, indicating a possibe required rebuild.
 
-```{r, eval=FALSE}
+```r
 > rd[ version=="3.0.0~20130330-1", version := "3.0.0.20130330-1"]
 > rd[ version=="3.2.4-revised-1", version := "3.2.4.1-1"]
 > rd[version!="", oldVersion := version  <=  package_version("3.3.3-1")]
@@ -146,7 +141,7 @@ earlier, indicating a possibe required rebuild.
 
 To cover some corner case, we derive a `skip` field:
 
-```{r, eval=FALSE}
+```r
 > rd[ version=="", skip:=TRUE ]
 > rd[ is.na(skip), skip:=FALSE]
 > rd[ skip==FALSE, ]
@@ -172,7 +167,7 @@ Next, we find the actual dependencies of each of these packages by constructing
 a large regular expression which we feed into `RcppAPT::getDepends()`
 
 
-```{r, eval=FALSE}
+```r
 > regexp <- paste(paste0("^", rd[skip==FALSE, package], "$"), collapse="|")
 > dep <- getDepends(regexp)
 > setDT(dep)
@@ -195,7 +190,7 @@ a large regular expression which we feed into `RcppAPT::getDepends()`
 Next we subset to those have `libc6` as a Depends, meaning they are compiled packages.
 This excludes all the R packages having only R code.
 
-```{r, eval=FALSE}
+```r
 > comp <- dep[deppkg=="libc6"]   # 242
 > comp
                  srcpkg deppkg cmpop version isCompiled
@@ -216,7 +211,7 @@ This excludes all the R packages having only R code.
 We are now getting closer.  We set keys on the `data.table` objects, and then do
 an inner join:
 
-```{r, eval=FALSE}
+```r
 > setkey(comp, srcpkg)
 > setkey(rd, package)
 > all <- rd[comp[, c(1,5)]]   # inner join (by default on columns with keys)
@@ -244,7 +239,7 @@ Next, we can concentrate on those having been built with the older versions requ
 a rebuild:
 
 
-```{r, eval=FALSE}
+```r
 > all[oldVersion==TRUE,][order(version),]    # 167
                       package version oldVersion  skip isCompiled
   1:            r-cran-bitops 3.0.1-6       TRUE FALSE       TRUE
@@ -263,7 +258,7 @@ a rebuild:
 
 Now we are down to 167 packages.
 
-```{r, eval=FALSE}
+```r
 > all[, cran:=grepl("^r-cran", package) ]
 > all[, bioc:=grepl("^r-bioc", package) ]
 > all[bioc==TRUE & oldVersion==TRUE,]                # 17 BioC
@@ -292,7 +287,7 @@ Among these are 17 BioConductor packages.  This is a superset as we do not know 
 use only `.Call()` meaning that no rebuild would be required.
 
 
-```{r, eval=FALSE}
+```r
 > all[bioc!=TRUE & cran!=TRUE & oldVersion==TRUE,]   # 3 other
                     package version oldVersion  skip isCompiled  cran  bioc
 1:       r-other-amsmercury 3.3.2-1       TRUE FALSE       TRUE FALSE FALSE
@@ -303,7 +298,7 @@ use only `.Call()` meaning that no rebuild would be required.
 
 There are also three which are neither BioC nor CRAN.
 
-```{r, eval=FALSE}
+```r
 > cand <- all[ cran==TRUE & oldVersion==TRUE, ]   # 147
 > cand
              package version oldVersion  skip isCompiled cran  bioc
@@ -325,7 +320,7 @@ We have 147 possible NMUs based off CRAN.
 
 Next, we mix this with information from CRAN.
 
-```{r, eval=FALSE}
+```r
 > db <- tools::CRAN_package_db()   # CRAN pkge info: N rows x 65 cols
 > setDT(db)
 > db[, package:=paste0("r-cran-", tolower(Package))]
@@ -349,7 +344,7 @@ Next, we mix this with information from CRAN.
 
 This is our set of 147 candidate packages with their CRAN name, Debian name and upstream version.
 
-```{r, eval=FALSE}
+```r
 > saveRDS(foo[, .(package, Package, Version, NeedsCompilation, oldVersion, skip)], file="debpackages.rds")
 ```
 
@@ -362,7 +357,7 @@ of 147 candidate packages and run a recursive grep for each.  We store the outpu
 directly in the same data structure.  The first checks for `.C()` or `.Fortran()` calls in the R scripts; the second checks
 for `R_registerRoutines()` in the compiled C code (with thanks again to Kurt Hornik for the suggestion)
 
-```{r, eval=FALSE}
+```r
 deb <- readRDS("~/debpackages.rds")
 for (i in 1:nrow(deb)) {
     deb[i, "dotCorFortran"] <- if (is.na(deb[i, "Package"])) NA
@@ -378,7 +373,7 @@ saveRDS(deb, "~/debpackagesout.rds")
 We read the data back in and subset on those for which the recursive grep found actual uses of
 `.C()` or `.Fortran()`.  The list contains 72 packages.
 
-```{r, eval=FALSE}
+```r
 > deb <- readRDS("debpackagesout.rds")
 > setDT(deb)
 > deb[ is.na(dotCorFortran) |(dotCorFortran & hasRegistration), 1:3]
@@ -432,7 +427,7 @@ We read the data back in and subset on those for which the recursive grep found 
 Similarly, the 17 BioC and 3 other packages can be tested via recursive greps (not shown) in a directory
 filled with `apt-get source` downloads:
 
-```{r, eval=FALSE}
+```r
 pkgs <- rbind(all[bioc!=TRUE & cran!=TRUE & oldVersion==TRUE, 1],
               all[bioc==TRUE & oldVersion==TRUE, 1])[[1]]
 
@@ -457,7 +452,7 @@ setDT(df)
 
 This leads to a further four packages:
 
-```{r, eval=FALSE}
+```r
 > df[dotCorFortran & hasRegistration, 1]
                      pkg
 1:           r-bioc-affy
@@ -469,7 +464,7 @@ This leads to a further four packages:
 
 These 42, along with the 4 (from the initally 17 BioC and 3 'other') packages are our target set.
 
-```{r, eval=FALSE}
+```r
 > nmu <- deb[ is.na(dotCorFortran) | (dotCorFortran & hasRegistration), 1] #42
 > oth <- df[dotCorFortran & hasRegistration, 1]
 >
@@ -530,7 +525,7 @@ These 42, along with the 4 (from the initally 17 BioC and 3 'other') packages ar
 We need to retrieve the version number in Debian unstable of these packages by once agaim
 relying of a function from [`RcppAPT`](https://github.com/eddelbuettel/rcppapt)
 
-```{r, eval=FALSE}
+```r
 > regexp <- paste(paste0("^", nmu[[1]], "$"), collapse="|")
 >
 > res <- getPackages(regexp)
@@ -587,7 +582,7 @@ relying of a function from [`RcppAPT`](https://github.com/eddelbuettel/rcppapt)
 
 With this, we can write out the content of the NMU request:
 
-```{r, eval=FALSE}
+```r
 >
 > for (i in 1:nrow(res))
 +     cat("nmu", paste(res[i,], collapse="_"), ". ANY . -m 'Rebuild against R 3.4.*, see #861333'\n")
