@@ -1,6 +1,5 @@
 ## RcppAPT: Rcpp Interface to APT Package Manager
 
-[![Build Status](https://travis-ci.org/eddelbuettel/rcppapt.png)](https://travis-ci.org/eddelbuettel/rcppapt)
 [![CI](https://github.com/eddelbuettel/rcppapt/workflows/ci/badge.svg)](https://github.com/eddelbuettel/rcppapt/actions?query=workflow%3Aci)
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT)
