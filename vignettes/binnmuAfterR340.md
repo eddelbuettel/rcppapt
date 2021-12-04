@@ -1,5 +1,5 @@
 <!--
-%\VignetteIndexEntry{Combining Drat and Travis CI}
+%\VignetteIndexEntry{Minimal Set of binnmu Packages}
 %\VignetteEngine{simplermarkdown::mdweave_to_html}
 %\VignetteEncoding{UTF-8}
 -->
@@ -654,6 +654,6 @@ does, leading to 46 suggested NMUs.
 
 ### See Also
 
-The [source file](https://github.com/eddelbuettel/rcppapt/blob/master/vignettes/binnmuAfterR340.Rmd) is on GitHub
-as is the  [revision history](https://github.com/eddelbuettel/rcppapt/commits/master/vignettes/binnmuAfterR340.Rmd).
+The [source file](https://github.com/eddelbuettel/rcppapt/blob/master/vignettes/binnmuAfterR340.md) is on GitHub
+as is the  [revision history](https://github.com/eddelbuettel/rcppapt/commits/master/vignettes/binnmuAfterR340.md).
 The [corresponding Debian bug report](https://bugs.debian.org/868558) is based on this analysis.

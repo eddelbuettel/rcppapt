@@ -3,6 +3,15 @@
 \newcommand{\ghpr}{\href{https://github.com/eddelbuettel/rcppapt/pull/#1}{##1}}
 \newcommand{\ghit}{\href{https://github.com/eddelbuettel/rcppapt/issues/#1}{##1}}
 
+\section{Changes in version 0.0.8 (2021-12-04)}{
+  \itemize{
+    \item New test file \code{version.R} ensures NEWS file documents
+    current package version
+    \item Travis artifacts and badges have been pruned
+    \item Vignettes now use \pkg{simplermarkdown}
+  }
+}
+
 \section{Changes in version 0.0.7 (2021-04-16)}{
   \itemize{
     \item Add rmarkdown to Suggests: as an implicit conditional dependency
