@@ -1,5 +1,7 @@
 2022-05-24  Dirk Eddelbuettel  <edd@debian.org>
 
+	* DESCRIPTION (Version, Date): Roll minor version and date
+
 	* src/buildDepends.cpp: Only include debsrcrecords if Apt < 2.5,
 	and condition out 'buildDepends()' and 'showSrc()' commands
 	* inst/scripts/configure.bash (aptver25): Condition for Apt >= 2.5
