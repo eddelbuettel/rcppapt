@@ -3,7 +3,8 @@
 complainAndExit() {
     echo $1
     sed -e 's/@compilearg@/-DRcppAPT_Wrong_System/' \
-        -e "s/@aptversionarg@//" \
+        -e "s/@apt19versionarg@//" \
+        -e "s/@apt25versionarg@//" \
         -e 's/@linkarg@//' \
         src/Makevars.in > src/Makevars
     exit 0
