@@ -23,11 +23,13 @@
   #include <apt-pkg/cachefile.h>
   #include <apt-pkg/cachefilter.h>
   #include <apt-pkg/pkgcache.h>
-  #include <apt-pkg/debsrcrecords.h>
   #if defined(APT_Version2)
     #include <apt-pkg/error.h>
     #include <apt-pkg/macros.h>
     #include <apt-pkg/pkgsystem.h>
+  #endif
+  #if !defined(APT_Version_2_5)
+    #include <apt-pkg/debsrcrecords.h>
   #endif
 #endif
 
@@ -69,6 +71,7 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
     if (unlikely(List == NULL))
         return res;             // #nocov
 
+#if !defined(APT_Version_2_5)
     // Create the text record parsers
     pkgSrcRecords SrcRecs(*List);
     if (_error->PendingError() == true)
@@ -90,6 +93,9 @@ std::vector<std::string> buildDepends(const std::string regexp = ".") {
             }
         }
     }
+#else
+    Rcpp::message(Rcpp::wrap(std::string("This command is temporarily unavailable.")));
+#endif
     return res;
 
 #else
@@ -143,14 +149,14 @@ bool showSrc(const std::string regexp = ".") {
         return false;
     } 									// #nocov end
 
+    unsigned found = 0;
+#if !defined(APT_Version_2_5)
     // Create the text record parsers
     pkgSrcRecords SrcRecs(*List);
     if (_error->PendingError() == true)	{	// #nocov  start
         Rcpp::Rcout << "Error: No sources records. Maybe you have src-deb entries?\n";
         return false;
     }										// #nocov end
-
-    unsigned found = 0;
 
     for (pkgCache::PkgIterator pkg = cache->PkgBegin(); !pkg.end(); pkg++) {
         if (pkgre(pkg)) {
@@ -173,6 +179,9 @@ bool showSrc(const std::string regexp = ".") {
             //}
         }
     }
+#else
+    Rcpp::message(Rcpp::wrap(std::string("This command is temporarily unavailable.")));
+#endif
     if (found == 0) {
         //_error->Notice(_("No packages found"));
         return false;		// #nocov
