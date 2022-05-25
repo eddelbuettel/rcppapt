@@ -1,3 +1,18 @@
+2022-05-25  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION (Version, Date): Release 0.0.9
+
+	* src/buildDepends.cpp: Simplified to use only public API, do not
+	need to account for API >= 2.5, no longer account for pre-2.0 API
+	* src/getPackages.cpp: No longer account for pre-2.0 API
+	* src/hasPackage.cpp: Idem
+	* src/reverseDepends.cpp: Idem
+
+	* inst/scripts/configure.bash: Removed conditioning for Apt versions
+	* src/Makevars.in: Idem
+
+	* cleanup: Remove src/symbols.rds
+
 2022-05-24  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Roll minor version and date
