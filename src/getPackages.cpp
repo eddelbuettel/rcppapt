@@ -1,7 +1,7 @@
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2020  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2022  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -29,9 +29,7 @@
   #include <apt-pkg/cachefile.h>
   #include <apt-pkg/cachefilter.h>
   #include <apt-pkg/pkgcache.h>
-  #if defined(APT_Version2)
-    #include <apt-pkg/pkgsystem.h>
-  #endif
+  #include <apt-pkg/pkgsystem.h>
 #endif
 
 #include <Rcpp.h>

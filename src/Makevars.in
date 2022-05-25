@@ -3,5 +3,5 @@
 CXX_STD = CXX11
 
 ## These are filled-in by configure
-PKG_CXXFLAGS = @compilearg@ @apt19versionarg@ @apt25versionarg@
+PKG_CXXFLAGS = @compilearg@
 PKG_LIBS = @linkarg@
