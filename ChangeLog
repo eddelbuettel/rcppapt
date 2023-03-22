@@ -1,3 +1,8 @@
+2023-03-22  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/Makevars: No longer set compilation standard
+	* src/Makevars.win: Idem
+
 2022-11-10  Dirk Eddelbuettel  <edd@debian.org>
 
 	* .github/workflows/ci.yaml (jobs): Update to actions/checkout@v3
