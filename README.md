@@ -4,7 +4,7 @@
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![CRAN](http://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](https://www.r-pkg.org:443/pkg/RcppAPT)
-[![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://codecov.io/github/eddelbuettel/rcppapt)
+[![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://app.codecov.io/github/eddelbuettel/rcppapt)
 [![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rcppapt)](https://github.com/eddelbuettel/rcppapt)
 
 ### Background
