@@ -3,6 +3,15 @@
 \newcommand{\ghpr}{\href{https://github.com/eddelbuettel/rcppapt/pull/#1}{##1}}
 \newcommand{\ghit}{\href{https://github.com/eddelbuettel/rcppapt/issues/#1}{##1}}
 
+\section{Changes in version 0.0.9.1 (2023-06-05)}{
+  \itemize{
+    \item UNRELEASED SNAPSHOT
+    \item Package maintenance updating continuous integration script versions
+    as well as coverage link from README
+    \item C++ compilation standards are no longer set to C++11 per CRAN preference
+  }
+}
+
 \section{Changes in version 0.0.9 (2022-05-25)}{
   \itemize{
     \item Simplified and standardized to only use public API
