@@ -3,8 +3,8 @@ Type: Package
 Title: 'Rcpp' Interface to the APT Package Manager
 Version: 0.0.9.1
 Date: 2023-04-12
-Author: Dirk Eddelbuettel
-Maintainer: Dirk Eddelbuettel <edd@debian.org>
+Authors@R: person("Dirk", "Eddelbuettel", role = c("aut", "cre"), email = "edd@debian.org",
+                  comment = c(ORCID = "0000-0001-6419-907X"))
 Description: The 'APT Package Management System' provides Debian and
  Debian-derived Linux systems with a powerful system to resolve package
  dependencies. This package offers access directly from R.  This can
