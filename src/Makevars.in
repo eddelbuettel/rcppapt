@@ -1,3 +1,5 @@
+## We need C++17 for the libapt-pkg API
+CXX_STD = CXX17
 
 ## These are filled-in by configure
 PKG_CXXFLAGS = @compilearg@
