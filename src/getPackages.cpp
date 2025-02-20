@@ -1,7 +1,7 @@
 //
 //  RcppAPT -- Rcpp bindings to APT package information on Debian systems
 //
-//  Copyright (C) 2015 - 2022  Dirk Eddelbuettel
+//  Copyright (C) 2015 - 2025  Dirk Eddelbuettel
 //
 //  This file is part of RcppAPT
 //
@@ -73,13 +73,13 @@ Rcpp::DataFrame getPackages(const std::string regexp = ".") {
         if (pkgre(package)) {
             std::string pkgname(package.Name());
             if (package.FullName(true) == pkgname) { 	// we do not want the foo:i386 variant
-                name.push_back(pkgname);
                 std::string version = "NA";
-                //Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << std::endl;
                 for (pkgCache::VerIterator cur = package.VersionList(); cur.end() != true; ++cur) {
+                    //Rcpp::Rcout << package.Name() << "--" << package.FullName(true) << "--" << cur.VerStr() << std::endl;
                     version = cur.VerStr();
+                    name.push_back(pkgname);
+                    ver.push_back(version);
                 }
-                ver.push_back(version);
             }
         }
     }
