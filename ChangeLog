@@ -1,3 +1,7 @@
+2025-02-22  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/version.R: Do not bail out under development versions
+
 2025-02-20  Dirk Eddelbuettel  <edd@debian.org>
 
 	* DESCRIPTION (Version, Date): Roll micro version and date

@@ -6,5 +6,7 @@ if (file.exists(nrdfile)) {
     ver <- as.package_version(gsub(".* ([0-9\\.]+) .*", "\\1", nrd[grepl("\\{Changes", nrd)]))
     dcf <- read.dcf(system.file("DESCRIPTION", package = pkg))
     cur <- as.package_version(dcf[[1,"Version"]])
-    if (cur != ver[1] && !isCI) stop("Expected NEWS entry for ", cur, " but saw ", ver[1], call. = FALSE)
+    lcur <- length(strsplit(format(cur), "\\.")[[1]])
+    if (cur != ver[1] && !isCI && lcur == 3)
+        stop("Expected NEWS entry for ", cur, " but saw ", ver[1], call. = FALSE)
 }
