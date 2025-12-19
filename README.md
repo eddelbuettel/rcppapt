@@ -3,6 +3,7 @@
 [![CI](https://github.com/eddelbuettel/rcppapt/workflows/ci/badge.svg)](https://github.com/eddelbuettel/rcppapt/actions?query=workflow%3Aci)
 [![License](https://eddelbuettel.github.io/badges/GPL2+.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![CRAN](https://www.r-pkg.org/badges/version/RcppAPT)](https://cran.r-project.org/package=RcppAPT)
+[![r-universe](https://eddelbuettel.r-universe.dev/badges/RcppAPT)](https://eddelbuettel.r-universe.dev/RcppAPT)
 [![Downloads](https://cranlogs.r-pkg.org/badges/RcppAPT?color=brightgreen)](https://www.r-pkg.org:443/pkg/RcppAPT)
 [![Code Coverage](https://img.shields.io/codecov/c/github/eddelbuettel/rcppapt/master.svg)](https://app.codecov.io/github/eddelbuettel/rcppapt)
 [![Last Commit](https://img.shields.io/github/last-commit/eddelbuettel/rcppapt)](https://github.com/eddelbuettel/rcppapt)
@@ -89,14 +90,20 @@ will do. Make sure you install the
 [libapt-pkg-dev](https://packages.debian.org/sid/libapt-pkg-dev)
 package first as it is a build-dependency.
 
-Versions of the package may also be available via
-[drat](http://dirk.eddelbuettel.com/code/drat.html) via:
+Development versions of the package may also be available via by r-universe
+which can accessed via
 
 ```{.r}
-drat:::add("eddelbuettel")
-install.packages("RcppAPT")
+install.packages('RcppAPT',
+                 repos = c('https://eddelbuettel.r-universe.dev',
+                           'https://cloud.r-project.org'))
 ```
 
+which offers source and binaries releases based on the main `git` branch for the common operating
+systems.  Linux binaries are also available, see the corresponding
+[documentation](https://docs.r-universe.dev/install/binaries.html#binaries-linux).
+Note that you _do_ need package `libapt-pkg-dev` installed to make a source
+installation take full advantage of the apt API.
 
 ### Author
 
